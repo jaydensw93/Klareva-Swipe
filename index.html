@@ -114,6 +114,12 @@
         <button data-p="instagram">IG</button>
         <button data-p="facebook">FB</button>
       </div>
+      <div class="seg" id="dateseg">
+        <button data-d="all" class="on">ALL TIME</button>
+        <button data-d="7">7D</button>
+        <button data-d="30">30D</button>
+        <button data-d="90">90D</button>
+      </div>
       <select id="sort">
         <option value="views">Most views</option>
         <option value="recent">Most recent</option>
@@ -154,9 +160,12 @@ async function decrypt(passcode){
 function render(){
   const q=$('q').value.trim().toLowerCase();
   const plat=document.querySelector('#platseg button.on').dataset.p;
+  const dwin=document.querySelector('#dateseg button.on').dataset.d;
   const sort=$('sort').value;
+  const nowS=Date.now()/1000;
   let list=VIDEOS.filter(v=>{
     if(plat!=='all'&&v.platform!==plat)return false;
+    if(dwin!=='all'){if(!v.posted)return false;if(nowS-v.posted>(+dwin)*86400)return false;}
     if(q){const hay=(v.desc+' '+v.account+' '+v.handle+' '+(v.tags||[]).join(' ')).toLowerCase();
       if(!hay.includes(q))return false;}
     return true;});
@@ -207,6 +216,8 @@ $('pass').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
 ['q','sort'].forEach(id=>$(id).addEventListener('input',render));
 $('platseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
   document.querySelectorAll('#platseg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();});
+$('dateseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('#dateseg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();});
 // auto-unlock within a session
 (function(){try{const p=sessionStorage.getItem('swipe_pass');if(p){$('pass').value=p;unlock();}}catch(e){}})();
 </script>
