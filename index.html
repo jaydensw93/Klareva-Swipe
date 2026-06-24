@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Winning Content Library</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--bg:#0a0d14;--panel:#141a26;--panel2:#0f131c;--bd:#2a3140;--bd2:#3e4859;
+    --gold:#d4933a;--gold2:#e0a82d;--text:#d4dae8;--mut:#7a8aa8;--mut2:#5a6478;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
+    letter-spacing:-0.005em;
+    background-image:linear-gradient(rgba(62,72,89,0.10) 1px,transparent 1px),linear-gradient(90deg,rgba(62,72,89,0.10) 1px,transparent 1px);
+    background-size:32px 32px;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:var(--gold);text-decoration:none;}
+
+  /* ---- gate ---- */
+  #gate{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(1200px 600px at 50% -10%,rgba(212,147,58,0.07),transparent),var(--bg);}
+  .gate-card{background:linear-gradient(180deg,rgba(22,28,40,0.96),rgba(15,19,28,0.98));
+    border:1px solid var(--bd);border-radius:8px;padding:40px 36px;max-width:380px;width:90%;text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+  .gate-badge{font-size:9px;color:var(--gold);letter-spacing:3px;font-weight:700;padding:3px 9px;
+    border:1px solid rgba(212,147,58,0.4);border-radius:3px;background:rgba(212,147,58,0.06);display:inline-block;}
+  .gate-card h1{font-size:22px;font-weight:800;letter-spacing:-0.4px;color:#e8ecf2;margin:18px 0 6px;}
+  .gate-card p{font-size:13px;color:var(--mut);line-height:1.5;margin-bottom:22px;}
+  #pass{width:100%;background:#0b0e15;border:1px solid var(--bd2);border-radius:5px;color:var(--text);
+    padding:12px 14px;font-size:15px;font-family:'JetBrains Mono',monospace;text-align:center;letter-spacing:2px;outline:none;}
+  #pass:focus{border-color:var(--gold);}
+  .btn{margin-top:14px;width:100%;background:var(--gold);color:#1a1206;border:none;border-radius:5px;
+    padding:12px;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;font-family:'JetBrains Mono',monospace;}
+  .btn:hover{background:var(--gold2);}
+  .btn:disabled{opacity:0.55;cursor:default;}
+  #gerr{color:#e06a5a;font-size:12px;margin-top:12px;min-height:16px;}
+
+  /* ---- app ---- */
+  #app{display:none;}
+  .topbar{background:linear-gradient(180deg,rgba(10,13,20,0.99),rgba(17,21,30,0.97));
+    border-bottom:1px solid var(--bd2);padding:14px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);box-shadow:0 1px 0 rgba(212,160,67,0.12);}
+  .brand{display:flex;align-items:center;gap:11px;}
+  .brand .tag{font-size:9px;color:var(--gold);letter-spacing:3px;font-weight:700;padding:2px 7px;
+    border:1px solid rgba(212,147,58,0.4);border-radius:2px;background:rgba(212,147,58,0.06);}
+  .brand .title{font-size:15px;font-weight:800;color:#e8ecf2;letter-spacing:1px;}
+  .meta{font-size:10px;color:var(--mut2);}
+  .tools{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .tools input,.tools select{background:#0b0e15;border:1px solid var(--bd2);border-radius:5px;color:var(--text);
+    padding:8px 11px;font-size:12px;font-family:'Inter',sans-serif;outline:none;}
+  .tools input{min-width:180px;}
+  .tools input:focus,.tools select:focus{border-color:var(--gold);}
+  .seg{display:flex;border:1px solid var(--bd2);border-radius:5px;overflow:hidden;}
+  .seg button{background:transparent;border:none;color:var(--mut);padding:8px 12px;font-size:11px;font-weight:700;
+    cursor:pointer;font-family:'JetBrains Mono',monospace;letter-spacing:0.5px;}
+  .seg button.on{background:rgba(212,147,58,0.14);color:var(--gold);}
+
+  .wrap{max-width:1480px;margin:0 auto;padding:22px 24px 60px;}
+  .count{font-size:11px;color:var(--mut);margin-bottom:16px;}
+  .count b{color:var(--text);}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px;}
+  .card{background:linear-gradient(180deg,rgba(22,28,40,0.9),rgba(15,19,28,0.95));border:1px solid var(--bd);
+    border-radius:7px;overflow:hidden;cursor:pointer;transition:transform .12s,border-color .12s,box-shadow .12s;display:flex;flex-direction:column;}
+  .card:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 10px 26px rgba(0,0,0,0.45);}
+  .thumb{position:relative;width:100%;aspect-ratio:9/16;background:#0b0e15;overflow:hidden;}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .thumb .ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800;
+    color:var(--bd2);background:linear-gradient(135deg,#11151e,#0b0e15);}
+  .plat{position:absolute;top:8px;left:8px;font-size:9px;font-weight:700;letter-spacing:0.5px;padding:3px 7px;border-radius:3px;
+    backdrop-filter:blur(6px);}
+  .plat.ig{background:rgba(214,41,118,0.82);color:#fff;}
+  .plat.fb{background:rgba(24,119,242,0.85);color:#fff;}
+  .views{position:absolute;bottom:8px;left:8px;font-size:11px;font-weight:800;color:#fff;
+    background:rgba(0,0,0,0.6);padding:3px 8px;border-radius:4px;backdrop-filter:blur(4px);}
+  .views span{color:var(--gold2);}
+  .body{padding:11px 12px 12px;display:flex;flex-direction:column;gap:7px;flex:1;}
+  .acct{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text);font-weight:600;}
+  .acct .vf{color:#3eb5c4;font-size:10px;}
+  .acct .fol{color:var(--mut2);font-weight:400;margin-left:auto;}
+  .desc{font-size:11.5px;color:var(--mut);line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .tags{display:flex;flex-wrap:wrap;gap:4px;}
+  .tags span{font-size:9px;color:var(--gold);background:rgba(212,147,58,0.08);border:1px solid rgba(212,147,58,0.18);
+    padding:1px 5px;border-radius:3px;}
+  .foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding-top:7px;border-top:1px solid var(--bd);
+    font-size:10px;color:var(--mut2);}
+  .foot .watch{color:var(--gold);font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:0.5px;}
+  .empty{text-align:center;color:var(--mut2);padding:60px;font-size:13px;}
+  @media(max-width:560px){.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:11px;}
+    .tools input{min-width:120px;}}
+</style></head><body>
+
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-badge">SWIPE FILE</div>
+    <h1>Winning Content Library</h1>
+    <p>Enter the creator passcode to browse the swipe file.</p>
+    <input id="pass" type="password" placeholder="passcode" autocomplete="off" autofocus>
+    <button class="btn" id="go">UNLOCK</button>
+    <div id="gerr"></div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="topbar">
+    <div class="brand">
+      <span class="tag">SWIPE FILE</span>
+      <span class="title">WINNING CONTENT LIBRARY</span>
+      <span class="meta mono" id="upd"></span>
+    </div>
+    <div class="tools">
+      <input id="q" placeholder="search caption, #tag, account…">
+      <div class="seg" id="platseg">
+        <button data-p="all" class="on">ALL</button>
+        <button data-p="instagram">IG</button>
+        <button data-p="facebook">FB</button>
+      </div>
+      <select id="sort">
+        <option value="views">Most views</option>
+        <option value="recent">Most recent</option>
+        <option value="likes">Most likes</option>
+        <option value="comments">Most comments</option>
+      </select>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="count" id="count"></div>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty" style="display:none;">No videos match your filters.</div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+let VIDEOS=[];
+
+function fmt(n){n=+n||0;if(n>=1e6)return (n/1e6).toFixed(n>=1e7?0:1)+'M';if(n>=1e3)return (n/1e3).toFixed(n>=1e4?0:1)+'K';return ''+n;}
+function ago(ts){if(!ts)return '';const d=Date.now()/1000-ts;const day=86400;
+  if(d<day)return 'today';if(d<2*day)return '1d ago';if(d<30*day)return Math.floor(d/day)+'d ago';
+  if(d<365*day)return Math.floor(d/(30*day))+'mo ago';return Math.floor(d/(365*day))+'y ago';}
+function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+async function decrypt(passcode){
+  const raw=Uint8Array.from(atob(window.SWIPE_ENC),c=>c.charCodeAt(0));
+  const salt=raw.slice(0,16), iv=raw.slice(16,28), ct=raw.slice(28);
+  const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(passcode),'PBKDF2',false,['deriveKey']);
+  const key=await crypto.subtle.deriveKey(
+    {name:'PBKDF2',salt,iterations:window.SWIPE_META.iters,hash:'SHA-256'},
+    km,{name:'AES-GCM',length:256},false,['decrypt']);
+  const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv},key,ct);
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+
+function render(){
+  const q=$('q').value.trim().toLowerCase();
+  const plat=document.querySelector('#platseg button.on').dataset.p;
+  const sort=$('sort').value;
+  let list=VIDEOS.filter(v=>{
+    if(plat!=='all'&&v.platform!==plat)return false;
+    if(q){const hay=(v.desc+' '+v.account+' '+v.handle+' '+(v.tags||[]).join(' ')).toLowerCase();
+      if(!hay.includes(q))return false;}
+    return true;});
+  const keymap={views:'views',likes:'likes',comments:'comments',recent:'posted'};
+  const k=keymap[sort];list.sort((a,b)=>(b[k]||0)-(a[k]||0));
+  $('count').innerHTML='Showing <b>'+list.length+'</b> of '+VIDEOS.length+' winning videos';
+  const g=$('grid');g.innerHTML='';
+  $('empty').style.display=list.length?'none':'block';
+  const frag=document.createDocumentFragment();
+  for(const v of list){
+    const c=document.createElement('div');c.className='card';
+    c.onclick=()=>{if(v.url)window.open(v.url,'_blank','noopener');};
+    const pc=v.platform==='instagram'?'ig':'fb';const pl=v.platform==='instagram'?'INSTAGRAM':'FACEBOOK';
+    const thumb=v.thumb?`<img loading="lazy" src="${v.thumb}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'ph',textContent:'${esc((v.account||'?')[0]).toUpperCase()}'}))">`
+      :`<div class="ph">${esc((v.account||'?')[0]).toUpperCase()}</div>`;
+    const tags=(v.tags||[]).slice(0,3).map(t=>`<span>#${esc(t.replace(/^#/,''))}</span>`).join('');
+    c.innerHTML=`<div class="thumb">${thumb}<span class="plat ${pc}">${pl}</span>
+        <span class="views"><span>▶</span> ${fmt(v.views)}</span></div>
+      <div class="body">
+        <div class="acct">@${esc(v.handle)}${v.verified?'<span class="vf">✓</span>':''}<span class="fol">${v.followers?fmt(v.followers)+' foll':''}</span></div>
+        <div class="desc">${esc(v.desc)||'<span style=color:#444>no caption</span>'}</div>
+        ${tags?`<div class="tags">${tags}</div>`:''}
+        <div class="foot"><span>♥ ${fmt(v.likes)} · 💬 ${fmt(v.comments)} · ${ago(v.posted)}</span><span class="watch">WATCH ↗</span></div>
+      </div>`;
+    frag.appendChild(c);
+  }
+  g.appendChild(frag);
+}
+
+async function unlock(){
+  const pass=$('pass').value;if(!pass)return;
+  $('go').disabled=true;$('gerr').textContent='';
+  try{
+    const data=await decrypt(pass);
+    VIDEOS=data.videos||[];
+    $('upd').textContent='updated '+(window.SWIPE_META.generated_at||'');
+    $('gate').style.display='none';$('app').style.display='block';
+    try{sessionStorage.setItem('swipe_pass',pass);}catch(e){}
+    render();
+  }catch(e){
+    $('gerr').textContent='Wrong passcode.';$('go').disabled=false;
+    $('pass').value='';$('pass').focus();
+  }
+}
+
+$('go').onclick=unlock;
+$('pass').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
+['q','sort'].forEach(id=>$(id).addEventListener('input',render));
+$('platseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('#platseg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();});
+// auto-unlock within a session
+(function(){try{const p=sessionStorage.getItem('swipe_pass');if(p){$('pass').value=p;unlock();}}catch(e){}})();
+</script>
+</body></html>
