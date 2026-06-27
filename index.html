@@ -295,7 +295,6 @@
         <span class="sh-title">MY VIDEOS</span>
         <span class="sh-sub" id="ideasSub"></span>
       </div>
-      <div class="seg" id="ideaseg" style="margin:0 0 14px;display:none;"></div>
       <div class="ideas" id="ideasGrid"></div>
     </div>
 
@@ -333,7 +332,7 @@
 <script src="data.js"></script>
 <script>
 const $=id=>document.getElementById(id);
-let VIDEOS=[], IDEAS=[], CREATOR=null, TOKEN='', CREATORS=[], SECTION='lib', PICK_CACHE={}, IDEA_TAB=null;
+let VIDEOS=[], IDEAS=[], CREATOR=null, TOKEN='', CREATORS=[], SECTION='lib', PICK_CACHE={}, LIB_PLATS=null;
 // Admin mode: only when this exact page is served from the bot on Jayden's Mac
 // (localhost). The public GitHub Pages copy is never admin — its assign API isn't reachable.
 const ADMIN=['localhost','127.0.0.1'].includes(location.hostname);
@@ -365,7 +364,10 @@ function setNav(tabs, active){
 }
 function showSection(name){
   SECTION=name;
-  const isLib=(name==='lib'||name==='assign');
+  LIB_PLATS = name==='linkbio' ? ['instagram','facebook']
+            : name==='tiktok'  ? ['tiktok']
+            : null;                          // null = use the #platseg filter (admin assign / public)
+  const isLib=(name==='lib'||name==='assign'||name==='linkbio'||name==='tiktok');
   $('hqPanel').style.display     = name==='hq'?'block':'none';
   $('ideasPanel').style.display  = name==='mine'?'block':'none';
   $('adminCreators').style.display = name==='creators'?'block':'none';
@@ -374,6 +376,9 @@ function showSection(name){
   $('grid').style.display        = isLib?'grid':'none';
   $('empty').style.display       = 'none';
   $('filterTools').style.display = isLib?'flex':'none';
+  $('platseg').style.display     = LIB_PLATS?'none':'';   // platform is the tab now → no platform filter
+  const lt=document.querySelector('#libHead .sh-title');
+  if(lt) lt.textContent = name==='linkbio'?'LINK IN BIO SCRAPER':(name==='tiktok'?'TIKTOK SCRAPER':'WINNING CONTENT LIBRARY');
   document.querySelectorAll('#subnav button').forEach(b=>b.classList.toggle('on',b.dataset.s===name));
   if(isLib) render();                       // (re)draw the library grid with current filters
   if(name==='creators' && ADMIN) loadCreators();
@@ -388,7 +393,7 @@ function renderHQ(hq){
   const wrap=$('hqBody');
   const has=Object.keys(hq).some(k=>(''+(hq[k]||'')).trim());
   if(!has){
-    wrap.innerHTML=`<div class="hq-empty">Your personalized plan is being set up.<br>Check back soon — or open the <b>Library</b> to browse winning content.</div>`;
+    wrap.innerHTML=`<div class="hq-empty">Your personalized plan is being set up.<br>Check back soon — or open a <b>Scraper</b> tab to browse winning content.</div>`;
     return;
   }
   const row=(label,val)=> val?`<div class="hq-row"><div class="hq-k">${label}</div><div class="hq-v">${esc(val)}</div></div>`:'';
@@ -809,11 +814,6 @@ async function pullStatus(){
 }
 async function syncStatus(){try{await flushQueue();await pullStatus();}catch(e){}}
 
-function ideaGroupOf(it){
-  return it.platform==='tiktok' ? 'tiktok'
-    : (it.platform==='instagram'||it.platform==='facebook') ? 'igfb'
-    : 'ideas';
-}
 function ideaCard(it){
   const st=ideaStatus(it.id);
   const card=document.createElement('div'); card.className='idea';
@@ -832,46 +832,34 @@ function ideaCard(it){
 }
 function renderIdeas(){
   const wrap=$('ideasGrid'); wrap.innerHTML='';
-  const seg=$('ideaseg');
   if(!IDEAS.length){
     $('ideasSub').textContent='nothing assigned yet';
-    if(seg) seg.style.display='none';
-    wrap.innerHTML=`<div class="hq-empty">No videos assigned to you yet.<br>Browse the <b>Library</b> — Jayden will drop your picks here.</div>`;
+    wrap.innerHTML=`<div class="hq-empty">No videos assigned to you yet.<br>Browse the <b>scrapers</b> — Jayden will drop your picks here.</div>`;
     return;
   }
   $('ideasSub').textContent=IDEAS.length+(IDEAS.length===1?' idea':' ideas')+' tailored for you';
-  const groups={igfb:[],tiktok:[],ideas:[]};
-  for(const it of IDEAS) groups[ideaGroupOf(it)].push(it);
-  const order=['igfb','tiktok','ideas'];
-  const live=order.filter(t=>groups[t].length);
-  if(!IDEA_TAB || !groups[IDEA_TAB] || !groups[IDEA_TAB].length) IDEA_TAB=live[0]||'igfb';
-  const labels={igfb:'📸 IG / FB',tiktok:'🎬 TIKTOK',ideas:'📝 IDEAS'};
-  if(seg){
-    if(live.length>1){
-      seg.style.display='inline-flex';
-      seg.innerHTML=live.map(t=>`<button data-it="${t}"${t===IDEA_TAB?' class="on"':''}>${labels[t]} (${groups[t].length})</button>`).join('');
-    }else{ seg.style.display='none'; }
-  }
   const frag=document.createDocumentFragment();
-  for(const it of (groups[IDEA_TAB]||[])) frag.appendChild(ideaCard(it));
+  for(const it of IDEAS) frag.appendChild(ideaCard(it));
   wrap.appendChild(frag);
 }
 
 function render(){
   const q=$('q').value.trim().toLowerCase();
-  const plat=document.querySelector('#platseg button.on').dataset.p;
+  const plat = LIB_PLATS ? null : document.querySelector('#platseg button.on').dataset.p;
   const dwin=document.querySelector('#dateseg button.on').dataset.d;
   const sort=$('sort').value;
   const nowS=Date.now()/1000;
   let list=VIDEOS.filter(v=>{
-    if(plat!=='all'&&v.platform!==plat)return false;
+    if(LIB_PLATS){ if(!LIB_PLATS.includes(v.platform))return false; }
+    else if(plat!=='all'&&v.platform!==plat)return false;
     if(dwin!=='all'){if(!v.posted)return false;if(nowS-v.posted>(+dwin)*86400)return false;}
     if(q){const hay=(v.desc+' '+v.account+' '+v.handle+' '+(v.tags||[]).join(' ')).toLowerCase();
       if(!hay.includes(q))return false;}
     return true;});
   const keymap={views:'views',likes:'likes',comments:'comments',recent:'posted'};
   const k=keymap[sort];list.sort((a,b)=>(b[k]||0)-(a[k]||0));
-  $('count').innerHTML='Showing <b>'+list.length+'</b> of '+VIDEOS.length+' winning videos';
+  const pool = LIB_PLATS ? VIDEOS.filter(v=>LIB_PLATS.includes(v.platform)).length : VIDEOS.length;
+  $('count').innerHTML='Showing <b>'+list.length+'</b> of '+pool+' winning videos';
   const g=$('grid');g.innerHTML='';
   $('empty').style.display=list.length?'none':'block';
   const frag=document.createDocumentFragment();
@@ -932,8 +920,6 @@ $('ideasGrid').addEventListener('click',e=>{
   const id=b.dataset.id;const nxt={todo:'wip',wip:'done',done:'todo'}[ideaStatus(id)];
   setIdeaStatus(id,nxt);b.className='istat '+nxt;b.textContent=statLabel(nxt);
   pushStatus(id,nxt);});
-$('ideaseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-  IDEA_TAB=b.dataset.it;renderIdeas();});
 // page-tab navigation (creator + admin)
 $('subnav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;showSection(b.dataset.s);});
 // admin only: assign menu on each card + publish + sync
@@ -971,11 +957,12 @@ async function bootCreator(token){
     await syncStatus();   // flush queued taps, then pull the shared truth (no-op if offline/unconfigured)
     renderHQ(cd.hq||{}); renderIdeas();
     setNav([
-      {id:'lib',  label:'LIBRARY'},
-      {id:'mine', label:'MY VIDEOS'+(IDEAS.length?' ('+IDEAS.length+')':'')},
-      {id:'hq',   label:'MY HQ'}
-    ],'lib');
-    showSection('lib');   // land on the library first
+      {id:'linkbio', label:'LINK IN BIO SCRAPER'},
+      {id:'tiktok',  label:'TIKTOK SCRAPER'},
+      {id:'mine',    label:'MY VIDEOS'+(IDEAS.length?' ('+IDEAS.length+')':'')},
+      {id:'hq',      label:'MY HQ'}
+    ],'linkbio');
+    showSection('linkbio');   // land on the Link in Bio scraper first
   }catch(e){
     console.error(e);
     document.querySelector('.gate-card h1').textContent='Link not active';
