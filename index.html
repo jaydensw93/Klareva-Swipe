@@ -144,10 +144,10 @@
   .hq-focus{border-top:1px solid var(--bd);padding-top:10px;}
   .hq-split{margin-bottom:12px;}
   .hq-splitbar{display:flex;height:12px;border-radius:6px;overflow:hidden;border:1px solid var(--bd);}
-  .hq-splitbar .g{background:#3eb5c4;} .hq-splitbar .s{background:var(--gold);}
+  .hq-splitbar .g{background:#3eb5c4;} .hq-splitbar .s{background:var(--gold);} .hq-splitbar .e{background:#8b7bf0;}
   .hq-splitleg{display:flex;gap:16px;margin-top:7px;font-size:11px;color:var(--mut);}
   .hq-splitleg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle;}
-  .hq-splitleg i.dotg{background:#3eb5c4;} .hq-splitleg i.dots{background:var(--gold);}
+  .hq-splitleg i.dotg{background:#3eb5c4;} .hq-splitleg i.dots{background:var(--gold);} .hq-splitleg i.dote{background:#8b7bf0;}
   .hq-chips{display:flex;flex-wrap:wrap;gap:6px;flex:1;}
   .hq-chips span{font-size:11px;color:var(--gold);background:rgba(212,147,58,0.08);
     border:1px solid rgba(212,147,58,0.25);padding:3px 9px;border-radius:99px;}
@@ -389,13 +389,13 @@ function renderHQ(hq){
   }
   const row=(label,val)=> val?`<div class="hq-row"><div class="hq-k">${label}</div><div class="hq-v">${esc(val)}</div></div>`:'';
   const metric=(label,val)=>`<div class="hq-metric"><div class="hq-mv">${val?esc(val):'—'}</div><div class="hq-mk">${label}</div></div>`;
-  const g=parseFloat(hq.split_growth), s=parseFloat(hq.split_sales);
+  const g=parseFloat(hq.split_growth), s=parseFloat(hq.split_sales), e=parseFloat(hq.split_edu);
   let splitBar='';
-  if(isFinite(g)||isFinite(s)){
-    const gv=isFinite(g)?g:0, sv=isFinite(s)?s:0, tot=(gv+sv)||100;
-    const gp=Math.round(gv/tot*100), sp=100-gp;
-    splitBar=`<div class="hq-split"><div class="hq-splitbar"><div class="g" style="width:${gp}%"></div><div class="s" style="width:${sp}%"></div></div>
-      <div class="hq-splitleg"><span><i class="dotg"></i>Growth ${gp}%</span><span><i class="dots"></i>Sales ${sp}%</span></div></div>`;
+  if(isFinite(g)||isFinite(s)||isFinite(e)){
+    const gv=isFinite(g)?g:0, sv=isFinite(s)?s:0, ev=isFinite(e)?e:0, tot=(gv+sv+ev)||100;
+    const gp=Math.round(gv/tot*100), sp=Math.round(sv/tot*100), ep=Math.max(0,100-gp-sp);
+    splitBar=`<div class="hq-split"><div class="hq-splitbar"><div class="g" style="width:${gp}%"></div><div class="s" style="width:${sp}%"></div><div class="e" style="width:${ep}%"></div></div>
+      <div class="hq-splitleg"><span><i class="dotg"></i>Growth ${gp}%</span><span><i class="dots"></i>Sales ${sp}%</span>${ev?`<span><i class="dote"></i>Educational ${ep}%</span>`:''}</div></div>`;
   }
   const conceptEmpty=!(hq.avatar||hq.niche||hq.style);
   wrap.innerHTML=`
@@ -582,16 +582,25 @@ function renderHQEditor(token, hq){
     </div>
     <div class="cm-sub">Content plan</div>
     <div class="cm-row">
-      <input id="hq-split_growth-${token}" type="number" placeholder="growth %" value="${v('split_growth')}" style="width:110px;">
-      <input id="hq-split_sales-${token}" type="number" placeholder="sales %" value="${v('split_sales')}" style="width:110px;">
-      <input id="hq-cadence-${token}" placeholder="posting cadence (e.g. 1 shop video/day)" value="${v('cadence')}" style="flex:1;min-width:200px;">
+      <input id="hq-split_growth-${token}" type="number" placeholder="growth %" value="${v('split_growth')}" style="width:90px;">
+      <input id="hq-split_sales-${token}" type="number" placeholder="sales %" value="${v('split_sales')}" style="width:90px;">
+      <input id="hq-split_edu-${token}" type="number" placeholder="edu %" value="${v('split_edu')}" style="width:90px;">
+      <input id="hq-cadence-${token}" placeholder="cadence (e.g. per 4 videos: 2 growth, 1 sales, 1 edu)" value="${v('cadence')}" style="flex:1;min-width:200px;">
     </div>
     <div class="cm-row"><input id="hq-formats-${token}" placeholder="formats, comma-separated (Recipe videos, Transformation, Store reviews)" value="${v('formats')}" style="flex:1;min-width:260px;"></div>
     <div class="cm-row"><textarea id="hq-plan-${token}" placeholder="the content plan / direction for this creator…">${esc(hq.plan||'')}</textarea></div>
     <div class="cm-sub">Progress</div>
     <div class="cm-row">
-      <input id="hq-m_followers-${token}" placeholder="followers" value="${v('m_followers')}" style="flex:1;min-width:110px;">
-      <input id="hq-m_videos-${token}" placeholder="videos posted" value="${v('m_videos')}" style="flex:1;min-width:110px;">
+      <select id="hq-acct_platform-${token}" style="width:130px;">
+        <option value=""${hq.acct_platform?'':' selected'}>— link acct —</option>
+        <option value="instagram"${hq.acct_platform==='instagram'?' selected':''}>Instagram</option>
+        <option value="facebook"${hq.acct_platform==='facebook'?' selected':''}>Facebook</option>
+      </select>
+      <input id="hq-acct_handle-${token}" placeholder="handle / page id (auto-fills followers + videos)" value="${v('acct_handle')}" style="flex:1;min-width:200px;">
+    </div>
+    <div class="cm-row">
+      <input id="hq-m_followers-${token}" placeholder="followers (blank = auto from linked acct)" value="${v('m_followers')}" style="flex:1;min-width:110px;">
+      <input id="hq-m_videos-${token}" placeholder="videos posted (blank = auto)" value="${v('m_videos')}" style="flex:1;min-width:110px;">
       <input id="hq-m_sales-${token}" placeholder="sales" value="${v('m_sales')}" style="flex:1;min-width:110px;">
     </div>
     <div class="cm-row"><input id="hq-focus-${token}" placeholder="current focus / next milestone" value="${v('focus')}" style="flex:1;min-width:260px;"></div>
@@ -599,7 +608,7 @@ function renderHQEditor(token, hq){
   </div>`;
 }
 async function saveHQ(token){
-  const f=['avatar','niche','style','split_growth','split_sales','cadence','formats','plan','focus','m_followers','m_videos','m_sales'];
+  const f=['avatar','niche','style','split_growth','split_sales','split_edu','cadence','formats','plan','focus','m_followers','m_videos','m_sales','acct_platform','acct_handle'];
   const body={}; f.forEach(k=>{const el=$('hq-'+k+'-'+token); if(el) body[k]=el.value;});
   try{ await api('/swipe/creators/'+token+'/hq',{method:'POST',body:JSON.stringify(body)});
     const m=$('hqmsg-'+token); if(m) m.textContent='✓ saved — publish to push live';
@@ -899,11 +908,11 @@ async function bootCreator(token){
     await syncStatus();   // flush queued taps, then pull the shared truth (no-op if offline/unconfigured)
     renderHQ(cd.hq||{}); renderIdeas();
     setNav([
-      {id:'hq',   label:'MY HQ'},
+      {id:'lib',  label:'LIBRARY'},
       {id:'mine', label:'MY VIDEOS'+(IDEAS.length?' ('+IDEAS.length+')':'')},
-      {id:'lib',  label:'LIBRARY'}
-    ],'hq');
-    showSection('hq');   // land on their personalized dashboard
+      {id:'hq',   label:'MY HQ'}
+    ],'lib');
+    showSection('lib');   // land on the library first
   }catch(e){
     console.error(e);
     document.querySelector('.gate-card h1').textContent='Link not active';
