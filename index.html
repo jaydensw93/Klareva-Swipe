@@ -85,8 +85,32 @@
     font-size:10px;color:var(--mut2);}
   .foot .watch{color:var(--gold);font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:0.5px;}
   .empty{text-align:center;color:var(--mut2);padding:60px;font-size:13px;}
+
+  /* ---- creator portal: ideas ---- */
+  .sechead{display:flex;align-items:center;gap:11px;margin:4px 0 15px;flex-wrap:wrap;}
+  .sechead .sh-tag{font-size:9px;color:var(--gold);letter-spacing:3px;font-weight:700;padding:3px 8px;
+    border:1px solid rgba(212,147,58,0.4);border-radius:3px;background:rgba(212,147,58,0.06);}
+  .sechead .sh-title{font-size:15px;font-weight:800;color:#e8ecf2;letter-spacing:1px;}
+  .sechead .sh-sub{font-size:11px;color:var(--mut2);}
+  .libhead{margin-top:36px;padding-top:24px;border-top:1px solid var(--bd);}
+  .ideas{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px;margin-bottom:6px;}
+  .idea{display:flex;background:linear-gradient(180deg,rgba(30,25,15,0.55),rgba(15,19,28,0.95));
+    border:1px solid var(--bd2);border-left:3px solid var(--gold);border-radius:7px;overflow:hidden;}
+  .idea .ithumb{width:80px;flex:0 0 80px;background:#0b0e15;}
+  .idea .ithumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .idea .ibody{padding:13px 15px;display:flex;flex-direction:column;gap:7px;flex:1;min-width:0;}
+  .idea .ititle{font-size:13.5px;font-weight:700;color:#e8ecf2;line-height:1.3;}
+  .idea .itext{font-size:12px;color:var(--mut);line-height:1.5;white-space:pre-wrap;}
+  .idea .ifoot{margin-top:auto;display:flex;align-items:center;gap:12px;padding-top:5px;}
+  .istat{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.5px;
+    border:1px solid var(--bd2);background:transparent;color:var(--mut);padding:4px 9px;border-radius:4px;cursor:pointer;}
+  .istat.wip{color:var(--gold);border-color:rgba(212,147,58,0.5);background:rgba(212,147,58,0.1);}
+  .istat.done{color:#5cc98a;border-color:rgba(92,201,138,0.45);background:rgba(92,201,138,0.1);}
+  .iwatch{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--gold);letter-spacing:0.5px;}
+
   @media(max-width:560px){.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:11px;}
-    .tools input{min-width:120px;}}
+    .tools input{min-width:120px;}
+    .ideas{grid-template-columns:1fr;}}
 </style></head><body>
 
 <div id="gate">
@@ -129,6 +153,19 @@
     </div>
   </div>
   <div class="wrap">
+    <div id="ideasPanel" style="display:none;">
+      <div class="sechead">
+        <span class="sh-tag">FOR YOU</span>
+        <span class="sh-title">YOUR VIDEO IDEAS</span>
+        <span class="sh-sub" id="ideasSub"></span>
+      </div>
+      <div class="ideas" id="ideasGrid"></div>
+    </div>
+    <div id="libHead" class="sechead libhead" style="display:none;">
+      <span class="sh-tag">SWIPE FILE</span>
+      <span class="sh-title">WINNING CONTENT LIBRARY</span>
+      <span class="sh-sub">proven videos to model</span>
+    </div>
     <div class="count" id="count"></div>
     <div class="grid" id="grid"></div>
     <div class="empty" id="empty" style="display:none;">No videos match your filters.</div>
@@ -138,7 +175,9 @@
 <script src="data.js"></script>
 <script>
 const $=id=>document.getElementById(id);
-let VIDEOS=[];
+let VIDEOS=[], IDEAS=[], CREATOR=null, TOKEN='';
+// Cloudflare Worker base for status sync-back. Empty string => localStorage-only.
+let STATUS_API=(window.SWIPE_STATUS_API||'').replace(/\/+$/,'');
 
 function fmt(n){n=+n||0;if(n>=1e6)return (n/1e6).toFixed(n>=1e7?0:1)+'M';if(n>=1e3)return (n/1e3).toFixed(n>=1e4?0:1)+'K';return ''+n;}
 function ago(ts){if(!ts)return '';const d=Date.now()/1000-ts;const day=86400;
@@ -146,15 +185,90 @@ function ago(ts){if(!ts)return '';const d=Date.now()/1000-ts;const day=86400;
   if(d<365*day)return Math.floor(d/(30*day))+'mo ago';return Math.floor(d/(365*day))+'y ago';}
 function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
-async function decrypt(passcode){
-  const raw=Uint8Array.from(atob(window.SWIPE_ENC),c=>c.charCodeAt(0));
+async function decryptBlob(b64, iters, passcode){
+  const raw=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));
   const salt=raw.slice(0,16), iv=raw.slice(16,28), ct=raw.slice(28);
   const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(passcode),'PBKDF2',false,['deriveKey']);
   const key=await crypto.subtle.deriveKey(
-    {name:'PBKDF2',salt,iterations:window.SWIPE_META.iters,hash:'SHA-256'},
+    {name:'PBKDF2',salt,iterations:iters,hash:'SHA-256'},
     km,{name:'AES-GCM',length:256},false,['decrypt']);
   const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv},key,ct);
   return JSON.parse(new TextDecoder().decode(pt));
+}
+async function decrypt(passcode){
+  return decryptBlob(window.SWIPE_ENC, window.SWIPE_META.iters, passcode);
+}
+async function sha256hex(s){
+  const buf=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function loadScript(src){
+  return new Promise((res,rej)=>{const s=document.createElement('script');
+    s.src=src; s.onload=res; s.onerror=()=>rej(new Error('load fail')); document.head.appendChild(s);});
+}
+
+// ---- creator portal: tailored video ideas ----
+function ideaKey(id){return 'swipe_idea_'+TOKEN+'_'+id;}
+function ideaStatus(id){try{return localStorage.getItem(ideaKey(id))||'todo';}catch(e){return 'todo';}}
+function setIdeaStatus(id,v){try{localStorage.setItem(ideaKey(id),v);}catch(e){}}
+function statLabel(s){return s==='done'?'✓ POSTED':s==='wip'?'● FILMING':'○ TO DO';}
+
+// ---- status sync-back (active only when a Worker URL was baked into data.js) ----
+// localStorage stays the on-device cache; the Worker is the shared source of truth
+// so Jayden sees taps too. Taps that fail (offline) queue and retry on next load.
+function qKey(){return 'swipe_q_'+TOKEN;}
+function loadQueue(){try{return JSON.parse(localStorage.getItem(qKey())||'[]');}catch(e){return [];}}
+function saveQueue(q){try{localStorage.setItem(qKey(),JSON.stringify(q));}catch(e){}}
+function enqueue(id,status){const q=loadQueue().filter(x=>x.id!=id);q.push({id:+id,status:status});saveQueue(q);}
+async function postStatus(id,status){
+  // text/plain keeps this a CORS "simple" request (no preflight); Worker parses the body
+  const r=await fetch(STATUS_API+'/status',{method:'POST',
+    headers:{'Content-Type':'text/plain;charset=UTF-8'},
+    body:JSON.stringify({c:TOKEN,idea_id:+id,status:status})});
+  if(!r.ok) throw new Error('status '+r.status);
+  return true;
+}
+async function pushStatus(id,status){
+  if(!STATUS_API) return;                 // localStorage-only mode
+  try{await postStatus(id,status);}       // UI already updated optimistically
+  catch(e){enqueue(id,status);}           // offline → retry next load
+}
+async function flushQueue(){
+  if(!STATUS_API) return;
+  const q=loadQueue(); if(!q.length) return;
+  const keep=[];
+  for(const it of q){try{await postStatus(it.id,it.status);}catch(e){keep.push(it);}}
+  saveQueue(keep);
+}
+async function pullStatus(){
+  if(!STATUS_API) return;
+  let r; try{r=await fetch(STATUS_API+'/portal?c='+encodeURIComponent(TOKEN));}catch(e){return;}
+  if(!r.ok) return;
+  let data; try{data=await r.json();}catch(e){return;}
+  const m=data.statuses||{};
+  for(const k in m){if(m[k]==='todo'||m[k]==='wip'||m[k]==='done') setIdeaStatus(k,m[k]);}
+}
+async function syncStatus(){try{await flushQueue();await pullStatus();}catch(e){}}
+
+function renderIdeas(){
+  const wrap=$('ideasGrid'); wrap.innerHTML='';
+  if(!IDEAS.length){$('ideasPanel').style.display='none';return;}
+  $('ideasPanel').style.display='block';
+  $('ideasSub').textContent=IDEAS.length+(IDEAS.length===1?' idea':' ideas')+' tailored for you';
+  const frag=document.createDocumentFragment();
+  for(const it of IDEAS){
+    const st=ideaStatus(it.id);
+    const card=document.createElement('div'); card.className='idea';
+    const thumb=it.thumb?`<div class="ithumb"><img loading="lazy" src="${esc(it.thumb)}"></div>`:'';
+    const ref=it.url?`<a class="iwatch" href="${esc(it.url)}" target="_blank" rel="noopener">REFERENCE ↗</a>`:'';
+    card.innerHTML=`${thumb}<div class="ibody">
+        <div class="ititle">${esc(it.title)}</div>
+        ${it.body?`<div class="itext">${esc(it.body)}</div>`:''}
+        <div class="ifoot"><button class="istat ${st}" data-id="${esc(''+it.id)}">${statLabel(st)}</button>${ref}</div>
+      </div>`;
+    frag.appendChild(card);
+  }
+  wrap.appendChild(frag);
 }
 
 function render(){
@@ -218,7 +332,43 @@ $('platseg').addEventListener('click',e=>{const b=e.target.closest('button');if(
   document.querySelectorAll('#platseg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();});
 $('dateseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
   document.querySelectorAll('#dateseg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();});
-// auto-unlock within a session
-(function(){try{const p=sessionStorage.getItem('swipe_pass');if(p){$('pass').value=p;unlock();}}catch(e){}})();
+// cycle an idea's status: to do -> filming -> posted (stored locally on this device)
+$('ideasGrid').addEventListener('click',e=>{
+  const b=e.target.closest('.istat');if(!b)return;
+  const id=b.dataset.id;const nxt={todo:'wip',wip:'done',done:'todo'}[ideaStatus(id)];
+  setIdeaStatus(id,nxt);b.className='istat '+nxt;b.textContent=statLabel(nxt);
+  pushStatus(id,nxt);});
+
+// personal link (?c=<token>): load + decrypt this creator's file, show their ideas,
+// then unlock the shared library with the passcode embedded inside their file.
+async function bootCreator(token){
+  try{
+    const hash=(await sha256hex(token)).slice(0,32);
+    await loadScript('creators/'+hash+'.js');
+    if(!window.CREATOR_ENC||!window.CREATOR_META) throw new Error('no creator data');
+    const cd=await decryptBlob(window.CREATOR_ENC, window.CREATOR_META.iters, token);
+    TOKEN=token; CREATOR=cd; IDEAS=cd.ideas||[];
+    const nm=(cd.name||'').trim();
+    document.querySelector('.brand .tag').textContent='YOUR HUB';
+    document.querySelector('.brand .title').textContent=nm?('HEY '+nm.toUpperCase()):'WELCOME';
+    $('upd').textContent='updated '+(window.CREATOR_META.generated_at||'');
+    const lib=await decryptBlob(window.SWIPE_ENC, window.SWIPE_META.iters, cd.lib_pass);
+    VIDEOS=lib.videos||[];
+    $('gate').style.display='none'; $('app').style.display='block'; $('libHead').style.display='flex';
+    await syncStatus();   // flush queued taps, then pull the shared truth (no-op if offline/unconfigured)
+    renderIdeas(); render();
+  }catch(e){
+    console.error(e);
+    document.querySelector('.gate-card h1').textContent='Link not active';
+    document.querySelector('.gate-card p').textContent='This personal link is invalid or has been turned off. Ask Jayden for a new one.';
+    $('pass').style.display='none'; $('go').style.display='none';
+  }
+}
+async function boot(){
+  const token=(new URLSearchParams(location.search).get('c')||'').trim();
+  if(token) return bootCreator(token);
+  try{const p=sessionStorage.getItem('swipe_pass');if(p){$('pass').value=p;unlock();}}catch(e){}
+}
+boot();
 </script>
 </body></html>
