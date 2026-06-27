@@ -1,0 +1,2 @@
+window.CREATOR_META={"iters": 150000, "generated_at": "2026-06-27 20:53 UTC", "name": "Eric"};
+window.CREATOR_ENC="nF6d1qWq3ymOMz0zm1WLvo9wPjFJniDtbxHEUVLr3KcAsqrqUJlZpWHSn2wJdL1+67iMsJJuEmYZ2Iv25QUbnOB1xhtLMX5dB8Xw94bZ9XqDISrPrb/JGM477xVb3DfyPXJPDYObh8S2CgaThSA0pNdQCD6fFcI9PX1ZVnbZuRnpFef1YzfecC9ZoueVfUrkcMlNCCK2leEOTmfcW7H5fxU3nG8=";

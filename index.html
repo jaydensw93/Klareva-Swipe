@@ -70,6 +70,7 @@
     backdrop-filter:blur(6px);}
   .plat.ig{background:rgba(214,41,118,0.82);color:#fff;}
   .plat.fb{background:rgba(24,119,242,0.85);color:#fff;}
+  .plat.tt{background:rgba(10,140,150,0.88);color:#fff;}
   .views{position:absolute;bottom:8px;left:8px;font-size:11px;font-weight:800;color:#fff;
     background:rgba(0,0,0,0.6);padding:3px 8px;border-radius:4px;backdrop-filter:blur(4px);}
   .views span{color:var(--gold2);}
@@ -254,6 +255,7 @@
           <button data-p="all" class="on">ALL</button>
           <button data-p="instagram">IG</button>
           <button data-p="facebook">FB</button>
+          <button data-p="tiktok">TIKTOK</button>
         </div>
         <div class="seg" id="dateseg">
           <button data-d="all" class="on">ALL TIME</button>
@@ -546,14 +548,21 @@ async function renderDrawer(token){
   const vmap={};
   if(ideas.some(it=>(it.ref_type||'')==='video' && it.ref_id)){
     try{
-      const rows=await api('/social/videos?sort=views&limit=400');
-      for(const r of rows){ vmap[await sha1hex16(r.platform+':'+r.video_id)]=r; }
+      const [igRows, ttRows] = await Promise.all([
+        api('/social/videos?sort=views&limit=400').catch(()=>[]),
+        api('/scraper/videos?sort=views&limit=400').catch(()=>[])
+      ]);
+      for(const r of igRows){ vmap[await sha1hex16(r.platform+':'+r.video_id)]=r; }
+      for(const r of ttRows){ r.platform='tiktok'; vmap[await sha1hex16('tiktok:'+r.video_id)]=r; }
     }catch(e){}
   }
   const items=ideas.map(it=>{
     const v=((it.ref_type||'')==='video' && it.ref_id) ? vmap[it.ref_id] : null;
+    const cover = v ? (v.platform==='tiktok'
+      ? `/cover/${encodeURIComponent(v.video_id)}`
+      : `/social/cover/${esc(v.platform)}/${encodeURIComponent(v.video_id)}`) : '';
     const thumb = v
-      ? `<img class="cm-ithumb" src="/social/cover/${esc(v.platform)}/${esc(v.video_id)}" alt="" onerror="this.style.display='none';">`
+      ? `<img class="cm-ithumb" src="${cover}" alt="" referrerpolicy="no-referrer" onerror="this.style.display='none';">`
       : '';
     const ref = v
       ? `<div class="cm-iref">▶ ${esc(v.platform)} · @${esc(v.handle)} · ${Number(v.play_count||0).toLocaleString()} views</div>`
@@ -614,6 +623,7 @@ function renderHQEditor(token, hq){
         <option value=""${hq.acct_platform?'':' selected'}>— link acct —</option>
         <option value="instagram"${hq.acct_platform==='instagram'?' selected':''}>Instagram</option>
         <option value="facebook"${hq.acct_platform==='facebook'?' selected':''}>Facebook</option>
+        <option value="tiktok"${hq.acct_platform==='tiktok'?' selected':''}>TikTok</option>
       </select>
       <input id="hq-acct_handle-${token}" placeholder="handle / page id (auto-fills followers + videos)" value="${v('acct_handle')}" style="flex:1;min-width:200px;">
     </div>
@@ -658,10 +668,15 @@ async function fetchOptions(type){
     return rows.map(r=>({id:String(r.id), title:(r.description||r.source_hook_verbatim||'adaptation').slice(0,90), sub:'adapt #'+r.id+' · @'+(r.handle||'')}));
   }
   if(type==='video'){
-    const rows=await api('/social/videos?sort=views&limit=80');
+    const [igRows, ttRows] = await Promise.all([
+      api('/social/videos?sort=views&limit=80').catch(()=>[]),
+      api('/scraper/videos?sort=views&limit=80').catch(()=>[])
+    ]);
     const out=[];
-    for(const r of rows){ const vk=await sha1hex16(r.platform+':'+r.video_id);
+    for(const r of igRows){ const vk=await sha1hex16(r.platform+':'+r.video_id);
       out.push({id:vk, title:(r.description||'(no caption)').slice(0,90), sub:r.platform+' · '+(r.play_count||0).toLocaleString()+' views'}); }
+    for(const r of ttRows){ const vk=await sha1hex16('tiktok:'+r.video_id);
+      out.push({id:vk, title:(r.description||'(no caption)').slice(0,90), sub:'tiktok · '+(r.play_count||0).toLocaleString()+' views'}); }
     return out;
   }
   return [];
@@ -807,8 +822,11 @@ function renderIdeas(){
     const card=document.createElement('div'); card.className='idea';
     const thumb=it.thumb?`<div class="ithumb"><img loading="lazy" src="${esc(it.thumb)}"></div>`:'';
     const ref=it.url?`<a class="iwatch" href="${esc(it.url)}" target="_blank" rel="noopener">REFERENCE ↗</a>`:'';
+    const platAbbr=it.platform==='instagram'?'IG':(it.platform==='tiktok'?'TT':(it.platform?'FB':''));
+    const platColor=it.platform==='instagram'?'#d62976':(it.platform==='tiktok'?'#0a8c96':'#1877f2');
+    const platTag=platAbbr?`<span style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:0.5px;padding:2px 5px;border-radius:3px;background:${platColor};color:#fff;margin-right:6px;vertical-align:middle;">${platAbbr}</span>`:'';
     card.innerHTML=`${thumb}<div class="ibody">
-        <div class="ititle">${esc(it.title)}</div>
+        <div class="ititle">${platTag}${esc(it.title)}</div>
         ${it.body?`<div class="itext">${esc(it.body)}</div>`:''}
         <div class="ifoot"><button class="istat ${st}" data-id="${esc(''+it.id)}">${statLabel(st)}</button>${ref}</div>
       </div>`;
@@ -838,7 +856,8 @@ function render(){
   for(const v of list){
     const c=document.createElement('div');c.className='card';
     if(!ADMIN) c.onclick=()=>{if(v.url)window.open(v.url,'_blank','noopener');};
-    const pc=v.platform==='instagram'?'ig':'fb';const pl=v.platform==='instagram'?'INSTAGRAM':'FACEBOOK';
+    const pc=v.platform==='instagram'?'ig':(v.platform==='tiktok'?'tt':'fb');
+    const pl=v.platform==='instagram'?'INSTAGRAM':(v.platform==='tiktok'?'TIKTOK':'FACEBOOK');
     const thumb=v.thumb?`<img loading="lazy" src="${v.thumb}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'ph',textContent:'${esc((v.account||'?')[0]).toUpperCase()}'}))">`
       :`<div class="ph">${esc((v.account||'?')[0]).toUpperCase()}</div>`;
     const tags=(v.tags||[]).slice(0,3).map(t=>`<span>#${esc(t.replace(/^#/,''))}</span>`).join('');
