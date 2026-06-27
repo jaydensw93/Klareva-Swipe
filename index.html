@@ -820,7 +820,8 @@ function renderIdeas(){
   for(const it of IDEAS){
     const st=ideaStatus(it.id);
     const card=document.createElement('div'); card.className='idea';
-    const thumb=it.thumb?`<div class="ithumb"><img loading="lazy" src="${esc(it.thumb)}"></div>`:'';
+    const ithumbsrc=it.thumb||it.cover||'';
+    const thumb=ithumbsrc?`<div class="ithumb"><img loading="lazy" referrerpolicy="no-referrer" src="${esc(ithumbsrc)}" onerror="this.closest('.ithumb').style.display='none'"></div>`:'';
     const ref=it.url?`<a class="iwatch" href="${esc(it.url)}" target="_blank" rel="noopener">REFERENCE ↗</a>`:'';
     const platAbbr=it.platform==='instagram'?'IG':(it.platform==='tiktok'?'TT':(it.platform?'FB':''));
     const platColor=it.platform==='instagram'?'#d62976':(it.platform==='tiktok'?'#0a8c96':'#1877f2');
@@ -858,7 +859,8 @@ function render(){
     if(!ADMIN) c.onclick=()=>{if(v.url)window.open(v.url,'_blank','noopener');};
     const pc=v.platform==='instagram'?'ig':(v.platform==='tiktok'?'tt':'fb');
     const pl=v.platform==='instagram'?'INSTAGRAM':(v.platform==='tiktok'?'TIKTOK':'FACEBOOK');
-    const thumb=v.thumb?`<img loading="lazy" src="${v.thumb}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'ph',textContent:'${esc((v.account||'?')[0]).toUpperCase()}'}))">`
+    const imgsrc=v.thumb||v.cover||'';
+    const thumb=imgsrc?`<img loading="lazy" referrerpolicy="no-referrer" src="${esc(imgsrc)}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'ph',textContent:'${esc((v.account||'?')[0]).toUpperCase()}'}))">`
       :`<div class="ph">${esc((v.account||'?')[0]).toUpperCase()}</div>`;
     const tags=(v.tags||[]).slice(0,3).map(t=>`<span>#${esc(t.replace(/^#/,''))}</span>`).join('');
     c.innerHTML=`<div class="thumb">${thumb}<span class="plat ${pc}">${pl}</span>
