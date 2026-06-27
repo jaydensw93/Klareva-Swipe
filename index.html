@@ -108,10 +108,53 @@
   .istat.done{color:#5cc98a;border-color:rgba(92,201,138,0.45);background:rgba(92,201,138,0.1);}
   .iwatch{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--gold);letter-spacing:0.5px;}
 
-  /* ---- topbar buttons (creator toggle + admin publish) ---- */
+  /* ---- topbar buttons (admin publish / sync) ---- */
   .tbtn{background:var(--gold);color:#1a1206;border:none;border-radius:5px;padding:8px 13px;font-size:11px;font-weight:700;
     letter-spacing:0.5px;cursor:pointer;font-family:'JetBrains Mono',monospace;}
   .tbtn:hover{background:var(--gold2);} .tbtn:disabled{opacity:0.5;cursor:default;}
+  .tbtn.ghost{background:transparent;border:1px solid var(--bd2);color:var(--mut);}
+  .tbtn.ghost:hover{border-color:var(--gold);color:var(--gold);}
+
+  /* ---- section nav (page tabs — replaces the old toggle) ---- */
+  .subnav{background:rgba(10,13,20,0.96);border-bottom:1px solid var(--bd);padding:0 24px;display:flex;gap:4px;overflow-x:auto;}
+  .subnav button{background:transparent;border:none;border-bottom:2px solid transparent;color:var(--mut);
+    padding:13px 18px;font-size:12px;font-weight:700;letter-spacing:1.2px;cursor:pointer;
+    font-family:'JetBrains Mono',monospace;white-space:nowrap;}
+  .subnav button:hover{color:var(--text);}
+  .subnav button.on{color:var(--gold);border-bottom-color:var(--gold);}
+
+  /* ---- creator HQ (the personalized dashboard) ---- */
+  .hq-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+  .hqcard{background:linear-gradient(180deg,rgba(22,28,40,0.9),rgba(15,19,28,0.95));border:1px solid var(--bd);
+    border-radius:8px;padding:18px 20px;}
+  .hq-plan{margin-bottom:16px;}
+  .hq-cardlabel{font-size:10px;color:var(--mut2);letter-spacing:2.5px;font-weight:700;text-transform:uppercase;
+    font-family:'JetBrains Mono',monospace;margin-bottom:14px;}
+  .hq-big{font-size:18px;font-weight:800;color:#e8ecf2;line-height:1.25;margin-bottom:10px;letter-spacing:-0.3px;}
+  .hq-row{display:flex;gap:12px;padding:8px 0;border-top:1px solid var(--bd);}
+  .hq-row:first-of-type{border-top:none;}
+  .hq-k{font-size:11px;color:var(--mut2);font-weight:700;letter-spacing:0.5px;min-width:120px;
+    font-family:'JetBrains Mono',monospace;text-transform:uppercase;flex:0 0 120px;}
+  .hq-v{font-size:13.5px;color:var(--text);line-height:1.5;flex:1;}
+  .hq-muted{font-size:12.5px;color:var(--mut2);}
+  .hq-metrics{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+  .hq-metric{flex:1;min-width:88px;background:rgba(0,0,0,0.25);border:1px solid var(--bd);border-radius:7px;padding:12px;text-align:center;}
+  .hq-mv{font-size:22px;font-weight:800;color:#e8ecf2;font-family:'JetBrains Mono',monospace;letter-spacing:-0.5px;}
+  .hq-mk{font-size:9px;color:var(--mut2);letter-spacing:1.2px;font-weight:700;margin-top:5px;text-transform:uppercase;}
+  .hq-focus{border-top:1px solid var(--bd);padding-top:10px;}
+  .hq-split{margin-bottom:12px;}
+  .hq-splitbar{display:flex;height:12px;border-radius:6px;overflow:hidden;border:1px solid var(--bd);}
+  .hq-splitbar .g{background:#3eb5c4;} .hq-splitbar .s{background:var(--gold);}
+  .hq-splitleg{display:flex;gap:16px;margin-top:7px;font-size:11px;color:var(--mut);}
+  .hq-splitleg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle;}
+  .hq-splitleg i.dotg{background:#3eb5c4;} .hq-splitleg i.dots{background:var(--gold);}
+  .hq-chips{display:flex;flex-wrap:wrap;gap:6px;flex:1;}
+  .hq-chips span{font-size:11px;color:var(--gold);background:rgba(212,147,58,0.08);
+    border:1px solid rgba(212,147,58,0.25);padding:3px 9px;border-radius:99px;}
+  .hq-plantext{white-space:pre-wrap;font-size:13.5px;line-height:1.65;color:var(--text);margin-top:12px;
+    border-top:1px solid var(--bd);padding-top:12px;}
+  .hq-empty{text-align:center;color:var(--mut2);padding:50px 20px;font-size:13.5px;line-height:1.6;
+    border:1px dashed var(--bd2);border-radius:8px;}
 
   /* ---- admin: assign a library video to a creator ---- */
   .assignbar{display:flex;gap:6px;align-items:center;position:relative;margin-top:7px;flex-wrap:wrap;}
@@ -131,6 +174,55 @@
   #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#141a26;border:1px solid var(--bd2);
     color:var(--text);padding:11px 20px;border-radius:6px;font-size:12.5px;display:none;z-index:300;box-shadow:0 10px 30px rgba(0,0,0,0.5);}
 
+  /* ---- admin: creator manager (merged from swipe_admin) ---- */
+  .cm-panel{background:linear-gradient(180deg,rgba(22,28,40,0.9),rgba(15,19,28,0.95));border:1px solid var(--bd);
+    border-radius:8px;padding:16px 18px;margin-bottom:16px;}
+  .cm-h2{font-size:11px;letter-spacing:1.5px;color:var(--mut);font-weight:700;margin-bottom:12px;
+    text-transform:uppercase;font-family:'JetBrains Mono',monospace;}
+  .cm-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px;}
+  .cm-panel input,.cm-panel select,.cm-panel textarea,.cm-drawer input,.cm-drawer select,.cm-drawer textarea{
+    background:#0b0e15;border:1px solid var(--bd2);border-radius:5px;color:var(--text);padding:9px 11px;
+    font-size:13px;font-family:'Inter',sans-serif;outline:none;}
+  .cm-panel input:focus,.cm-drawer input:focus,.cm-drawer select:focus,.cm-drawer textarea:focus{border-color:var(--gold);}
+  .cm-drawer textarea{width:100%;min-height:72px;resize:vertical;line-height:1.5;}
+  .cm-hint{font-size:11px;color:var(--mut2);line-height:1.5;margin-top:6px;}
+  .cm-sm{background:var(--gold);color:#1a1206;border:none;border-radius:5px;padding:6px 11px;font-size:10px;font-weight:700;
+    letter-spacing:0.5px;cursor:pointer;font-family:'JetBrains Mono',monospace;}
+  .cm-sm:hover{background:var(--gold2);}
+  .cm-sm.ghost{background:transparent;border:1px solid var(--bd2);color:var(--mut);}
+  .cm-sm.ghost:hover{border-color:var(--gold);color:var(--gold);}
+  .cm-sm.danger{background:transparent;border:1px solid rgba(224,106,90,0.4);color:#e06a5a;}
+  .cm-cre{border:1px solid var(--bd);border-radius:7px;padding:14px 16px;margin-bottom:12px;background:rgba(15,19,28,0.6);}
+  .cm-cre.rev{opacity:0.55;}
+  .cm-crehead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .cm-name{font-size:15px;font-weight:800;color:#e8ecf2;}
+  .cm-handle{font-size:12px;color:var(--mut2);}
+  .cm-badge{font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 7px;border-radius:3px;}
+  .cm-badge.cnt{color:var(--gold);background:rgba(212,147,58,0.1);border:1px solid rgba(212,147,58,0.3);}
+  .cm-badge.rev{color:#e06a5a;background:rgba(224,106,90,0.1);border:1px solid rgba(224,106,90,0.35);}
+  .cm-linkrow{display:flex;gap:8px;margin-top:10px;align-items:center;}
+  .cm-linkrow input{flex:1;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mut);}
+  .cm-acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+  .cm-drawer{margin-top:14px;padding-top:14px;border-top:1px solid var(--bd);display:none;}
+  .cm-sub{font-size:10px;letter-spacing:1.5px;color:var(--gold);font-weight:700;margin:16px 0 9px;
+    text-transform:uppercase;font-family:'JetBrains Mono',monospace;}
+  .cm-hq{background:rgba(11,14,21,0.5);border:1px solid var(--bd);border-radius:7px;padding:6px 14px 14px;margin-bottom:12px;}
+  .cm-hq .cm-sub:first-child{margin-top:10px;}
+  .cm-idea{border:1px solid var(--bd2);border-left:3px solid var(--gold);border-radius:6px;padding:10px 12px;margin-bottom:8px;
+    display:flex;gap:10px;align-items:flex-start;}
+  .cm-it{flex:1;min-width:0;} .cm-ititle{font-size:13px;font-weight:700;color:#e8ecf2;}
+  .cm-ibody{font-size:12px;color:var(--mut);white-space:pre-wrap;margin-top:4px;line-height:1.45;}
+  .cm-iref{font-size:9px;color:var(--gold);letter-spacing:0.5px;margin-top:5px;}
+  .cm-addbox{background:rgba(11,14,21,0.7);border:1px dashed var(--bd2);border-radius:6px;padding:12px;margin-top:10px;}
+  .cm-picker{border:1px solid var(--bd2);border-radius:5px;max-height:190px;overflow:auto;margin-top:6px;display:none;}
+  .cm-pick{padding:7px 10px;font-size:11.5px;color:var(--mut);border-bottom:1px solid var(--bd);cursor:pointer;}
+  .cm-pick:hover{background:rgba(212,147,58,0.08);color:var(--text);} .cm-pick b{color:var(--text);}
+  .cm-sbadge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:0.04em;padding:2px 7px;border-radius:99px;
+    border:1px solid var(--bd2);color:var(--mut);}
+  .cm-sbadge.wip{color:var(--gold);border-color:rgba(212,147,58,0.5);background:rgba(212,147,58,0.08);}
+  .cm-sbadge.done{color:#5fd29a;border-color:rgba(95,210,154,0.5);background:rgba(95,210,154,0.08);}
+
+  @media(max-width:680px){.hq-grid{grid-template-columns:1fr;}}
   @media(max-width:560px){.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:11px;}
     .tools input{min-width:120px;}
     .ideas{grid-template-columns:1fr;}}
@@ -155,40 +247,72 @@
       <span class="meta mono" id="upd"></span>
     </div>
     <div class="tools">
-      <div class="seg" id="viewseg" style="display:none;">
-        <button data-v="lib" class="on">LIBRARY</button>
-        <button data-v="mine">MY VIDEOS</button>
+      <div id="filterTools" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <input id="q" placeholder="search caption, #tag, account…">
+        <div class="seg" id="platseg">
+          <button data-p="all" class="on">ALL</button>
+          <button data-p="instagram">IG</button>
+          <button data-p="facebook">FB</button>
+        </div>
+        <div class="seg" id="dateseg">
+          <button data-d="all" class="on">ALL TIME</button>
+          <button data-d="7">7D</button>
+          <button data-d="30">30D</button>
+          <button data-d="90">90D</button>
+        </div>
+        <select id="sort">
+          <option value="views">Most views</option>
+          <option value="recent">Most recent</option>
+          <option value="likes">Most likes</option>
+          <option value="comments">Most comments</option>
+        </select>
       </div>
-      <input id="q" placeholder="search caption, #tag, account…">
-      <div class="seg" id="platseg">
-        <button data-p="all" class="on">ALL</button>
-        <button data-p="instagram">IG</button>
-        <button data-p="facebook">FB</button>
-      </div>
-      <div class="seg" id="dateseg">
-        <button data-d="all" class="on">ALL TIME</button>
-        <button data-d="7">7D</button>
-        <button data-d="30">30D</button>
-        <button data-d="90">90D</button>
-      </div>
-      <select id="sort">
-        <option value="views">Most views</option>
-        <option value="recent">Most recent</option>
-        <option value="likes">Most likes</option>
-        <option value="comments">Most comments</option>
-      </select>
+      <button class="tbtn ghost" id="syncBtn" style="display:none;">SYNC ↻</button>
       <button class="tbtn" id="pubBtn" style="display:none;">PUBLISH ↗</button>
     </div>
   </div>
+
+  <div class="subnav" id="subnav" style="display:none;"></div>
+
   <div class="wrap">
+    <!-- creator: personalized dashboard (concept / plan / progress) -->
+    <div id="hqPanel" style="display:none;">
+      <div class="sechead">
+        <span class="sh-tag">YOUR HQ</span>
+        <span class="sh-title">YOUR DASHBOARD</span>
+        <span class="sh-sub" id="hqSub"></span>
+      </div>
+      <div id="hqBody"></div>
+    </div>
+
+    <!-- creator: the videos assigned to them -->
     <div id="ideasPanel" style="display:none;">
       <div class="sechead">
         <span class="sh-tag">FOR YOU</span>
-        <span class="sh-title">YOUR VIDEO IDEAS</span>
+        <span class="sh-title">MY VIDEOS</span>
         <span class="sh-sub" id="ideasSub"></span>
       </div>
       <div class="ideas" id="ideasGrid"></div>
     </div>
+
+    <!-- admin: create / manage creator links + HQ + ideas -->
+    <div id="adminCreators" style="display:none;">
+      <div class="cm-panel">
+        <div class="cm-h2">New creator link</div>
+        <div class="cm-row">
+          <input id="cmName" placeholder="creator name (e.g. Jessica)" style="min-width:200px;">
+          <input id="cmHandle" placeholder="@handle (optional)" style="min-width:160px;">
+          <button class="cm-sm" onclick="mintCreator()">MINT LINK</button>
+        </div>
+        <p class="cm-hint">Each link is the creator's password — anyone with it sees their HQ + assigned videos + the library. Send it to that creator only. Revoke to kill a link. Changes go live for creators after you hit PUBLISH.</p>
+      </div>
+      <div class="cm-panel">
+        <div class="cm-h2">Creators</div>
+        <div id="cmList"><p class="cm-hint">Loading…</p></div>
+      </div>
+    </div>
+
+    <!-- shared winning-content library (creator LIBRARY tab + admin ASSIGN tab + public) -->
     <div id="libHead" class="sechead libhead" style="display:none;">
       <span class="sh-tag">SWIPE FILE</span>
       <span class="sh-title">WINNING CONTENT LIBRARY</span>
@@ -205,7 +329,7 @@
 <script src="data.js"></script>
 <script>
 const $=id=>document.getElementById(id);
-let VIDEOS=[], IDEAS=[], CREATOR=null, TOKEN='', CREATORS=[];
+let VIDEOS=[], IDEAS=[], CREATOR=null, TOKEN='', CREATORS=[], SECTION='lib', PICK_CACHE={};
 // Admin mode: only when this exact page is served from the bot on Jayden's Mac
 // (localhost). The public GitHub Pages copy is never admin — its assign API isn't reachable.
 const ADMIN=['localhost','127.0.0.1'].includes(location.hostname);
@@ -228,19 +352,77 @@ async function api(path,opts){
   return j;
 }
 
-// ---- creator view toggle: LIBRARY (what everyone sees) <-> MY VIDEOS (their picks) ----
-function setView(v){
-  const mine=(v==='mine');
-  $('ideasPanel').style.display = mine?'block':'none';
-  $('libHead').style.display    = mine?'none':(CREATOR?'flex':'none');
-  $('count').style.display      = mine?'none':'block';
-  $('grid').style.display       = mine?'none':'grid';
-  $('empty').style.display      = 'none';
-  document.querySelectorAll('#viewseg button').forEach(x=>x.classList.toggle('on',x.dataset.v===v));
-  if(!mine) render();   // refresh the library grid (keeps current filters)
+// ---- section router (page tabs replace the old toggle) ----
+// creator tabs: hq | mine | lib   ·   admin tabs: assign | creators
+function setNav(tabs, active){
+  const nav=$('subnav');
+  nav.innerHTML=tabs.map(t=>`<button data-s="${t.id}"${t.id===active?' class="on"':''}>${esc(t.label)}</button>`).join('');
+  nav.style.display='flex';
+}
+function showSection(name){
+  SECTION=name;
+  const isLib=(name==='lib'||name==='assign');
+  $('hqPanel').style.display     = name==='hq'?'block':'none';
+  $('ideasPanel').style.display  = name==='mine'?'block':'none';
+  $('adminCreators').style.display = name==='creators'?'block':'none';
+  $('libHead').style.display     = (isLib && !ADMIN && CREATOR)?'flex':'none';
+  $('count').style.display       = isLib?'block':'none';
+  $('grid').style.display        = isLib?'grid':'none';
+  $('empty').style.display       = 'none';
+  $('filterTools').style.display = isLib?'flex':'none';
+  document.querySelectorAll('#subnav button').forEach(b=>b.classList.toggle('on',b.dataset.s===name));
+  if(isLib) render();                       // (re)draw the library grid with current filters
+  if(name==='creators' && ADMIN) loadCreators();
 }
 
-// ---- admin: drop a library video into a creator's personalized section ----
+// ---- creator HQ: render the personalized dashboard from cd.hq ----
+function hqChips(s){
+  return (s||'').split(/[,\n]/).map(x=>x.trim()).filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('');
+}
+function renderHQ(hq){
+  hq=hq||{};
+  const wrap=$('hqBody');
+  const has=Object.keys(hq).some(k=>(''+(hq[k]||'')).trim());
+  if(!has){
+    wrap.innerHTML=`<div class="hq-empty">Your personalized plan is being set up.<br>Check back soon — or open the <b>Library</b> to browse winning content.</div>`;
+    return;
+  }
+  const row=(label,val)=> val?`<div class="hq-row"><div class="hq-k">${label}</div><div class="hq-v">${esc(val)}</div></div>`:'';
+  const metric=(label,val)=>`<div class="hq-metric"><div class="hq-mv">${val?esc(val):'—'}</div><div class="hq-mk">${label}</div></div>`;
+  const g=parseFloat(hq.split_growth), s=parseFloat(hq.split_sales);
+  let splitBar='';
+  if(isFinite(g)||isFinite(s)){
+    const gv=isFinite(g)?g:0, sv=isFinite(s)?s:0, tot=(gv+sv)||100;
+    const gp=Math.round(gv/tot*100), sp=100-gp;
+    splitBar=`<div class="hq-split"><div class="hq-splitbar"><div class="g" style="width:${gp}%"></div><div class="s" style="width:${sp}%"></div></div>
+      <div class="hq-splitleg"><span><i class="dotg"></i>Growth ${gp}%</span><span><i class="dots"></i>Sales ${sp}%</span></div></div>`;
+  }
+  const conceptEmpty=!(hq.avatar||hq.niche||hq.style);
+  wrap.innerHTML=`
+    <div class="hq-grid">
+      <div class="hqcard">
+        <div class="hq-cardlabel">// Concept</div>
+        ${hq.avatar?`<div class="hq-big">${esc(hq.avatar)}</div>`:''}
+        ${row('Niche',hq.niche)}
+        ${row('Style',hq.style)}
+        ${conceptEmpty?'<div class="hq-muted">No concept set yet.</div>':''}
+      </div>
+      <div class="hqcard">
+        <div class="hq-cardlabel">// Progress</div>
+        <div class="hq-metrics">${metric('Followers',hq.m_followers)}${metric('Videos posted',hq.m_videos)}${metric('Sales',hq.m_sales)}</div>
+        ${hq.focus?`<div class="hq-focus"><div class="hq-k" style="margin-bottom:5px;">Current focus</div><div class="hq-v">${esc(hq.focus)}</div></div>`:''}
+      </div>
+    </div>
+    <div class="hqcard hq-plan">
+      <div class="hq-cardlabel">// Content plan</div>
+      ${splitBar}
+      ${row('Posting cadence',hq.cadence)}
+      ${hq.formats?`<div class="hq-row"><div class="hq-k">Formats</div><div class="hq-chips">${hqChips(hq.formats)}</div></div>`:''}
+      ${hq.plan?`<div class="hq-plantext">${esc(hq.plan)}</div>`:''}
+    </div>`;
+}
+
+// ---- admin: assign a library video to a creator's personalized section ----
 function closeMenus(except){document.querySelectorAll('.amenu').forEach(m=>{if(m!==except)m.style.display='none';});}
 function buildMenu(vid){
   const m=document.createElement('div'); m.className='amenu';
@@ -273,6 +455,7 @@ async function assignTo(vid,token,name){
     if(btn){const bar=btn.parentElement; let chip=bar.querySelector('.assigned');
       if(!chip){chip=document.createElement('span');chip.className='assigned';bar.appendChild(chip);}
       chip.textContent='✓ assigned to '+name;}
+    loadCreators();   // refresh idea counts in the CREATORS tab
   }catch(e){toast('Error: '+e.message);}
 }
 async function doPublish(){
@@ -282,16 +465,236 @@ async function doPublish(){
   catch(e){toast('Publish failed: '+e.message);}
   b.disabled=false; b.textContent=o;
 }
+
+// ---- admin: creator manager (mint links, manage HQ + ideas) ----
+function copyLink(link){ navigator.clipboard.writeText(link).then(()=>toast('Link copied')).catch(()=>toast('Copy failed')); }
+function statusBadge(s){
+  if(s==='done') return '<span class="cm-sbadge done">✓ POSTED</span>';
+  if(s==='wip')  return '<span class="cm-sbadge wip">● FILMING</span>';
+  if(s==='todo') return '<span class="cm-sbadge">○ TO DO</span>';
+  return '';
+}
+async function loadCreators(){
+  try{ CREATORS=await api('/swipe/creators'); }
+  catch(e){ CREATORS=[]; const box=$('cmList'); if(box) box.innerHTML='<p class="cm-hint">Could not load ('+esc(e.message)+'). Is the bot running on this Mac?</p>'; return; }
+  renderCreatorManager();
+}
+function renderCreatorManager(){
+  const box=$('cmList'); if(!box) return;
+  const list=CREATORS||[];
+  if(!list.length){box.innerHTML='<p class="cm-hint">No creators yet. Mint a link above.</p>';return;}
+  box.innerHTML=list.map(c=>{
+    const cnt=c.idea_count||0;
+    return `<div class="cm-cre${c.revoked?' rev':''}" id="cmcre-${c.token}">
+      <div class="cm-crehead">
+        <span class="cm-name">${esc(c.name)}</span>
+        ${c.handle?`<span class="cm-handle">@${esc(c.handle)}</span>`:''}
+        <span class="cm-badge cnt">${cnt} idea${cnt===1?'':'s'}</span>
+        ${c.revoked?'<span class="cm-badge rev">REVOKED</span>':''}
+      </div>
+      <div class="cm-linkrow">
+        <input readonly value="${esc(c.link)}" onclick="this.select()">
+        <button class="cm-sm" onclick="copyLink('${esc(c.link)}')">COPY</button>
+      </div>
+      <div class="cm-acts">
+        <button class="cm-sm ghost" onclick="toggleDrawer('${c.token}')">EDIT HQ + VIDEOS ▾</button>
+        <button class="cm-sm ghost" onclick="toggleRevoke('${c.token}')">${c.revoked?'RESTORE':'REVOKE'}</button>
+        <button class="cm-sm danger" onclick="delCreator('${c.token}')">DELETE</button>
+      </div>
+      <div class="cm-drawer" id="cmdrawer-${c.token}"></div>
+    </div>`;
+  }).join('');
+}
+async function mintCreator(){
+  const name=$('cmName').value.trim();
+  if(!name){toast('Enter a name');return;}
+  const handle=$('cmHandle').value.trim();
+  try{
+    const r=await api('/swipe/creators',{method:'POST',body:JSON.stringify({name,handle})});
+    $('cmName').value='';$('cmHandle').value='';
+    await loadCreators(); copyLink(r.link); toast('Link minted + copied');
+  }catch(e){toast('Error: '+e.message);}
+}
+async function toggleRevoke(token){
+  const c=(CREATORS||[]).find(x=>x.token===token)||{};
+  try{ await api('/swipe/creators/'+token+'/revoke',{method:'POST',body:JSON.stringify({unrevoke:!!c.revoked})});
+    toast(c.revoked?'Restored — publish to apply':'Revoked — publish to apply'); await loadCreators();
+  }catch(e){toast('Error: '+e.message);}
+}
+async function delCreator(token){
+  const c=(CREATORS||[]).find(x=>x.token===token)||{};
+  if(!confirm('Delete '+(c.name||'this creator')+' and all their ideas? This cannot be undone.'))return;
+  try{ await api('/swipe/creators/'+token,{method:'DELETE'}); toast('Deleted'); await loadCreators(); }
+  catch(e){toast('Error: '+e.message);}
+}
+async function toggleDrawer(token){
+  const d=$('cmdrawer-'+token);
+  if(d.style.display==='block'){d.style.display='none';return;}
+  d.style.display='block';
+  await renderDrawer(token);
+}
+async function renderDrawer(token){
+  const d=$('cmdrawer-'+token);
+  d.innerHTML='<p class="cm-hint">Loading…</p>';
+  let ideas=[], hqResp={data:{}};
+  try{ [ideas,hqResp]=await Promise.all([
+      api('/swipe/creators/'+token+'/ideas'),
+      api('/swipe/creators/'+token+'/hq')
+    ]); }catch(e){ d.innerHTML='<p class="cm-hint">'+esc(e.message)+'</p>'; return; }
+  const items=ideas.map(it=>`
+    <div class="cm-idea">
+      <div class="cm-it">
+        <div class="cm-ititle">${esc(it.title)} ${statusBadge(it.live_status)}</div>
+        ${it.body?`<div class="cm-ibody">${esc(it.body)}</div>`:''}
+        ${it.ref_type?`<div class="cm-iref">↳ ${esc(it.ref_type)} #${esc(it.ref_id)}</div>`:''}
+      </div>
+      <button class="cm-sm danger" onclick="delIdea(${it.id},'${token}')">×</button>
+    </div>`).join('') || '<p class="cm-hint">No videos assigned yet. Use the ASSIGN tab to drop in library videos, or add one below.</p>';
+  d.innerHTML = renderHQEditor(token, hqResp.data||{}) + `
+    <div class="cm-sub">Assigned videos & ideas</div>
+    ${items}
+    <div class="cm-addbox">
+      <div class="cm-row"><input id="addtitle-${token}" placeholder="idea title (e.g. NECK angle — saggy neck reveal)" style="flex:1;min-width:220px;"></div>
+      <div class="cm-row"><textarea id="addbody-${token}" placeholder="the tailored direction: hook, what to film, why it fits them…"></textarea></div>
+      <div class="cm-row">
+        <select id="reftype-${token}" onchange="onRefType('${token}')">
+          <option value="">No reference</option>
+          <option value="saved_script">Attach saved script</option>
+          <option value="adaptation">Attach scraper adaptation</option>
+          <option value="video">Attach library video</option>
+        </select>
+        <input id="refsearch-${token}" placeholder="search to attach…" style="flex:1;min-width:160px;display:none;" oninput="filterPicker('${token}')">
+        <button class="cm-sm" onclick="addIdea('${token}')">ADD IDEA</button>
+      </div>
+      <input type="hidden" id="refid-${token}">
+      <div class="cm-picker" id="picker-${token}"></div>
+    </div>`;
+}
+function renderHQEditor(token, hq){
+  hq=hq||{};
+  const v=k=>esc(hq[k]||'');
+  return `<div class="cm-hq">
+    <div class="cm-sub">Creator HQ — concept</div>
+    <div class="cm-row"><input id="hq-avatar-${token}" placeholder="Avatar / on-camera persona (e.g. gay Korean skincare expert, 30s)" value="${v('avatar')}" style="flex:1;min-width:260px;"></div>
+    <div class="cm-row">
+      <input id="hq-niche-${token}" placeholder="Niche / angle" value="${v('niche')}" style="flex:1;min-width:170px;">
+      <input id="hq-style-${token}" placeholder="Style / concept" value="${v('style')}" style="flex:1;min-width:170px;">
+    </div>
+    <div class="cm-sub">Content plan</div>
+    <div class="cm-row">
+      <input id="hq-split_growth-${token}" type="number" placeholder="growth %" value="${v('split_growth')}" style="width:110px;">
+      <input id="hq-split_sales-${token}" type="number" placeholder="sales %" value="${v('split_sales')}" style="width:110px;">
+      <input id="hq-cadence-${token}" placeholder="posting cadence (e.g. 1 shop video/day)" value="${v('cadence')}" style="flex:1;min-width:200px;">
+    </div>
+    <div class="cm-row"><input id="hq-formats-${token}" placeholder="formats, comma-separated (Recipe videos, Transformation, Store reviews)" value="${v('formats')}" style="flex:1;min-width:260px;"></div>
+    <div class="cm-row"><textarea id="hq-plan-${token}" placeholder="the content plan / direction for this creator…">${esc(hq.plan||'')}</textarea></div>
+    <div class="cm-sub">Progress</div>
+    <div class="cm-row">
+      <input id="hq-m_followers-${token}" placeholder="followers" value="${v('m_followers')}" style="flex:1;min-width:110px;">
+      <input id="hq-m_videos-${token}" placeholder="videos posted" value="${v('m_videos')}" style="flex:1;min-width:110px;">
+      <input id="hq-m_sales-${token}" placeholder="sales" value="${v('m_sales')}" style="flex:1;min-width:110px;">
+    </div>
+    <div class="cm-row"><input id="hq-focus-${token}" placeholder="current focus / next milestone" value="${v('focus')}" style="flex:1;min-width:260px;"></div>
+    <div class="cm-row"><button class="cm-sm" onclick="saveHQ('${token}')">SAVE HQ</button><span class="cm-hint" id="hqmsg-${token}" style="margin-top:0;"></span></div>
+  </div>`;
+}
+async function saveHQ(token){
+  const f=['avatar','niche','style','split_growth','split_sales','cadence','formats','plan','focus','m_followers','m_videos','m_sales'];
+  const body={}; f.forEach(k=>{const el=$('hq-'+k+'-'+token); if(el) body[k]=el.value;});
+  try{ await api('/swipe/creators/'+token+'/hq',{method:'POST',body:JSON.stringify(body)});
+    const m=$('hqmsg-'+token); if(m) m.textContent='✓ saved — publish to push live';
+    toast('HQ saved — hit PUBLISH to push it live');
+  }catch(e){toast('Error: '+e.message);}
+}
+async function sha1hex16(s){
+  const buf=await crypto.subtle.digest('SHA-1', new TextEncoder().encode(s));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('').slice(0,16);
+}
+async function onRefType(token){
+  const type=$('reftype-'+token).value;
+  const search=$('refsearch-'+token), picker=$('picker-'+token);
+  $('refid-'+token).value='';
+  if(!type){ search.style.display='none'; picker.style.display='none'; return; }
+  search.style.display='block'; search.value=''; picker.style.display='block';
+  picker.innerHTML='<div class="cm-pick">Loading…</div>';
+  try{ PICK_CACHE[type]=await fetchOptions(type); filterPicker(token); }
+  catch(e){ picker.innerHTML='<div class="cm-pick">'+esc(e.message)+'</div>'; }
+}
+async function fetchOptions(type){
+  if(type==='saved_script'){
+    const rows=await api('/scripts');
+    return rows.map(r=>({id:String(r.id), title:(r.hook_text||'').slice(0,90), sub:'script #'+r.id+' · '+(r.status||'')}));
+  }
+  if(type==='adaptation'){
+    const rows=await api('/scraper/adaptations');
+    return rows.map(r=>({id:String(r.id), title:(r.description||r.source_hook_verbatim||'adaptation').slice(0,90), sub:'adapt #'+r.id+' · @'+(r.handle||'')}));
+  }
+  if(type==='video'){
+    const rows=await api('/social/videos?sort=views&limit=80');
+    const out=[];
+    for(const r of rows){ const vk=await sha1hex16(r.platform+':'+r.video_id);
+      out.push({id:vk, title:(r.description||'(no caption)').slice(0,90), sub:r.platform+' · '+(r.play_count||0).toLocaleString()+' views'}); }
+    return out;
+  }
+  return [];
+}
+function filterPicker(token){
+  const type=$('reftype-'+token).value;
+  const q=($('refsearch-'+token).value||'').toLowerCase();
+  const opts=(PICK_CACHE[type]||[]).filter(o=>!q || (o.title+' '+o.sub).toLowerCase().includes(q)).slice(0,60);
+  const picker=$('picker-'+token);
+  if(!opts.length){ picker.innerHTML='<div class="cm-pick">No matches.</div>'; return; }
+  picker.innerHTML=opts.map(o=>`<div class="cm-pick" onclick="pickRef('${token}','${esc(o.id)}','${esc(o.title).replace(/'/g,'&#39;')}')"><b>${esc(o.title)}</b><br>${esc(o.sub)}</div>`).join('');
+}
+function pickRef(token,id,title){
+  $('refid-'+token).value=id;
+  if(!$('addtitle-'+token).value.trim()) $('addtitle-'+token).value=title;
+  $('picker-'+token).style.display='none';
+  toast('Reference attached');
+}
+async function addIdea(token){
+  const title=$('addtitle-'+token).value.trim();
+  if(!title){toast('Idea needs a title');return;}
+  const body=$('addbody-'+token).value.trim();
+  const ref_type=$('reftype-'+token).value;
+  const ref_id=$('refid-'+token).value;
+  try{
+    await api('/swipe/creators/'+token+'/ideas',{method:'POST',
+      body:JSON.stringify({title,body,ref_type:ref_type||'',ref_id:ref_id||''})});
+    await renderDrawer(token); loadCreators(); toast('Idea added');
+  }catch(e){toast('Error: '+e.message);}
+}
+async function delIdea(id,token){
+  try{ await api('/swipe/ideas/'+id,{method:'DELETE'}); await renderDrawer(token); loadCreators(); }
+  catch(e){toast('Error: '+e.message);}
+}
+async function adminSyncStatus(){
+  const b=$('syncBtn'); if(b)b.disabled=true; const o=b?b.textContent:''; if(b)b.textContent='SYNCING…';
+  try{
+    const r=await api('/swipe/sync',{method:'POST',body:'{}'});
+    if(!r.configured){ toast('Status sync not set up yet'); }
+    else if(r.error){ toast('Sync error: '+r.error); }
+    else{
+      const nd=(r.newly_done||[]).length;
+      toast('Synced — '+(r.updated||0)+' updated'+(nd?(', '+nd+' newly posted'):''));
+      document.querySelectorAll('.cm-drawer').forEach(d=>{ if(d.style.display==='block') renderDrawer(d.id.replace('cmdrawer-','')); });
+    }
+  }catch(e){ toast('Sync failed: '+e.message); }
+  if(b){b.disabled=false; b.textContent=o;}
+}
 async function bootAdmin(){
   try{
     document.querySelector('.brand .tag').textContent='ADMIN';
-    document.querySelector('.brand .title').textContent='ASSIGN TO CREATORS';
+    document.querySelector('.brand .title').textContent='SCRAPER · ADMIN';
     const lib=await api('/swipe/library'); VIDEOS=lib.videos||[];
-    try{CREATORS=await api('/swipe/creators');}catch(e){CREATORS=[];}
-    const nC=CREATORS.filter(c=>!c.revoked).length;
+    await loadCreators();   // sets CREATORS + renders the manager (hidden until CREATORS tab)
+    const nC=(CREATORS||[]).filter(c=>!c.revoked).length;
     $('upd').textContent=VIDEOS.length+' videos · '+nC+' creator'+(nC===1?'':'s');
-    $('gate').style.display='none'; $('app').style.display='block'; $('pubBtn').style.display='inline-block';
-    render();
+    $('gate').style.display='none'; $('app').style.display='block';
+    $('pubBtn').style.display='inline-block';
+    $('syncBtn').style.display='inline-block';
+    setNav([{id:'assign',label:'ASSIGN VIDEOS'},{id:'creators',label:'CREATORS'}],'assign');
+    showSection('assign');
   }catch(e){
     $('gerr').textContent='Admin load failed: '+e.message+' — is the bot running on this Mac?';
   }
@@ -364,8 +767,11 @@ async function syncStatus(){try{await flushQueue();await pullStatus();}catch(e){
 
 function renderIdeas(){
   const wrap=$('ideasGrid'); wrap.innerHTML='';
-  if(!IDEAS.length){$('ideasPanel').style.display='none';return;}
-  $('ideasPanel').style.display='block';
+  if(!IDEAS.length){
+    $('ideasSub').textContent='nothing assigned yet';
+    wrap.innerHTML=`<div class="hq-empty">No videos assigned to you yet.<br>Browse the <b>Library</b> — Jayden will drop your picks here.</div>`;
+    return;
+  }
   $('ideasSub').textContent=IDEAS.length+(IDEAS.length===1?' idea':' ideas')+' tailored for you';
   const frag=document.createDocumentFragment();
   for(const it of IDEAS){
@@ -456,11 +862,12 @@ $('ideasGrid').addEventListener('click',e=>{
   const id=b.dataset.id;const nxt={todo:'wip',wip:'done',done:'todo'}[ideaStatus(id)];
   setIdeaStatus(id,nxt);b.className='istat '+nxt;b.textContent=statLabel(nxt);
   pushStatus(id,nxt);});
-// creator toggle: switch between the shared library and their own picks
-$('viewseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setView(b.dataset.v);});
-// admin only: assign menu on each card + publish
+// page-tab navigation (creator + admin)
+$('subnav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;showSection(b.dataset.s);});
+// admin only: assign menu on each card + publish + sync
 if(ADMIN){
   $('pubBtn').onclick=doPublish;
+  $('syncBtn').onclick=adminSyncStatus;
   $('grid').addEventListener('click',async e=>{
     const w=e.target.closest('.awatch'); if(w){const u=w.dataset.url;if(u)window.open(u,'_blank','noopener');return;}
     const ab=e.target.closest('.abtn');
@@ -472,7 +879,7 @@ if(ADMIN){
   document.addEventListener('click',e=>{if(!e.target.closest('.assignbar'))closeMenus();});
 }
 
-// personal link (?c=<token>): load + decrypt this creator's file, show their ideas,
+// personal link (?c=<token>): load + decrypt this creator's file, show their HQ + videos,
 // then unlock the shared library with the passcode embedded inside their file.
 async function bootCreator(token){
   try{
@@ -485,16 +892,18 @@ async function bootCreator(token){
     document.querySelector('.brand .tag').textContent='YOUR HUB';
     document.querySelector('.brand .title').textContent=nm?('HEY '+nm.toUpperCase()):'WELCOME';
     $('upd').textContent='updated '+(window.CREATOR_META.generated_at||'');
+    $('hqSub').textContent=(cd.handle?('@'+cd.handle):'');
     const lib=await decryptBlob(window.SWIPE_ENC, window.SWIPE_META.iters, cd.lib_pass);
     VIDEOS=lib.videos||[];
     $('gate').style.display='none'; $('app').style.display='block';
     await syncStatus();   // flush queued taps, then pull the shared truth (no-op if offline/unconfigured)
-    renderIdeas(); render();
-    if(IDEAS.length){
-      $('viewseg').style.display='flex';
-      $('viewseg').querySelector('[data-v="mine"]').textContent='MY VIDEOS ('+IDEAS.length+')';
-    }
-    setView('lib');   // land on the shared library; one tap opens their personalized section
+    renderHQ(cd.hq||{}); renderIdeas();
+    setNav([
+      {id:'hq',   label:'MY HQ'},
+      {id:'mine', label:'MY VIDEOS'+(IDEAS.length?' ('+IDEAS.length+')':'')},
+      {id:'lib',  label:'LIBRARY'}
+    ],'hq');
+    showSection('hq');   // land on their personalized dashboard
   }catch(e){
     console.error(e);
     document.querySelector('.gate-card h1').textContent='Link not active';
