@@ -213,6 +213,7 @@
   .cm-it{flex:1;min-width:0;} .cm-ititle{font-size:13px;font-weight:700;color:#e8ecf2;}
   .cm-ibody{font-size:12px;color:var(--mut);white-space:pre-wrap;margin-top:4px;line-height:1.45;}
   .cm-iref{font-size:9px;color:var(--gold);letter-spacing:0.5px;margin-top:5px;}
+  .cm-ithumb{width:52px;height:70px;object-fit:cover;border-radius:5px;border:1px solid var(--bd2);flex:0 0 auto;background:#0b0e15;}
   .cm-addbox{background:rgba(11,14,21,0.7);border:1px dashed var(--bd2);border-radius:6px;padding:12px;margin-top:10px;}
   .cm-picker{border:1px solid var(--bd2);border-radius:5px;max-height:190px;overflow:auto;margin-top:6px;display:none;}
   .cm-pick{padding:7px 10px;font-size:11.5px;color:var(--mut);border-bottom:1px solid var(--bd);cursor:pointer;}
@@ -541,15 +542,33 @@ async function renderDrawer(token){
       api('/swipe/creators/'+token+'/ideas'),
       api('/swipe/creators/'+token+'/hq')
     ]); }catch(e){ d.innerHTML='<p class="cm-hint">'+esc(e.message)+'</p>'; return; }
-  const items=ideas.map(it=>`
+  // resolve video pins -> thumbnail + account + views so you can SEE what's on their videos
+  const vmap={};
+  if(ideas.some(it=>(it.ref_type||'')==='video' && it.ref_id)){
+    try{
+      const rows=await api('/social/videos?sort=views&limit=400');
+      for(const r of rows){ vmap[await sha1hex16(r.platform+':'+r.video_id)]=r; }
+    }catch(e){}
+  }
+  const items=ideas.map(it=>{
+    const v=((it.ref_type||'')==='video' && it.ref_id) ? vmap[it.ref_id] : null;
+    const thumb = v
+      ? `<img class="cm-ithumb" src="/social/cover/${esc(v.platform)}/${esc(v.video_id)}" alt="" onerror="this.style.display='none';">`
+      : '';
+    const ref = v
+      ? `<div class="cm-iref">▶ ${esc(v.platform)} · @${esc(v.handle)} · ${Number(v.play_count||0).toLocaleString()} views</div>`
+      : (it.ref_type?`<div class="cm-iref">↳ ${esc(it.ref_type)} #${esc(it.ref_id)}</div>`:'');
+    return `
     <div class="cm-idea">
+      ${thumb}
       <div class="cm-it">
         <div class="cm-ititle">${esc(it.title)} ${statusBadge(it.live_status)}</div>
         ${it.body?`<div class="cm-ibody">${esc(it.body)}</div>`:''}
-        ${it.ref_type?`<div class="cm-iref">↳ ${esc(it.ref_type)} #${esc(it.ref_id)}</div>`:''}
+        ${ref}
       </div>
       <button class="cm-sm danger" onclick="delIdea(${it.id},'${token}')">×</button>
-    </div>`).join('') || '<p class="cm-hint">No videos assigned yet. Use the ASSIGN tab to drop in library videos, or add one below.</p>';
+    </div>`;
+  }).join('') || '<p class="cm-hint">No videos assigned yet. Use the ASSIGN tab to drop in library videos, or add one below.</p>';
   d.innerHTML = renderHQEditor(token, hqResp.data||{}) + `
     <div class="cm-sub">Assigned videos & ideas</div>
     ${items}
