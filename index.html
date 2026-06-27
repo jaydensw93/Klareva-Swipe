@@ -295,6 +295,7 @@
         <span class="sh-title">MY VIDEOS</span>
         <span class="sh-sub" id="ideasSub"></span>
       </div>
+      <div class="seg" id="ideaseg" style="margin:0 0 14px;display:none;"></div>
       <div class="ideas" id="ideasGrid"></div>
     </div>
 
@@ -332,7 +333,7 @@
 <script src="data.js"></script>
 <script>
 const $=id=>document.getElementById(id);
-let VIDEOS=[], IDEAS=[], CREATOR=null, TOKEN='', CREATORS=[], SECTION='lib', PICK_CACHE={};
+let VIDEOS=[], IDEAS=[], CREATOR=null, TOKEN='', CREATORS=[], SECTION='lib', PICK_CACHE={}, IDEA_TAB=null;
 // Admin mode: only when this exact page is served from the bot on Jayden's Mac
 // (localhost). The public GitHub Pages copy is never admin — its assign API isn't reachable.
 const ADMIN=['localhost','127.0.0.1'].includes(location.hostname);
@@ -808,31 +809,51 @@ async function pullStatus(){
 }
 async function syncStatus(){try{await flushQueue();await pullStatus();}catch(e){}}
 
+function ideaGroupOf(it){
+  return it.platform==='tiktok' ? 'tiktok'
+    : (it.platform==='instagram'||it.platform==='facebook') ? 'igfb'
+    : 'ideas';
+}
+function ideaCard(it){
+  const st=ideaStatus(it.id);
+  const card=document.createElement('div'); card.className='idea';
+  const ithumbsrc=it.thumb||it.cover||'';
+  const thumb=ithumbsrc?`<div class="ithumb"><img loading="lazy" referrerpolicy="no-referrer" src="${esc(ithumbsrc)}" onerror="this.closest('.ithumb').style.display='none'"></div>`:'';
+  const ref=it.url?`<a class="iwatch" href="${esc(it.url)}" target="_blank" rel="noopener">REFERENCE ↗</a>`:'';
+  const platAbbr=it.platform==='instagram'?'IG':(it.platform==='tiktok'?'TT':(it.platform?'FB':''));
+  const platColor=it.platform==='instagram'?'#d62976':(it.platform==='tiktok'?'#0a8c96':'#1877f2');
+  const platTag=platAbbr?`<span style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:0.5px;padding:2px 5px;border-radius:3px;background:${platColor};color:#fff;margin-right:6px;vertical-align:middle;">${platAbbr}</span>`:'';
+  card.innerHTML=`${thumb}<div class="ibody">
+      <div class="ititle">${platTag}${esc(it.title)}</div>
+      ${it.body?`<div class="itext">${esc(it.body)}</div>`:''}
+      <div class="ifoot"><button class="istat ${st}" data-id="${esc(''+it.id)}">${statLabel(st)}</button>${ref}</div>
+    </div>`;
+  return card;
+}
 function renderIdeas(){
   const wrap=$('ideasGrid'); wrap.innerHTML='';
+  const seg=$('ideaseg');
   if(!IDEAS.length){
     $('ideasSub').textContent='nothing assigned yet';
+    if(seg) seg.style.display='none';
     wrap.innerHTML=`<div class="hq-empty">No videos assigned to you yet.<br>Browse the <b>Library</b> — Jayden will drop your picks here.</div>`;
     return;
   }
   $('ideasSub').textContent=IDEAS.length+(IDEAS.length===1?' idea':' ideas')+' tailored for you';
-  const frag=document.createDocumentFragment();
-  for(const it of IDEAS){
-    const st=ideaStatus(it.id);
-    const card=document.createElement('div'); card.className='idea';
-    const ithumbsrc=it.thumb||it.cover||'';
-    const thumb=ithumbsrc?`<div class="ithumb"><img loading="lazy" referrerpolicy="no-referrer" src="${esc(ithumbsrc)}" onerror="this.closest('.ithumb').style.display='none'"></div>`:'';
-    const ref=it.url?`<a class="iwatch" href="${esc(it.url)}" target="_blank" rel="noopener">REFERENCE ↗</a>`:'';
-    const platAbbr=it.platform==='instagram'?'IG':(it.platform==='tiktok'?'TT':(it.platform?'FB':''));
-    const platColor=it.platform==='instagram'?'#d62976':(it.platform==='tiktok'?'#0a8c96':'#1877f2');
-    const platTag=platAbbr?`<span style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:0.5px;padding:2px 5px;border-radius:3px;background:${platColor};color:#fff;margin-right:6px;vertical-align:middle;">${platAbbr}</span>`:'';
-    card.innerHTML=`${thumb}<div class="ibody">
-        <div class="ititle">${platTag}${esc(it.title)}</div>
-        ${it.body?`<div class="itext">${esc(it.body)}</div>`:''}
-        <div class="ifoot"><button class="istat ${st}" data-id="${esc(''+it.id)}">${statLabel(st)}</button>${ref}</div>
-      </div>`;
-    frag.appendChild(card);
+  const groups={igfb:[],tiktok:[],ideas:[]};
+  for(const it of IDEAS) groups[ideaGroupOf(it)].push(it);
+  const order=['igfb','tiktok','ideas'];
+  const live=order.filter(t=>groups[t].length);
+  if(!IDEA_TAB || !groups[IDEA_TAB] || !groups[IDEA_TAB].length) IDEA_TAB=live[0]||'igfb';
+  const labels={igfb:'📸 IG / FB',tiktok:'🎬 TIKTOK',ideas:'📝 IDEAS'};
+  if(seg){
+    if(live.length>1){
+      seg.style.display='inline-flex';
+      seg.innerHTML=live.map(t=>`<button data-it="${t}"${t===IDEA_TAB?' class="on"':''}>${labels[t]} (${groups[t].length})</button>`).join('');
+    }else{ seg.style.display='none'; }
   }
+  const frag=document.createDocumentFragment();
+  for(const it of (groups[IDEA_TAB]||[])) frag.appendChild(ideaCard(it));
   wrap.appendChild(frag);
 }
 
@@ -911,6 +932,8 @@ $('ideasGrid').addEventListener('click',e=>{
   const id=b.dataset.id;const nxt={todo:'wip',wip:'done',done:'todo'}[ideaStatus(id)];
   setIdeaStatus(id,nxt);b.className='istat '+nxt;b.textContent=statLabel(nxt);
   pushStatus(id,nxt);});
+$('ideaseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  IDEA_TAB=b.dataset.it;renderIdeas();});
 // page-tab navigation (creator + admin)
 $('subnav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;showSection(b.dataset.s);});
 // admin only: assign menu on each card + publish + sync
