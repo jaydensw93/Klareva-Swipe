@@ -108,6 +108,29 @@
   .istat.done{color:#5cc98a;border-color:rgba(92,201,138,0.45);background:rgba(92,201,138,0.1);}
   .iwatch{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--gold);letter-spacing:0.5px;}
 
+  /* ---- topbar buttons (creator toggle + admin publish) ---- */
+  .tbtn{background:var(--gold);color:#1a1206;border:none;border-radius:5px;padding:8px 13px;font-size:11px;font-weight:700;
+    letter-spacing:0.5px;cursor:pointer;font-family:'JetBrains Mono',monospace;}
+  .tbtn:hover{background:var(--gold2);} .tbtn:disabled{opacity:0.5;cursor:default;}
+
+  /* ---- admin: assign a library video to a creator ---- */
+  .assignbar{display:flex;gap:6px;align-items:center;position:relative;margin-top:7px;flex-wrap:wrap;}
+  .abtn{flex:1;min-width:0;background:rgba(212,147,58,0.13);color:var(--gold);border:1px solid rgba(212,147,58,0.45);
+    border-radius:5px;padding:7px 9px;font-size:10px;font-weight:700;letter-spacing:0.5px;cursor:pointer;font-family:'JetBrains Mono',monospace;}
+  .abtn:hover{background:rgba(212,147,58,0.24);}
+  .awatch{background:transparent;border:1px solid var(--bd2);color:var(--mut);border-radius:5px;padding:7px 10px;font-size:11px;
+    font-weight:700;cursor:pointer;}
+  .awatch:hover{border-color:var(--gold);color:var(--gold);}
+  .amenu{position:absolute;bottom:calc(100% + 5px);left:0;right:0;background:#11151e;border:1px solid var(--bd2);border-radius:6px;
+    max-height:210px;overflow:auto;z-index:40;box-shadow:0 12px 34px rgba(0,0,0,0.55);}
+  .amenu .ac{padding:8px 11px;font-size:11.5px;color:var(--text);cursor:pointer;border-bottom:1px solid var(--bd);}
+  .amenu .ac:last-child{border-bottom:none;}
+  .amenu .ac:hover{background:rgba(212,147,58,0.13);color:var(--gold);}
+  .amenu .ac.new{color:var(--gold);font-weight:700;}
+  .assigned{width:100%;color:#5cc98a;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:0.3px;}
+  #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#141a26;border:1px solid var(--bd2);
+    color:var(--text);padding:11px 20px;border-radius:6px;font-size:12.5px;display:none;z-index:300;box-shadow:0 10px 30px rgba(0,0,0,0.5);}
+
   @media(max-width:560px){.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:11px;}
     .tools input{min-width:120px;}
     .ideas{grid-template-columns:1fr;}}
@@ -132,6 +155,10 @@
       <span class="meta mono" id="upd"></span>
     </div>
     <div class="tools">
+      <div class="seg" id="viewseg" style="display:none;">
+        <button data-v="lib" class="on">LIBRARY</button>
+        <button data-v="mine">MY VIDEOS</button>
+      </div>
       <input id="q" placeholder="search caption, #tag, account…">
       <div class="seg" id="platseg">
         <button data-p="all" class="on">ALL</button>
@@ -150,6 +177,7 @@
         <option value="likes">Most likes</option>
         <option value="comments">Most comments</option>
       </select>
+      <button class="tbtn" id="pubBtn" style="display:none;">PUBLISH ↗</button>
     </div>
   </div>
   <div class="wrap">
@@ -172,10 +200,15 @@
   </div>
 </div>
 
+<div id="toast"></div>
+
 <script src="data.js"></script>
 <script>
 const $=id=>document.getElementById(id);
-let VIDEOS=[], IDEAS=[], CREATOR=null, TOKEN='';
+let VIDEOS=[], IDEAS=[], CREATOR=null, TOKEN='', CREATORS=[];
+// Admin mode: only when this exact page is served from the bot on Jayden's Mac
+// (localhost). The public GitHub Pages copy is never admin — its assign API isn't reachable.
+const ADMIN=['localhost','127.0.0.1'].includes(location.hostname);
 // Cloudflare Worker base for status sync-back. Empty string => localStorage-only.
 let STATUS_API=(window.SWIPE_STATUS_API||'').replace(/\/+$/,'');
 
@@ -184,6 +217,85 @@ function ago(ts){if(!ts)return '';const d=Date.now()/1000-ts;const day=86400;
   if(d<day)return 'today';if(d<2*day)return '1d ago';if(d<30*day)return Math.floor(d/day)+'d ago';
   if(d<365*day)return Math.floor(d/(30*day))+'mo ago';return Math.floor(d/(365*day))+'y ago';}
 function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+// ---- shared little helpers (toast + same-origin API) ----
+function toast(m){const t=$('toast');if(!t)return;t.textContent=m;t.style.display='block';
+  clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',2600);}
+async function api(path,opts){
+  const r=await fetch(path,Object.assign({headers:{'Content-Type':'application/json'}},opts||{}));
+  let j={};try{j=await r.json();}catch(e){}
+  if(!r.ok) throw new Error(j.error||('HTTP '+r.status));
+  return j;
+}
+
+// ---- creator view toggle: LIBRARY (what everyone sees) <-> MY VIDEOS (their picks) ----
+function setView(v){
+  const mine=(v==='mine');
+  $('ideasPanel').style.display = mine?'block':'none';
+  $('libHead').style.display    = mine?'none':(CREATOR?'flex':'none');
+  $('count').style.display      = mine?'none':'block';
+  $('grid').style.display       = mine?'none':'grid';
+  $('empty').style.display      = 'none';
+  document.querySelectorAll('#viewseg button').forEach(x=>x.classList.toggle('on',x.dataset.v===v));
+  if(!mine) render();   // refresh the library grid (keeps current filters)
+}
+
+// ---- admin: drop a library video into a creator's personalized section ----
+function closeMenus(except){document.querySelectorAll('.amenu').forEach(m=>{if(m!==except)m.style.display='none';});}
+function buildMenu(vid){
+  const m=document.createElement('div'); m.className='amenu';
+  const active=CREATORS.filter(c=>!c.revoked);
+  let h=`<div class="ac new" data-vid="${esc(vid)}" data-new="1">+ New creator…</div>`;
+  if(!active.length) h+=`<div class="ac" style="cursor:default;color:var(--mut2)">No creators yet — use “New creator…”</div>`;
+  for(const c of active)
+    h+=`<div class="ac" data-vid="${esc(vid)}" data-token="${esc(c.token)}" data-name="${esc(c.name)}">${esc(c.name)}${c.handle?' · @'+esc(c.handle):''}</div>`;
+  m.innerHTML=h; return m;
+}
+async function onPick(ac){
+  const vid=ac.dataset.vid; let token=ac.dataset.token, name=ac.dataset.name;
+  if(ac.dataset.new){
+    const nm=(prompt('New creator name:')||'').trim(); if(!nm){closeMenus();return;}
+    try{const r=await api('/swipe/creators',{method:'POST',body:JSON.stringify({name:nm})});
+      CREATORS.push(r); token=r.token; name=r.name;}
+    catch(e){toast('Error: '+e.message); return;}
+  }
+  closeMenus();
+  if(token) await assignTo(vid,token,name);
+}
+async function assignTo(vid,token,name){
+  const v=VIDEOS.find(x=>x.id===vid)||{};
+  const title=((v.desc||'').slice(0,70).trim())||('Winning video — @'+(v.handle||''));
+  try{
+    await api('/swipe/creators/'+token+'/ideas',{method:'POST',
+      body:JSON.stringify({title,body:'',ref_type:'video',ref_id:vid})});
+    toast('Added to '+name+' — hit PUBLISH to push it live');
+    const btn=[...document.querySelectorAll('.card .abtn')].find(b=>b.dataset.vid===vid);
+    if(btn){const bar=btn.parentElement; let chip=bar.querySelector('.assigned');
+      if(!chip){chip=document.createElement('span');chip.className='assigned';bar.appendChild(chip);}
+      chip.textContent='✓ assigned to '+name;}
+  }catch(e){toast('Error: '+e.message);}
+}
+async function doPublish(){
+  const b=$('pubBtn'); b.disabled=true; const o=b.textContent; b.textContent='PUBLISHING…';
+  try{const r=await api('/swipe/publish',{method:'POST',body:'{}'});
+    toast(r.status==='ok'?'Published ✓ creators see updates in ~1 min':'Publish finished with errors');}
+  catch(e){toast('Publish failed: '+e.message);}
+  b.disabled=false; b.textContent=o;
+}
+async function bootAdmin(){
+  try{
+    document.querySelector('.brand .tag').textContent='ADMIN';
+    document.querySelector('.brand .title').textContent='ASSIGN TO CREATORS';
+    const lib=await api('/swipe/library'); VIDEOS=lib.videos||[];
+    try{CREATORS=await api('/swipe/creators');}catch(e){CREATORS=[];}
+    const nC=CREATORS.filter(c=>!c.revoked).length;
+    $('upd').textContent=VIDEOS.length+' videos · '+nC+' creator'+(nC===1?'':'s');
+    $('gate').style.display='none'; $('app').style.display='block'; $('pubBtn').style.display='inline-block';
+    render();
+  }catch(e){
+    $('gerr').textContent='Admin load failed: '+e.message+' — is the bot running on this Mac?';
+  }
+}
 
 async function decryptBlob(b64, iters, passcode){
   const raw=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));
@@ -291,7 +403,7 @@ function render(){
   const frag=document.createDocumentFragment();
   for(const v of list){
     const c=document.createElement('div');c.className='card';
-    c.onclick=()=>{if(v.url)window.open(v.url,'_blank','noopener');};
+    if(!ADMIN) c.onclick=()=>{if(v.url)window.open(v.url,'_blank','noopener');};
     const pc=v.platform==='instagram'?'ig':'fb';const pl=v.platform==='instagram'?'INSTAGRAM':'FACEBOOK';
     const thumb=v.thumb?`<img loading="lazy" src="${v.thumb}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'ph',textContent:'${esc((v.account||'?')[0]).toUpperCase()}'}))">`
       :`<div class="ph">${esc((v.account||'?')[0]).toUpperCase()}</div>`;
@@ -304,6 +416,12 @@ function render(){
         ${tags?`<div class="tags">${tags}</div>`:''}
         <div class="foot"><span>♥ ${fmt(v.likes)} · 💬 ${fmt(v.comments)} · ${ago(v.posted)}</span><span class="watch">WATCH ↗</span></div>
       </div>`;
+    if(ADMIN){
+      const bar=document.createElement('div'); bar.className='assignbar';
+      bar.innerHTML=`<button class="abtn" data-vid="${esc(v.id)}">+ ASSIGN ▾</button>`+
+        `<button class="awatch" data-url="${esc(v.url)}" title="watch">▶</button>`;
+      c.querySelector('.body').appendChild(bar);
+    }
     frag.appendChild(c);
   }
   g.appendChild(frag);
@@ -338,6 +456,21 @@ $('ideasGrid').addEventListener('click',e=>{
   const id=b.dataset.id;const nxt={todo:'wip',wip:'done',done:'todo'}[ideaStatus(id)];
   setIdeaStatus(id,nxt);b.className='istat '+nxt;b.textContent=statLabel(nxt);
   pushStatus(id,nxt);});
+// creator toggle: switch between the shared library and their own picks
+$('viewseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setView(b.dataset.v);});
+// admin only: assign menu on each card + publish
+if(ADMIN){
+  $('pubBtn').onclick=doPublish;
+  $('grid').addEventListener('click',async e=>{
+    const w=e.target.closest('.awatch'); if(w){const u=w.dataset.url;if(u)window.open(u,'_blank','noopener');return;}
+    const ab=e.target.closest('.abtn');
+    if(ab){const bar=ab.parentElement; let m=bar.querySelector('.amenu');
+      if(!m){m=buildMenu(ab.dataset.vid); bar.appendChild(m);}
+      const wasOpen=m.style.display==='block'; closeMenus(); m.style.display=wasOpen?'none':'block'; return;}
+    const ac=e.target.closest('.ac'); if(ac){await onPick(ac); return;}
+  });
+  document.addEventListener('click',e=>{if(!e.target.closest('.assignbar'))closeMenus();});
+}
 
 // personal link (?c=<token>): load + decrypt this creator's file, show their ideas,
 // then unlock the shared library with the passcode embedded inside their file.
@@ -354,9 +487,14 @@ async function bootCreator(token){
     $('upd').textContent='updated '+(window.CREATOR_META.generated_at||'');
     const lib=await decryptBlob(window.SWIPE_ENC, window.SWIPE_META.iters, cd.lib_pass);
     VIDEOS=lib.videos||[];
-    $('gate').style.display='none'; $('app').style.display='block'; $('libHead').style.display='flex';
+    $('gate').style.display='none'; $('app').style.display='block';
     await syncStatus();   // flush queued taps, then pull the shared truth (no-op if offline/unconfigured)
     renderIdeas(); render();
+    if(IDEAS.length){
+      $('viewseg').style.display='flex';
+      $('viewseg').querySelector('[data-v="mine"]').textContent='MY VIDEOS ('+IDEAS.length+')';
+    }
+    setView('lib');   // land on the shared library; one tap opens their personalized section
   }catch(e){
     console.error(e);
     document.querySelector('.gate-card h1').textContent='Link not active';
@@ -365,6 +503,7 @@ async function bootCreator(token){
   }
 }
 async function boot(){
+  if(ADMIN) return bootAdmin();
   const token=(new URLSearchParams(location.search).get('c')||'').trim();
   if(token) return bootCreator(token);
   try{const p=sessionStorage.getItem('swipe_pass');if(p){$('pass').value=p;unlock();}}catch(e){}
