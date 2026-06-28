@@ -298,6 +298,16 @@
       <div class="ideas" id="ideasGrid"></div>
     </div>
 
+    <!-- creator: the adaptations assigned to them (read-only — no good/great/bad rating) -->
+    <div id="adaptsPanel" style="display:none;">
+      <div class="sechead">
+        <span class="sh-tag">TO FILM</span>
+        <span class="sh-title">ADAPT QUEUE</span>
+        <span class="sh-sub" id="adaptsSub"></span>
+      </div>
+      <div id="adaptsGrid"></div>
+    </div>
+
     <!-- admin: create / manage creator links + HQ + ideas -->
     <div id="adminCreators" style="display:none;">
       <div class="cm-panel">
@@ -332,7 +342,7 @@
 <script src="data.js"></script>
 <script>
 const $=id=>document.getElementById(id);
-let VIDEOS=[], IDEAS=[], CREATOR=null, TOKEN='', CREATORS=[], SECTION='lib', PICK_CACHE={}, LIB_PLATS=null;
+let VIDEOS=[], IDEAS=[], ADAPTS=[], CREATOR=null, TOKEN='', CREATORS=[], SECTION='lib', PICK_CACHE={}, LIB_PLATS=null;
 // Admin mode: only when this exact page is served from the bot on Jayden's Mac
 // (localhost). The public GitHub Pages copy is never admin — its assign API isn't reachable.
 const ADMIN=['localhost','127.0.0.1'].includes(location.hostname);
@@ -370,6 +380,7 @@ function showSection(name){
   const isLib=(name==='lib'||name==='assign'||name==='linkbio'||name==='tiktok');
   $('hqPanel').style.display     = name==='hq'?'block':'none';
   $('ideasPanel').style.display  = name==='mine'?'block':'none';
+  $('adaptsPanel').style.display = name==='adapts'?'block':'none';
   $('adminCreators').style.display = name==='creators'?'block':'none';
   $('libHead').style.display     = (isLib && !ADMIN && CREATOR)?'flex':'none';
   $('count').style.display       = isLib?'block':'none';
@@ -843,6 +854,73 @@ function renderIdeas(){
   wrap.appendChild(frag);
 }
 
+// ---- creator ADAPT QUEUE: read-only adapt cards (same info as the admin queue,
+// full iterations, but NO good/great/bad rating — rating stays admin-only) ----
+function adaptCard(a){
+  const v=a.verdict||'maybe';
+  const vc = v==='yes'?'#8fb33f':v==='maybe'?'#d4933a':'#7a8aa8';
+  const vbg= v==='yes'?'rgba(143,179,63,0.08)':v==='maybe'?'rgba(212,147,58,0.08)':'rgba(122,138,168,0.06)';
+  const vbd= v==='yes'?'rgba(143,179,63,0.4)':v==='maybe'?'rgba(212,147,58,0.4)':'rgba(122,138,168,0.3)';
+  const imgsrc=a.thumb||a.cover||'';
+  const thumb=imgsrc?`<img loading="lazy" referrerpolicy="no-referrer" src="${esc(imgsrc)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.outerHTML='🎬'">`:'🎬';
+  const hooks=Array.isArray(a.hook_options)?a.hook_options:[];
+  const tweaks=Array.isArray(a.review_style_tweaks)?a.review_style_tweaks:[];
+  const tx=a.transcript||'';
+  return `
+    <div style="background:rgba(0,0,0,0.25);border:1px solid var(--bd);border-left:3px solid ${vc};border-radius:0 3px 3px 0;padding:18px 22px;margin-bottom:14px;display:grid;grid-template-columns:84px 1fr;gap:18px;">
+      <div style="width:84px;height:110px;border-radius:2px;overflow:hidden;background:#1c2230;display:flex;align-items:center;justify-content:center;font-size:22px;color:#3e4859;">${thumb}</div>
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+          <span class="mono" style="font-size:11px;padding:3px 9px;border-radius:99px;font-weight:700;letter-spacing:1.5px;color:${vc};background:${vbg};border:1px solid ${vbd};">${v.toUpperCase()} · ${a.score||'?'}/10</span>
+          <span class="mono" style="font-size:10px;color:var(--mut2);">from @${esc(a.handle||'')} · ${fmt(a.views||0)} views</span>
+          ${a.url?`<a href="${esc(a.url)}" target="_blank" rel="noopener" class="mono" style="font-size:10px;color:#3eb5c4;letter-spacing:1.5px;font-weight:700;">SOURCE ↗</a>`:''}
+        </div>
+        ${tx?`
+          <div class="mono" style="font-size:10px;color:#3eb5c4;letter-spacing:1.8px;font-weight:700;margin-bottom:6px;">📝 ACTUAL SPOKEN HOOK + BODY</div>
+          <div style="padding:10px 14px;background:rgba(62,181,196,0.04);border-left:2px solid rgba(62,181,196,0.4);border-radius:0 2px 2px 0;font-size:13px;color:var(--text);line-height:1.6;margin-bottom:14px;font-style:italic;">${esc(tx.slice(0,420))}${tx.length>420?'…':''}</div>`
+        :(a.description?`<div style="font-size:12.5px;color:#a0a8b8;font-style:italic;margin-bottom:12px;line-height:1.5;">"${esc(a.description.slice(0,180))}"</div>`:'')}
+        ${a.why?`
+          <div class="mono" style="font-size:11px;color:var(--mut2);letter-spacing:1.5px;font-weight:700;margin-bottom:6px;">WHAT'S WORTH TESTING</div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:14px;">${esc(a.why)}</div>`:''}
+        ${a.source_hook_verbatim?`
+          <div class="mono" style="font-size:11px;color:var(--mut2);letter-spacing:1.5px;font-weight:700;margin-bottom:6px;">SOURCE HOOK ${a.source_hook_usable==='yes'?'<span style="color:#8fb33f;margin-left:6px;">· USABLE AS-IS</span>':'<span style="color:#d4933a;margin-left:6px;">· NEEDS REFRAME</span>'}</div>
+          <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border-left:2px solid var(--bd2);border-radius:0 2px 2px 0;font-size:13.5px;color:#eef0f5;line-height:1.6;margin-bottom:8px;">"${esc(a.source_hook_verbatim)}"</div>
+          ${a.source_hook_reframe?`
+            <div class="mono" style="font-size:10px;color:var(--gold);letter-spacing:1.5px;font-weight:700;margin:8px 0 4px;">↳ REFRAMED FOR REVIEW STYLE</div>
+            <div style="padding:10px 14px;background:rgba(212,147,58,0.07);border-left:2px solid rgba(212,147,58,0.5);border-radius:0 2px 2px 0;font-size:13.5px;color:#eef0f5;line-height:1.6;margin-bottom:14px;">"${esc(a.source_hook_reframe)}"</div>`:'<div style="margin-bottom:14px;"></div>'}`:''}
+        ${hooks.length?`
+          <div class="mono" style="font-size:11px;color:var(--mut2);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">HOOK ITERATIONS</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+            ${hooks.map((h,i)=>`
+              <div style="padding:11px 14px;background:rgba(212,147,58,0.05);border-left:2px solid rgba(212,147,58,0.4);border-radius:0 2px 2px 0;">
+                <div style="font-size:13.5px;color:#eef0f5;line-height:1.55;"><span class="mono" style="color:var(--gold);font-size:9px;letter-spacing:1.5px;margin-right:8px;">${String.fromCharCode(65+i)}</span>"${esc(h)}"</div>
+              </div>`).join('')}
+          </div>`:''}
+        ${tweaks.length?`
+          <div class="mono" style="font-size:10px;color:#8fb33f;letter-spacing:1.8px;font-weight:700;margin-bottom:6px;">🔧 REVIEW STYLE TWEAK</div>
+          <div style="padding:10px 14px;background:rgba(143,179,63,0.05);border-left:2px solid rgba(143,179,63,0.4);border-radius:0 2px 2px 0;font-size:13px;color:var(--text);line-height:1.6;margin-bottom:14px;">${tweaks.map(t=>esc(t)).join('<br><br>')}</div>`:''}
+        ${(a.alt_format_verdict==='yes'&&a.alt_format_note)?`
+          <div style="padding:12px 14px;background:rgba(62,181,196,0.06);border-left:2px solid rgba(62,181,196,0.4);border-radius:0 2px 2px 0;margin-bottom:14px;">
+            <div class="mono" style="font-size:10px;color:#3eb5c4;letter-spacing:1.8px;font-weight:700;margin-bottom:6px;">⚡ ALTERNATIVE FORMAT WORTH TESTING</div>
+            <div style="font-size:13px;color:var(--text);line-height:1.6;">${esc(a.alt_format_note)}</div>
+          </div>`:''}
+        ${a.klareva_fit?`
+          <div class="mono" style="font-size:11px;color:var(--mut2);letter-spacing:1.5px;font-weight:700;margin-bottom:4px;">HYDROCOLLOID FIT</div>
+          <div style="font-size:12px;color:#a0a8b8;line-height:1.55;font-style:italic;">${esc(a.klareva_fit)}</div>`:''}
+      </div>
+    </div>`;
+}
+function renderAdapts(){
+  const wrap=$('adaptsGrid');
+  if(!ADAPTS.length){
+    $('adaptsSub').textContent='nothing assigned yet';
+    wrap.innerHTML=`<div class="hq-empty">No adapts assigned to you yet.<br>Jayden will drop adaptation breakdowns here for you to film.</div>`;
+    return;
+  }
+  $('adaptsSub').textContent=ADAPTS.length+(ADAPTS.length===1?' adapt':' adapts')+' to film';
+  wrap.innerHTML=ADAPTS.map(adaptCard).join('');
+}
+
 function render(){
   const q=$('q').value.trim().toLowerCase();
   const plat = LIB_PLATS ? null : document.querySelector('#platseg button.on').dataset.p;
@@ -945,7 +1023,7 @@ async function bootCreator(token){
     await loadScript('creators/'+hash+'.js');
     if(!window.CREATOR_ENC||!window.CREATOR_META) throw new Error('no creator data');
     const cd=await decryptBlob(window.CREATOR_ENC, window.CREATOR_META.iters, token);
-    TOKEN=token; CREATOR=cd; IDEAS=cd.ideas||[];
+    TOKEN=token; CREATOR=cd; IDEAS=cd.ideas||[]; ADAPTS=cd.adapts||[];
     const nm=(cd.name||'').trim();
     document.querySelector('.brand .tag').textContent='YOUR HUB';
     document.querySelector('.brand .title').textContent=nm?('HEY '+nm.toUpperCase()):'WELCOME';
@@ -955,11 +1033,12 @@ async function bootCreator(token){
     VIDEOS=lib.videos||[];
     $('gate').style.display='none'; $('app').style.display='block';
     await syncStatus();   // flush queued taps, then pull the shared truth (no-op if offline/unconfigured)
-    renderHQ(cd.hq||{}); renderIdeas();
+    renderHQ(cd.hq||{}); renderIdeas(); renderAdapts();
     setNav([
       {id:'linkbio', label:'LINK IN BIO SCRAPER'},
       {id:'tiktok',  label:'TIKTOK SCRAPER'},
       {id:'mine',    label:'MY VIDEOS'+(IDEAS.length?' ('+IDEAS.length+')':'')},
+      {id:'adapts',  label:'ADAPT QUEUE'+(ADAPTS.length?' ('+ADAPTS.length+')':'')},
       {id:'hq',      label:'MY HQ'}
     ],'linkbio');
     showSection('linkbio');   // land on the Link in Bio scraper first
