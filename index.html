@@ -875,6 +875,9 @@ function adaptCard(a){
           <span class="mono" style="font-size:10px;color:var(--mut2);">from @${esc(a.handle||'')} · ${fmt(a.views||0)} views</span>
           ${a.url?`<a href="${esc(a.url)}" target="_blank" rel="noopener" class="mono" style="font-size:10px;color:#3eb5c4;letter-spacing:1.5px;font-weight:700;">SOURCE ↗</a>`:''}
         </div>
+        ${a.notes?`
+          <div class="mono" style="font-size:10px;color:var(--gold);letter-spacing:1.8px;font-weight:700;margin-bottom:6px;">📌 NOTES FROM JAYDEN</div>
+          <div style="padding:11px 14px;background:rgba(212,147,58,0.09);border-left:2px solid var(--gold);border-radius:0 2px 2px 0;font-size:13px;color:#eef0f5;line-height:1.6;margin-bottom:14px;white-space:pre-wrap;">${esc(a.notes)}</div>`:''}
         ${tx?`
           <div class="mono" style="font-size:10px;color:#3eb5c4;letter-spacing:1.8px;font-weight:700;margin-bottom:6px;">📝 ACTUAL SPOKEN HOOK + BODY</div>
           <div style="padding:10px 14px;background:rgba(62,181,196,0.04);border-left:2px solid rgba(62,181,196,0.4);border-radius:0 2px 2px 0;font-size:13px;color:var(--text);line-height:1.6;margin-bottom:14px;font-style:italic;">${esc(tx.slice(0,420))}${tx.length>420?'…':''}</div>`
