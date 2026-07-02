@@ -666,8 +666,44 @@ async function saveHQ(token){
   }catch(e){toast('Error: '+e.message);}
 }
 async function sha1hex16(s){
-  const buf=await crypto.subtle.digest('SHA-1', new TextEncoder().encode(s));
-  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('').slice(0,16);
+  // Pure-JS SHA-1 (first 16 hex). Matches python hashlib.sha1(s.utf8).hexdigest()[:16].
+  // Do NOT switch back to crypto.subtle: it is undefined on plain-HTTP LAN origins.
+  function utf8(str){
+    const out=[];
+    for(let i=0;i<str.length;i++){
+      let c=str.charCodeAt(i);
+      if(c<0x80){ out.push(c); }
+      else if(c<0x800){ out.push(0xc0|(c>>6),0x80|(c&0x3f)); }
+      else if(c<0xd800||c>=0xe000){ out.push(0xe0|(c>>12),0x80|((c>>6)&0x3f),0x80|(c&0x3f)); }
+      else { i++; c=0x10000+(((c&0x3ff)<<10)|(str.charCodeAt(i)&0x3ff));
+        out.push(0xf0|(c>>18),0x80|((c>>12)&0x3f),0x80|((c>>6)&0x3f),0x80|(c&0x3f)); }
+    }
+    return out;
+  }
+  const msg=utf8(s), ml=msg.length*8;
+  msg.push(0x80);
+  while(msg.length%64!==56) msg.push(0);
+  const hi=Math.floor(ml/0x100000000), lo=ml>>>0;
+  msg.push((hi>>>24)&0xff,(hi>>>16)&0xff,(hi>>>8)&0xff,hi&0xff,(lo>>>24)&0xff,(lo>>>16)&0xff,(lo>>>8)&0xff,lo&0xff);
+  let h0=0x67452301,h1=0xEFCDAB89,h2=0x98BADCFE,h3=0x10325476,h4=0xC3D2E1F0;
+  const w=new Array(80);
+  for(let i=0;i<msg.length;i+=64){
+    for(let j=0;j<16;j++){ w[j]=(msg[i+j*4]<<24)|(msg[i+j*4+1]<<16)|(msg[i+j*4+2]<<8)|(msg[i+j*4+3]); }
+    for(let j=16;j<80;j++){ const n=w[j-3]^w[j-8]^w[j-14]^w[j-16]; w[j]=(n<<1)|(n>>>31); }
+    let a=h0,b=h1,c=h2,d=h3,e=h4;
+    for(let j=0;j<80;j++){
+      let f,k;
+      if(j<20){ f=(b&c)|((~b)&d); k=0x5A827999; }
+      else if(j<40){ f=b^c^d; k=0x6ED9EBA1; }
+      else if(j<60){ f=(b&c)|(b&d)|(c&d); k=0x8F1BBCDC; }
+      else { f=b^c^d; k=0xCA62C1D6; }
+      const t=(((a<<5)|(a>>>27))+f+e+k+w[j])|0;
+      e=d; d=c; c=(b<<30)|(b>>>2); b=a; a=t;
+    }
+    h0=(h0+a)|0; h1=(h1+b)|0; h2=(h2+c)|0; h3=(h3+d)|0; h4=(h4+e)|0;
+  }
+  function hx(x){ let h=(x>>>0).toString(16); while(h.length<8) h='0'+h; return h; }
+  return (hx(h0)+hx(h1)+hx(h2)+hx(h3)+hx(h4)).slice(0,16);
 }
 async function onRefType(token){
   const type=$('reftype-'+token).value;
