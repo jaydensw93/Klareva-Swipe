@@ -1086,7 +1086,11 @@ if(ADMIN){
 async function bootCreator(token){
   try{
     const hash=(await sha256hex(token)).slice(0,32);
-    await loadScript('creators/'+hash+'.js');
+    // Cache-buster: the creator file is tiny (~5KB) and carries each assigned video's
+    // display data baked in, so ALWAYS pull a fresh copy. Without this, GitHub Pages'
+    // 10-min max-age lets a creator see a stale dashboard for up to 10 min after a
+    // publish (assigned videos "not showing"). Date.now() makes every load a unique URL.
+    await loadScript('creators/'+hash+'.js?v='+Date.now());
     if(!window.CREATOR_ENC||!window.CREATOR_META) throw new Error('no creator data');
     const cd=await decryptBlob(window.CREATOR_ENC, window.CREATOR_META.iters, token);
     TOKEN=token; CREATOR=cd; IDEAS=cd.ideas||[]; ADAPTS=cd.adapts||[];
