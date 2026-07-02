@@ -272,6 +272,7 @@
       </div>
       <button class="tbtn ghost" id="syncBtn" style="display:none;">SYNC ↻</button>
       <button class="tbtn" id="pubBtn" style="display:none;">PUBLISH ↗</button>
+      <span id="pubStatus" class="mono" style="font-size:10px;letter-spacing:0.5px;color:#7a8aa8;max-width:300px;line-height:1.3;"></span>
     </div>
   </div>
 
@@ -481,13 +482,34 @@ async function assignTo(vid,token,name){
     loadCreators();   // refresh idea counts in the CREATORS tab
   }catch(e){toast('Error: '+e.message);}
 }
+let PUBLISHING=false;
+function _setPubStatus(txt,color){ const s=$('pubStatus'); if(!s) return; s.textContent=txt; s.style.color=color||'#7a8aa8'; }
 async function doPublish(){
-  const b=$('pubBtn'); b.disabled=true; const o=b.textContent; b.textContent='PUBLISHING…';
-  try{const r=await api('/swipe/publish',{method:'POST',body:'{}'});
-    toast(r.status==='ok'?'Published ✓ creators see updates in ~1 min':'Publish finished with errors');}
-  catch(e){toast('Publish failed: '+e.message);}
-  b.disabled=false; b.textContent=o;
+  if(PUBLISHING) return;                       // ignore double-clicks while a publish is running
+  const b=$('pubBtn'), o=b.textContent, t0=Date.now();
+  PUBLISHING=true; b.disabled=true; b.textContent='PUBLISHING…';
+  _setPubStatus('● publishing… 0s · do NOT refresh','#d4933a');
+  const tick=setInterval(()=>_setPubStatus('● publishing… '+Math.round((Date.now()-t0)/1000)+'s · do NOT refresh','#d4933a'),1000);
+  try{
+    const r=await api('/swipe/publish',{method:'POST',body:'{}'});
+    clearInterval(tick);
+    const secs=Math.round((Date.now()-t0)/1000);
+    if(r.status==='ok'){
+      _setPubStatus('✓ PUBLISHED '+new Date().toLocaleTimeString()+' ('+secs+'s) · creators update in ~1 min','#8fb33f');
+      b.textContent='PUBLISHED ✓'; toast('Published ✓ creators see updates in ~1 min');
+      setTimeout(()=>{ if(!PUBLISHING) b.textContent=o; },6000);
+    }else{
+      _setPubStatus('✗ finished with errors (code '+r.returncode+') · nothing changed live','#d62929');
+      b.textContent=o; toast('Publish finished with errors');
+    }
+  }catch(e){
+    clearInterval(tick);
+    _setPubStatus('✗ publish failed: '+e.message+' · nothing went live, try again','#d62929');
+    b.textContent=o; toast('Publish failed: '+e.message);
+  }
+  PUBLISHING=false; b.disabled=false;
 }
+window.addEventListener('beforeunload',e=>{ if(PUBLISHING){ e.preventDefault(); e.returnValue=''; } });
 
 // ---- admin: creator manager (mint links, manage HQ + ideas) ----
 function copyLink(link){ navigator.clipboard.writeText(link).then(()=>toast('Link copied')).catch(()=>toast('Copy failed')); }
