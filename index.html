@@ -467,9 +467,12 @@ async function onPick(ac){
 async function assignTo(vid,token,name){
   const v=VIDEOS.find(x=>x.id===vid)||{};
   const title=((v.desc||'').slice(0,70).trim())||('Winning video — @'+(v.handle||''));
+  const notes=prompt('Notes / iterations for '+name+' (optional, shown on their dashboard):','');
+  if(notes===null) return;
+  const script=prompt('Script for this video (optional, shown alongside the notes). Leave blank to skip:','')||'';
   try{
     await api('/swipe/creators/'+token+'/ideas',{method:'POST',
-      body:JSON.stringify({title,body:'',ref_type:'video',ref_id:vid})});
+      body:JSON.stringify({title,body:notes.trim(),script:script.trim(),ref_type:'video',ref_id:vid})});
     toast('Added to '+name+' — hit PUBLISH to push it live');
     const btn=[...document.querySelectorAll('.card .abtn')].find(b=>b.dataset.vid===vid);
     if(btn){const bar=btn.parentElement; let chip=bar.querySelector('.assigned');
@@ -590,6 +593,7 @@ async function renderDrawer(token){
       <div class="cm-it">
         <div class="cm-ititle">${esc(it.title)} ${statusBadge(it.live_status)}</div>
         ${it.body?`<div class="cm-ibody">${esc(it.body)}</div>`:''}
+        ${it.script?`<div class="cm-ibody" style="margin-top:6px;border-top:1px dashed var(--bd2);padding-top:6px;"><span style="color:var(--gold);font-size:9px;letter-spacing:1px;font-weight:700;">SCRIPT</span><br>${esc(it.script)}</div>`:''}
         ${ref}
       </div>
       <button class="cm-sm danger" onclick="delIdea(${it.id},'${token}')">×</button>
@@ -837,6 +841,7 @@ function ideaCard(it){
   card.innerHTML=`${thumb}<div class="ibody">
       <div class="ititle">${platTag}${esc(it.title)}</div>
       ${it.body?`<div class="itext">${esc(it.body)}</div>`:''}
+      ${it.script?`<div class="itext" style="margin-top:8px;border-left:2px solid var(--gold);padding:6px 0 6px 9px;background:rgba(212,147,58,0.06);border-radius:0 5px 5px 0;"><span style="display:block;font-size:8px;font-weight:800;letter-spacing:1.5px;color:var(--gold);margin-bottom:3px;">SCRIPT</span>${esc(it.script)}</div>`:''}
       <div class="ifoot"><button class="istat ${st}" data-id="${esc(''+it.id)}">${statLabel(st)}</button>${ref}</div>
     </div>`;
   return card;
