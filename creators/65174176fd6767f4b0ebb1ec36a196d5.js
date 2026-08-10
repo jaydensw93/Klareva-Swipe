@@ -1,2 +1,2 @@
-window.CREATOR_META={"iters": 150000, "generated_at": "2026-08-10 00:17 UTC", "name": "Maggi"};
-window.CREATOR_ENC="wfc4kRZ1AfUuJtac1en5vJgNorL4pNjnoeJvSsKYfmN7EDxm8fX9t5RdATkcDBe5RlfqXGcfQcFGrGsxZMTDS/7wKJ8mevUnDv2RH793GnJSVXJUlnfjfuiVpNGkqBRCz0GkZc4sjlLdAF3FMBOkwTtmDuZ6zQ52ITYW5+CnxAfpl8xwS66NR7YjNCQEIcpWyXBwcTO4qB/xQE2DCZ5wx+JAjLXuTBek30eE8L4TeuIxt4s=";
+window.CREATOR_META={"iters": 150000, "generated_at": "2026-08-10 14:48 UTC", "name": "Maggi"};
+window.CREATOR_ENC="lIQuewavbA/htU17qZcsyuEjbJnPwU2ElpKXSf486gqfaUIjS/wJwIo7XmQaxCIsiE3wPyAr4lwLhGCtEC4IqRV23m6fR91knGDHX6HSQJvsvq8yMpZe3yyBMoUmpuXRq8Cq3Mzj0T42bASlz40xsO41BlPh5TwkJ1k0e8pgnrCF8MOlsdz4CYTHmNp7wTyi4AGFXukUSTyVJ9gBK/Jtbg8BR1SXKjbmwgakUJBj2oDmTIM=";
