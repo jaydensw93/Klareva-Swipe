@@ -262,6 +262,42 @@
   .card h3 a{border-bottom:0}
   .card p{margin:0;font-size:.94rem;color:var(--body)}
 
+  /* ---------- link cards ---------- */
+  .dcard{display:flex;align-items:center;gap:1rem;background:var(--panel);
+    border:1px solid var(--line);border-radius:13px;padding:1.05rem 1.15rem;
+    margin-bottom:.65rem;text-decoration:none;
+    transition:border-color .14s,transform .14s,box-shadow .14s}
+  a.dcard{border-bottom:1px solid var(--line)}
+  .dcard:hover{border-color:rgba(242,181,157,.5);transform:translateY(-1px);
+    box-shadow:0 8px 24px rgba(0,0,0,.35)}
+  .dcard:hover .darr{transform:translate(2px,-2px);color:var(--peach)}
+  .dico{width:40px;height:40px;border-radius:11px;flex:0 0 auto;display:flex;
+    align-items:center;justify-content:center;color:var(--peach);
+    background:linear-gradient(140deg,rgba(242,181,157,.12),rgba(214,123,166,.08));
+    border:1px solid var(--line2)}
+  .dbody{flex:1;min-width:0}
+  .dbody b{display:block;color:var(--text);font-weight:630;font-size:.98rem;
+    letter-spacing:-.01em;margin-bottom:.2rem}
+  .dbody > span{display:block;color:var(--mute);font-size:.87rem;line-height:1.55}
+  .dmeta{display:flex;flex-direction:column;align-items:flex-end;gap:.45rem;flex:0 0 auto}
+  .dtags{display:flex;gap:.35rem;align-items:center}
+  .dtag{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.58rem;
+    letter-spacing:.09em;text-transform:uppercase;color:var(--faint);font-style:normal;
+    border:1px solid var(--line2);border-radius:5px;padding:.18rem .42rem;white-space:nowrap}
+  .dnew{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.58rem;
+    letter-spacing:.09em;text-transform:uppercase;font-style:normal;font-weight:700;
+    color:var(--ink);border-radius:5px;padding:.2rem .44rem;white-space:nowrap;
+    background:linear-gradient(135deg,var(--peach),var(--pink))}
+  .ddate{font-size:.72rem;color:var(--faint);font-style:normal;white-space:nowrap;
+    font-variant-numeric:tabular-nums}
+  .darr{color:var(--faint);flex:0 0 auto;margin-left:.2rem;
+    transition:transform .14s,color .14s}
+  @media (max-width:640px){
+    .dcard{flex-wrap:wrap}
+    .dmeta{width:100%;flex-direction:row;align-items:center;justify-content:flex-start;
+      margin-top:.15rem;padding-left:calc(40px + 1rem)}
+  }
+
   /* ---------- accounts + admin ---------- */
   label{display:block;font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
     color:var(--faint);margin:1.1rem 0 .4rem}
@@ -621,11 +657,7 @@
   <h1>Viral Radar</h1>
   <p class="lede">Every video worth copying, in one place. This is where your day starts. You do not go hunting on Instagram for ideas, you open the library and take one.</p>
 
-  <div class="card">
-    <h3><a href="library/" target="_blank" rel="noopener">Open the Winning Content Library &nbsp;&rarr;</a></h3>
-    <p>Thousands of videos pulled from the accounts in our lane, with thumbnails, view counts and a link straight to the original. Sort by most views, most recent, most likes or most comments. It rebuilds itself twice a day, so what you see in the morning is not what you saw yesterday.</p>
-    <p><strong>It will ask for the passcode.</strong> Same one you got when you joined. If you do not have it, ask in your chat and it gets sent to you.</p>
-  </div>
+  <a class="dcard" href="library/" target="_blank" rel="noopener"><span class="dico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><path d="M15.5 14.5v5l4-2.5z"/></svg></span><span class="dbody"><b>Winning Content Library</b><span>Thousands of videos from the accounts in our lane, with thumbnails, view counts and a link to the original. Rebuilds twice a day. <strong>It asks for the passcode</strong>, same one you got when you joined, ask in your chat if you do not have it.</span></span><span class="dmeta"><span class="dtags"><i class="dtag">Passcode</i></span><i class="ddate">Refreshed 8am + 8pm</i></span><svg class="darr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></a>
 
   <div class="note"><p><strong>Your own link is different from this one.</strong> If videos have been assigned to you personally, you were sent a link with a code on the end of it. Open that one instead and your assigned videos and scripts show up alongside the library. Keep it, it is yours and it does not change.</p></div>
 
@@ -652,17 +684,11 @@
 <section class="sec" id="scripts">
   <div class="eyebrow">Word for word</div>
   <h1>Scripts</h1>
-  <p class="lede">Ready to film. Say what's in quotes. Text in brackets means do it on camera, don't say it.</p>
+  <p class="lede">Ready to film. Say what's in quotes. Text in brackets means do it on camera, don't say it. Newest sheet first, check the date before you film.</p>
 
-  <div class="card">
-    <h3><a href="https://app.notion.com/p/3b5f54400d5d8173b66efc9a770ecdcc" target="_blank" rel="noopener">Creator Sheet &nbsp;·&nbsp; 5 videos</a></h3>
-    <p>The Throw &nbsp;·&nbsp; Hawaii Bride &nbsp;·&nbsp; Under Eye Hack &nbsp;·&nbsp; Target Walkthrough &nbsp;·&nbsp; The Interview. Each with its source video linked.</p>
-  </div>
+  <a class="dcard" href="https://app.notion.com/p/3b5f54400d5d8173b66efc9a770ecdcc" target="_blank" rel="noopener"><span class="dico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 5v14M16 5v14M3 10h5M3 14h5M16 10h5M16 14h5"/></svg></span><span class="dbody"><b>Creator Sheet &nbsp;&middot;&nbsp; 5 videos</b><span>The Throw &nbsp;&middot;&nbsp; Hawaii Bride &nbsp;&middot;&nbsp; Under Eye Hack &nbsp;&middot;&nbsp; Target Walkthrough &nbsp;&middot;&nbsp; The Interview. Each with its source video linked.</span></span><span class="dmeta"><span class="dtags"><i class="dnew">New</i><i class="dtag">Notion</i></span><i class="ddate">Aug 11, 2026</i></span><svg class="darr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></a>
 
-  <div class="card">
-    <h3><a href="https://app.notion.com/p/3abf54400d5d810f9d24fc82377d6726" target="_blank" rel="noopener">Gay Avatars &nbsp;·&nbsp; 8 videos</a></h3>
-    <p>Podcast &nbsp;·&nbsp; Dad and daughter &nbsp;·&nbsp; Escape the trap &nbsp;·&nbsp; Hands &nbsp;·&nbsp; Ingredients ranked &nbsp;·&nbsp; Neck &nbsp;·&nbsp; Sam's Club &nbsp;·&nbsp; Mom and gay son.</p>
-  </div>
+  <a class="dcard" href="https://app.notion.com/p/3abf54400d5d810f9d24fc82377d6726" target="_blank" rel="noopener"><span class="dico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 5v14M16 5v14M3 10h5M3 14h5M16 10h5M16 14h5"/></svg></span><span class="dbody"><b>Gay Avatars &nbsp;&middot;&nbsp; 8 videos</b><span>Podcast &nbsp;&middot;&nbsp; Dad and daughter &nbsp;&middot;&nbsp; Escape the trap &nbsp;&middot;&nbsp; Hands &nbsp;&middot;&nbsp; Ingredients ranked &nbsp;&middot;&nbsp; Neck &nbsp;&middot;&nbsp; Sam's Club &nbsp;&middot;&nbsp; Mom and gay son.</span></span><span class="dmeta"><span class="dtags"><i class="dtag">Notion</i></span><i class="ddate">Aug 2, 2026</i></span><svg class="darr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></a>
 
   <div class="note"><p><strong>Don't film these as-is forever.</strong> Once you're comfortable, use METHOD to convert new videos off the Viral Radar yourself. That's how you stop waiting on sheets.</p></div>
 </section>
@@ -671,34 +697,24 @@
 <section class="sec" id="docs">
   <div class="eyebrow">Reference</div>
   <h1>Documents</h1>
-  <p class="lede">Two of these are not for you to read. They are instruction files you paste into Claude so it knows how to do the work.</p>
+  <p class="lede">The strategy docs first, they are what you are actually executing. The two Claude files live at the bottom, those get pasted into Claude, not read.</p>
 
-  <h2>Give these to your Claude</h2>
+  <h2>Content strategy</h2>
+  <a class="dcard" href="https://docs.google.com/document/d/1VjC6leieHvWY_4UTR5VYYKMeHc-5GInNNkfP3eXTqj8/edit?usp=sharing" target="_blank" rel="noopener"><span class="dico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M10 12h5M10 16h5"/></svg></span><span class="dbody"><b>Content Strategy &nbsp;&middot;&nbsp; the new strategy, explained</b><span>What we are doing now and why. Read this before you make anything.</span></span><span class="dmeta"><span class="dtags"><i class="dnew">New</i><i class="dtag">Google Doc</i></span><i class="ddate">Aug 14, 2026</i></span><svg class="darr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></a>
+
+  <a class="dcard" href="https://docs.google.com/document/d/1K_FinZ_y9VERhISw3d0u9ggGiW0QVUwFCrR5oX84hrk/edit?usp=sharing" target="_blank" rel="noopener"><span class="dico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M10 12h5M10 16h5"/></svg></span><span class="dbody"><b>Lifestyle Videos &nbsp;&middot;&nbsp; strategy and explanation</b><span>The lifestyle lane on its own. What those videos are, the numbers behind them, and how to make them.</span></span><span class="dmeta"><span class="dtags"><i class="dnew">New</i><i class="dtag">Google Doc</i></span><i class="ddate">Aug 14, 2026</i></span><svg class="darr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></a>
+
+  <h2 style="margin-top:2.4rem">Assets</h2>
+  <a class="dcard" href="https://drive.google.com/drive/folders/1PNdTIv4dnyEZdpwcAkw21d4L3KGoGO8D" target="_blank" rel="noopener"><span class="dico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4.5 18l5-5 3.5 3.5L16 13l3.5 4"/></svg></span><span class="dbody"><b>Product images</b><span>Every product image you need, in one Drive folder.</span></span><span class="dmeta"><span class="dtags"><i class="dtag">Drive</i></span><i class="ddate">&nbsp;</i></span><svg class="darr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></a>
+
+  <h2 style="margin-top:2.4rem">Give these to your Claude</h2>
   <p style="margin-bottom:1rem">Open a fresh Claude chat, copy the whole document, paste it in, hit send. You do this once per chat, then keep using that same chat from then on. Do not read them and try to follow them yourself, that is not what they are for.</p>
 
-  <div class="card">
-    <h3><a href="https://app.notion.com/p/3bbf54400d5d811294e8de11ff40a7f5" target="_blank" rel="noopener">METHOD &nbsp;&middot;&nbsp; turning other people&rsquo;s videos into ours</a></h3>
-    <p>Teaches Claude how we rewrite a video that already went viral into a Klareva script. Paste this in, then give it a transcript and tell it what to change. It hands back the finished script.</p>
-  </div>
+  <a class="dcard" href="https://app.notion.com/p/3bbf54400d5d811294e8de11ff40a7f5" target="_blank" rel="noopener"><span class="dico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="14" height="16" rx="2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h6"/></svg></span><span class="dbody"><b>METHOD &nbsp;&middot;&nbsp; turning other people&rsquo;s videos into ours</b><span>Teaches Claude how we rewrite a video that already went viral into a Klareva script. Paste it in, give it a transcript, tell it what to change.</span></span><span class="dmeta"><span class="dtags"><i class="dtag">Notion</i><i class="dtag">Paste into Claude</i></span><i class="ddate">&nbsp;</i></span><svg class="darr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></a>
 
-  <div class="card">
-    <h3><a href="https://docs.google.com/document/d/1d87V7h6h_pa-iWrYhm0X9YU086oEcyvTlcJgPOjQt38/edit?usp=sharing" target="_blank" rel="noopener">Avatar Builder and Onboarding</a></h3>
-    <p>Builds your three avatars, then turns that same chat into your prompt writer for every image and video after. Paste it in and it starts asking you questions.</p>
-  </div>
+  <a class="dcard" href="https://docs.google.com/document/d/1d87V7h6h_pa-iWrYhm0X9YU086oEcyvTlcJgPOjQt38/edit?usp=sharing" target="_blank" rel="noopener"><span class="dico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="14" height="16" rx="2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h6"/></svg></span><span class="dbody"><b>Avatar Builder and Onboarding</b><span>Builds your three avatars, then turns that same chat into your prompt writer for every image and video after.</span></span><span class="dmeta"><span class="dtags"><i class="dtag">Google Doc</i><i class="dtag">Paste into Claude</i></span><i class="ddate">&nbsp;</i></span><svg class="darr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></a>
 
   <div class="note"><p><strong>Use two separate chats.</strong> One with METHOD in it for scripts, one with the Avatar Builder in it for images. Do not paste both into the same chat.</p></div>
-
-  <h2 style="margin-top:2.6rem">For you to read</h2>
-
-  <div class="card">
-    <h3>Content Strategy</h3>
-    <p>The two lanes, your daily numbers, what a good video looks like, where ideas come from, how to iterate. <span class="pending">Link pending</span></p>
-  </div>
-
-  <div class="card">
-    <h3><a href="https://drive.google.com/drive/folders/1PNdTIv4dnyEZdpwcAkw21d4L3KGoGO8D" target="_blank" rel="noopener">Product images</a></h3>
-    <p>Every product image you need, in one Drive folder.</p>
-  </div>
 </section>
 
 <!-- SETTINGS -->
