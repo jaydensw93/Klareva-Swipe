@@ -84,7 +84,7 @@
   main{flex:1;padding:3rem 3.2rem 6rem;max-width:1500px;min-width:0}
   /* text sections stay readable; the radar gets the full width */
   .sec{max-width:1000px}
-  #radar.sec{max-width:none}
+  #radar.sec{max-width:1280px;margin:0 auto}
   .sec{display:none;animation:in .18s ease-out}
   .sec.on{display:block}
   @keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
@@ -304,30 +304,31 @@
     font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.64rem;font-weight:700;
     padding:.22rem .46rem;border-radius:6px;background:rgba(10,5,20,.78);color:var(--mute)}
   .rcx.hot{background:linear-gradient(135deg,var(--peach),var(--pink));color:var(--ink)}
-  .rcdur{position:absolute;bottom:.55rem;right:.55rem;z-index:2;color:rgba(255,255,255,.75);
-    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.62rem}
-  .rcf{padding:.68rem .8rem .75rem}
-  .racct{display:flex;align-items:center;gap:.42rem;font-size:.88rem;font-weight:620;
+  .rcdur{position:absolute;bottom:.55rem;right:.55rem;z-index:2;color:#fff;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.62rem;
+    background:rgba(10,5,20,.78);padding:.2rem .42rem;border-radius:6px}
+  .rcf{padding:.8rem .95rem .9rem}
+  .racct{display:flex;align-items:center;gap:.42rem;font-size:.9rem;font-weight:620;
     color:var(--text);min-width:0}
   .racct svg{flex:0 0 auto;color:var(--faint)}
   .racct b{font-weight:620;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .rstats{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;margin:.4rem 0 0;
-    font-size:.77rem;color:var(--mute)}
+  .rstats{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin:.48rem 0 0;
+    font-size:.82rem;color:var(--body)}
   .rstats span{display:inline-flex;align-items:center;gap:.28rem;white-space:nowrap;
     font-variant-numeric:tabular-nums}
   .rstats svg{color:var(--faint)}
-  .rcap{color:var(--faint);font-size:.76rem;white-space:nowrap;overflow:hidden;
-    text-overflow:ellipsis;margin:.42rem 0 0;min-width:0}
+  .rcap{color:var(--mute);font-size:.79rem;white-space:nowrap;overflow:hidden;
+    text-overflow:ellipsis;margin:.5rem 0 0;min-width:0}
   .rbot{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;
-    margin-top:.5rem;border-top:1px solid var(--line);padding-top:.52rem}
-  .rage{color:var(--faint);font-size:.72rem;white-space:nowrap}
+    margin-top:.6rem;border-top:1px solid var(--line);padding-top:.6rem}
+  .rage{color:var(--mute);font-size:.75rem;white-space:nowrap}
   .rrate{color:var(--peach);font-weight:700;font-size:.9rem;letter-spacing:-.01em;
     white-space:nowrap;font-variant-numeric:tabular-nums}
   .rrate i{font-style:normal;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
     font-size:.56rem;letter-spacing:.1em;color:var(--faint);font-weight:400;margin-left:.15rem}
 
-  .rhero{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;max-width:1150px}
-  .rpack{display:grid;grid-template-columns:repeat(auto-fill,minmax(212px,1fr));gap:.75rem;
+  .rhero{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+  .rpack{display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:.9rem;
     margin:0 0 1.1rem}
 
   @media (max-width:900px){.rhero{grid-template-columns:1fr 1fr}}
@@ -770,6 +771,7 @@
       <option value="v">Most views</option>
       <option value="x">Biggest outlier</option>
       <option value="t">Newest</option>
+      <option value="g">Fastest growing</option>
     </select>
   </div>
   <div class="rchips" id="rchips"></div>
@@ -1465,10 +1467,13 @@
   function card(v, rank, isHero) {
     var a = laneData().accounts[v.a] || {};
     var img = v.th ? '<img src="' + v.th + '" alt="" loading="lazy">' : '';
-    var x = v.x
-      ? '<span class="rcx' + (v.x >= 2 ? ' hot' : '') + '" title="vs this account normal">'
-        + v.x + '&times;</span>'
-      : '';
+    // only flag real outliers, and say it in plain english
+    var x = '';
+    if (v.x >= 2) {
+      var mult = v.x >= 10 ? Math.round(v.x) : v.x;
+      x = '<span class="rcx hot" title="Did ' + mult + ' times better than this account usually does">'
+        + mult + '&times; normal</span>';
+    }
     var rate = vph(v);
     return '<div class="rcard' + (isHero && rank === 1 ? ' first' : '') + '">'
       + '<a class="rct" href="' + esc(v.u) + '" target="_blank" rel="noopener">' + img
@@ -1517,6 +1522,7 @@
     rest.sort(function (p, n) {
       if (sortKey === 'x') return (n.x - p.x) || (n.v - p.v);
       if (sortKey === 't') return (n.p || 0) - (p.p || 0);
+      if (sortKey === 'g') return vph(n) - vph(p);
       return n.v - p.v;
     });
     rest = rest.slice(0, MAXSHOW - hero.length);
