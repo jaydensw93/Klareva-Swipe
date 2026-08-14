@@ -146,6 +146,19 @@
     font-family:inherit;font-size:.78rem;padding:.2rem .6rem}
   .atog:hover{border-color:var(--peach)}
   .aempty{color:var(--faint);font-size:.9rem;padding:.9rem 0}
+  .nrow{display:flex;gap:.5rem;align-items:center;margin:0 0 .55rem}
+  .nrow .fin{margin:0}
+  .nrow select.fin{flex:0 0 122px}
+  .nrow input.fin{flex:1 1 auto;min-width:0}
+  .nx{flex:0 0 auto;background:none;border:0;color:var(--faint);cursor:pointer;
+    font-family:inherit;font-size:1.1rem;line-height:1;padding:.35rem .45rem;border-radius:5px}
+  .nx:hover{color:#F2938D;background:rgba(242,147,141,.09)}
+  .nx[disabled]{opacity:.25;cursor:default}
+  .nx[disabled]:hover{color:var(--faint);background:none}
+  .addmore{appearance:none;background:none;border:1px dashed var(--line2);border-radius:7px;
+    color:var(--mute);cursor:pointer;font-family:inherit;font-size:.85rem;
+    padding:.5rem .9rem;width:100%;margin:.2rem 0 1rem;transition:border-color .12s,color .12s}
+  .addmore:hover{border-color:var(--peach);color:var(--text)}
   .krow{display:flex;flex-wrap:wrap;gap:.7rem;margin:0 0 1.8rem}
   .kbox{flex:1 1 150px;background:var(--panel);border:1px solid var(--line);
     border-radius:9px;padding:.95rem 1.1rem}
@@ -609,15 +622,11 @@
   <h1>My Accounts</h1>
   <p class="lede">Add every Instagram and Facebook account you are running. They start getting tracked straight away, there is nothing to wait on.</p>
 
-  <div class="card" style="max-width:520px;padding:1.4rem 1.5rem 1.6rem">
-    <label for="aplat">Platform</label>
-    <select id="aplat" class="fin">
-      <option value="instagram">Instagram</option>
-      <option value="facebook">Facebook</option>
-    </select>
-    <label for="ahandle">Handle</label>
-    <input id="ahandle" class="fin" type="text" placeholder="@username" autocomplete="off">
-    <button class="btn" id="aadd" type="button">Add account</button>
+  <div class="card" style="max-width:560px;padding:1.4rem 1.5rem 1.6rem">
+    <label>Accounts you run</label>
+    <div id="newrows"></div>
+    <button class="addmore" id="amore" type="button">+ Add another</button>
+    <button class="btn" id="asave" type="button">Save accounts</button>
     <span class="ok" id="amsg"></span>
   </div>
 
@@ -787,9 +796,12 @@
   var alist = document.getElementById('alist');
   var amsg = document.getElementById('amsg');
 
+  var flashTimer;
   function flash(t) {
     amsg.textContent = t;
-    setTimeout(function () { amsg.textContent = ''; }, 2200);
+    clearTimeout(flashTimer);
+    // saving several at once produces a longer message, so give it time to read
+    flashTimer = setTimeout(function () { amsg.textContent = ''; }, 4000);
   }
 
   function loadAccounts() {
@@ -831,28 +843,98 @@
     });
   }
 
-  document.getElementById('aadd').addEventListener('click', function () {
-    var handleEl = document.getElementById('ahandle');
-    var handle = handleEl.value.trim().replace(/^@+/, '').replace(/\s+/g, '');
-    if (!handle) { flash('Type a handle first'); return; }
+  /* Creators run three accounts, so let them fill in several and save once. */
+  var rowsWrap = document.getElementById('newrows');
+
+  function blankRow() {
+    var row = document.createElement('div');
+    row.className = 'nrow';
+
+    var sel = document.createElement('select');
+    sel.className = 'fin';
+    [['instagram', 'Instagram'], ['facebook', 'Facebook']].forEach(function (o) {
+      var op = document.createElement('option');
+      op.value = o[0]; op.textContent = o[1];
+      sel.appendChild(op);
+    });
+
+    var inp = document.createElement('input');
+    inp.className = 'fin';
+    inp.type = 'text';
+    inp.placeholder = '@username';
+    inp.autocomplete = 'off';
+    inp.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); addRow(); }
+    });
+
+    var x = document.createElement('button');
+    x.className = 'nx';
+    x.type = 'button';
+    x.textContent = '\u00d7';
+    x.title = 'Remove this line';
+    x.addEventListener('click', function () { row.remove(); syncRemoveButtons(); });
+
+    row.appendChild(sel); row.appendChild(inp); row.appendChild(x);
+    return row;
+  }
+
+  function syncRemoveButtons() {
+    var rows = rowsWrap.querySelectorAll('.nrow');
+    // nothing to remove when a single empty line is all that is left
+    rows.forEach(function (r) { r.querySelector('.nx').disabled = rows.length < 2; });
+  }
+
+  function addRow() {
+    rowsWrap.appendChild(blankRow());
+    syncRemoveButtons();
+    var inputs = rowsWrap.querySelectorAll('input');
+    inputs[inputs.length - 1].focus();
+  }
+
+  document.getElementById('amore').addEventListener('click', addRow);
+
+  document.getElementById('asave').addEventListener('click', function () {
+    var rows = [].slice.call(rowsWrap.querySelectorAll('.nrow'));
+    var wanted = [];
+    rows.forEach(function (r) {
+      var handle = r.querySelector('input').value.trim().replace(/^@+/, '').replace(/\s+/g, '');
+      if (handle) wanted.push({ platform: r.querySelector('select').value, handle: handle, row: r });
+    });
+    if (!wanted.length) { flash('Type a handle first'); return; }
+
+    var btn = this;
+    btn.disabled = true;
     SB.auth.getSession().then(function (r) {
       var uid = r.data.session && r.data.session.user.id;
-      if (!uid) { flash('Log in again'); return; }
-      return SB.from('creator_accounts').insert({
-        user_id: uid,
-        platform: document.getElementById('aplat').value,
-        handle: handle
-      }).then(function (res) {
-        if (res.error) {
-          flash(res.error.code === '23505' ? 'That handle is already added' : 'Could not add it');
-          return;
-        }
-        handleEl.value = '';
-        flash('Added');
+      if (!uid) { btn.disabled = false; flash('Log in again'); return; }
+
+      // insert one at a time so a single duplicate cannot reject the whole batch
+      var added = 0, dupes = 0, failed = 0;
+      return wanted.reduce(function (chain, w) {
+        return chain.then(function () {
+          return SB.from('creator_accounts')
+            .insert({ user_id: uid, platform: w.platform, handle: w.handle })
+            .then(function (res) {
+              if (!res.error) { added++; w.row.remove(); }
+              else if (res.error.code === '23505') { dupes++; }
+              else { failed++; }
+            });
+        });
+      }, Promise.resolve()).then(function () {
+        btn.disabled = false;
+        if (!rowsWrap.querySelector('.nrow')) addRow();
+        syncRemoveButtons();
+        var parts = [];
+        if (added) parts.push('Saved ' + added);
+        if (dupes) parts.push(dupes + ' already added');
+        if (failed) parts.push(failed + ' failed');
+        flash(parts.join(', '));
         loadAccounts();
       });
-    });
+    }).catch(function () { btn.disabled = false; flash('Could not save'); });
   });
+
+  addRow();
 
   /* -------------------------------------------------------- admin ---- */
   var adminLoaded = false;
