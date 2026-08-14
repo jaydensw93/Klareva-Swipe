@@ -607,14 +607,13 @@
 <section class="sec" id="accounts">
   <div class="eyebrow">Your account</div>
   <h1>My Accounts</h1>
-  <p class="lede">Add every account you are running. This is how your posts get counted, and how Jayden finds your videos to check them.</p>
+  <p class="lede">Add every Instagram and Facebook account you are running. They start getting tracked straight away, there is nothing to wait on.</p>
 
   <div class="card" style="max-width:520px;padding:1.4rem 1.5rem 1.6rem">
     <label for="aplat">Platform</label>
     <select id="aplat" class="fin">
       <option value="instagram">Instagram</option>
       <option value="facebook">Facebook</option>
-      <option value="tiktok">TikTok</option>
     </select>
     <label for="ahandle">Handle</label>
     <input id="ahandle" class="fin" type="text" placeholder="@username" autocomplete="off">
@@ -638,7 +637,7 @@
 
   <h2>Accounts by creator</h2>
   <div class="scroll"><table>
-    <thead><tr><th>Creator</th><th>Email</th><th>Platform</th><th>Handle</th><th class="num">Posts 7d</th><th>Scraping</th></tr></thead>
+    <thead><tr><th>Creator</th><th>Email</th><th>Platform</th><th>Handle</th><th class="num">Posts 7d</th><th>Tracking</th></tr></thead>
     <tbody id="adminrows"></tbody>
   </table></div>
 </section>
@@ -905,7 +904,7 @@
         posts.textContent = postsByAcct[a.id] || 0;
         tr.appendChild(posts);
 
-        // Approving is what puts a handle on the scraper, which costs credits.
+        // Starts on. Only flipped off if someone is abusing the free signup.
         var cell = document.createElement('td');
         var btn = document.createElement('button');
         btn.type = 'button';
