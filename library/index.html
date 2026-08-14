@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Winning Content Library</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{--bg:#0a0d14;--panel:#141a26;--panel2:#0f131c;--bd:#2a3140;--bd2:#3e4859;
+    --gold:#d4933a;--gold2:#e0a82d;--text:#d4dae8;--mut:#7a8aa8;--mut2:#5a6478;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
+    letter-spacing:-0.005em;
+    background-image:linear-gradient(rgba(62,72,89,0.10) 1px,transparent 1px),linear-gradient(90deg,rgba(62,72,89,0.10) 1px,transparent 1px);
+    background-size:32px 32px;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:var(--gold);text-decoration:none;}
+
+  /* ---- gate ---- */
+  #gate{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(1200px 600px at 50% -10%,rgba(212,147,58,0.07),transparent),var(--bg);}
+  .gate-card{background:linear-gradient(180deg,rgba(22,28,40,0.96),rgba(15,19,28,0.98));
+    border:1px solid var(--bd);border-radius:8px;padding:40px 36px;max-width:380px;width:90%;text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+  .gate-badge{font-size:9px;color:var(--gold);letter-spacing:3px;font-weight:700;padding:3px 9px;
+    border:1px solid rgba(212,147,58,0.4);border-radius:3px;background:rgba(212,147,58,0.06);display:inline-block;}
+  .gate-card h1{font-size:22px;font-weight:800;letter-spacing:-0.4px;color:#e8ecf2;margin:18px 0 6px;}
+  .gate-card p{font-size:13px;color:var(--mut);line-height:1.5;margin-bottom:22px;}
+  #pass{width:100%;background:#0b0e15;border:1px solid var(--bd2);border-radius:5px;color:var(--text);
+    padding:12px 14px;font-size:15px;font-family:'JetBrains Mono',monospace;text-align:center;letter-spacing:2px;outline:none;}
+  #pass:focus{border-color:var(--gold);}
+  .btn{margin-top:14px;width:100%;background:var(--gold);color:#1a1206;border:none;border-radius:5px;
+    padding:12px;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;font-family:'JetBrains Mono',monospace;}
+  .btn:hover{background:var(--gold2);}
+  .btn:disabled{opacity:0.55;cursor:default;}
+  #gerr{color:#e06a5a;font-size:12px;margin-top:12px;min-height:16px;}
+
+  /* ---- app ---- */
+  #app{display:none;}
+  .topbar{background:linear-gradient(180deg,rgba(10,13,20,0.99),rgba(17,21,30,0.97));
+    border-bottom:1px solid var(--bd2);padding:14px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);box-shadow:0 1px 0 rgba(212,160,67,0.12);}
+  .brand{display:flex;align-items:center;gap:11px;}
+  .brand .tag{font-size:9px;color:var(--gold);letter-spacing:3px;font-weight:700;padding:2px 7px;
+    border:1px solid rgba(212,147,58,0.4);border-radius:2px;background:rgba(212,147,58,0.06);}
+  .brand .title{font-size:15px;font-weight:800;color:#e8ecf2;letter-spacing:1px;}
+  .meta{font-size:10px;color:var(--mut2);}
+  .tools{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .tools input,.tools select{background:#0b0e15;border:1px solid var(--bd2);border-radius:5px;color:var(--text);
+    padding:8px 11px;font-size:12px;font-family:'Inter',sans-serif;outline:none;}
+  .tools input{min-width:180px;}
+  .tools input:focus,.tools select:focus{border-color:var(--gold);}
+  .seg{display:flex;border:1px solid var(--bd2);border-radius:5px;overflow:hidden;}
+  .seg button{background:transparent;border:none;color:var(--mut);padding:8px 12px;font-size:11px;font-weight:700;
+    cursor:pointer;font-family:'JetBrains Mono',monospace;letter-spacing:0.5px;}
+  .seg button.on{background:rgba(212,147,58,0.14);color:var(--gold);}
+
+  .wrap{max-width:1480px;margin:0 auto;padding:22px 24px 60px;}
+  .count{font-size:11px;color:var(--mut);margin-bottom:16px;}
+  .count b{color:var(--text);}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px;}
+  .card{background:linear-gradient(180deg,rgba(22,28,40,0.9),rgba(15,19,28,0.95));border:1px solid var(--bd);
+    border-radius:7px;overflow:hidden;cursor:pointer;transition:transform .12s,border-color .12s,box-shadow .12s;display:flex;flex-direction:column;}
+  .card:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 10px 26px rgba(0,0,0,0.45);}
+  .thumb{position:relative;width:100%;aspect-ratio:9/16;background:#0b0e15;overflow:hidden;}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .thumb .ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800;
+    color:var(--bd2);background:linear-gradient(135deg,#11151e,#0b0e15);}
+  .plat{position:absolute;top:8px;left:8px;font-size:9px;font-weight:700;letter-spacing:0.5px;padding:3px 7px;border-radius:3px;
+    backdrop-filter:blur(6px);}
+  .plat.ig{background:rgba(214,41,118,0.82);color:#fff;}
+  .plat.fb{background:rgba(24,119,242,0.85);color:#fff;}
+  .plat.tt{background:rgba(10,140,150,0.88);color:#fff;}
+  .views{position:absolute;bottom:8px;left:8px;font-size:11px;font-weight:800;color:#fff;
+    background:rgba(0,0,0,0.6);padding:3px 8px;border-radius:4px;backdrop-filter:blur(4px);}
+  .views span{color:var(--gold2);}
+  .body{padding:11px 12px 12px;display:flex;flex-direction:column;gap:7px;flex:1;}
+  .acct{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text);font-weight:600;}
+  .acct .vf{color:#3eb5c4;font-size:10px;}
+  .acct .fol{color:var(--mut2);font-weight:400;margin-left:auto;}
+  .desc{font-size:11.5px;color:var(--mut);line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .tags{display:flex;flex-wrap:wrap;gap:4px;}
+  .tags span{font-size:9px;color:var(--gold);background:rgba(212,147,58,0.08);border:1px solid rgba(212,147,58,0.18);
+    padding:1px 5px;border-radius:3px;}
+  .foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding-top:7px;border-top:1px solid var(--bd);
+    font-size:10px;color:var(--mut2);}
+  .foot .watch{color:var(--gold);font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:0.5px;}
+  .empty{text-align:center;color:var(--mut2);padding:60px;font-size:13px;}
+
+  /* ---- creator portal: ideas ---- */
+  .sechead{display:flex;align-items:center;gap:11px;margin:4px 0 15px;flex-wrap:wrap;}
+  .sechead .sh-tag{font-size:9px;color:var(--gold);letter-spacing:3px;font-weight:700;padding:3px 8px;
+    border:1px solid rgba(212,147,58,0.4);border-radius:3px;background:rgba(212,147,58,0.06);}
+  .sechead .sh-title{font-size:15px;font-weight:800;color:#e8ecf2;letter-spacing:1px;}
+  .sechead .sh-sub{font-size:11px;color:var(--mut2);}
+  .libhead{margin-top:36px;padding-top:24px;border-top:1px solid var(--bd);}
+  .ideas{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px;margin-bottom:6px;}
+  .idea{display:flex;background:linear-gradient(180deg,rgba(30,25,15,0.55),rgba(15,19,28,0.95));
+    border:1px solid var(--bd2);border-left:3px solid var(--gold);border-radius:7px;overflow:hidden;}
+  .idea .ithumb{width:80px;flex:0 0 80px;background:#0b0e15;}
+  .idea .ithumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .idea .ibody{padding:13px 15px;display:flex;flex-direction:column;gap:7px;flex:1;min-width:0;}
+  .idea .ititle{font-size:13.5px;font-weight:700;color:#e8ecf2;line-height:1.3;}
+  .idea .itext{font-size:12px;color:var(--mut);line-height:1.5;white-space:pre-wrap;}
+  .idea .ifoot{margin-top:auto;display:flex;align-items:center;gap:12px;padding-top:5px;}
+  .istat{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.5px;
+    border:1px solid var(--bd2);background:transparent;color:var(--mut);padding:4px 9px;border-radius:4px;cursor:pointer;}
+  .istat.wip{color:var(--gold);border-color:rgba(212,147,58,0.5);background:rgba(212,147,58,0.1);}
+  .istat.done{color:#5cc98a;border-color:rgba(92,201,138,0.45);background:rgba(92,201,138,0.1);}
+  .iwatch{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--gold);letter-spacing:0.5px;}
+
+  /* ---- topbar buttons (admin publish / sync) ---- */
+  .tbtn{background:var(--gold);color:#1a1206;border:none;border-radius:5px;padding:8px 13px;font-size:11px;font-weight:700;
+    letter-spacing:0.5px;cursor:pointer;font-family:'JetBrains Mono',monospace;}
+  .tbtn:hover{background:var(--gold2);} .tbtn:disabled{opacity:0.5;cursor:default;}
+  .tbtn.ghost{background:transparent;border:1px solid var(--bd2);color:var(--mut);}
+  .tbtn.ghost:hover{border-color:var(--gold);color:var(--gold);}
+
+  /* ---- section nav (page tabs — replaces the old toggle) ---- */
+  .subnav{background:rgba(10,13,20,0.96);border-bottom:1px solid var(--bd);padding:0 24px;display:flex;gap:4px;overflow-x:auto;}
+  .subnav button{background:transparent;border:none;border-bottom:2px solid transparent;color:var(--mut);
+    padding:13px 18px;font-size:12px;font-weight:700;letter-spacing:1.2px;cursor:pointer;
+    font-family:'JetBrains Mono',monospace;white-space:nowrap;}
+  .subnav button:hover{color:var(--text);}
+  .subnav button.on{color:var(--gold);border-bottom-color:var(--gold);}
+
+  /* ---- creator HQ (the personalized dashboard) ---- */
+  .hq-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+  .hqcard{background:linear-gradient(180deg,rgba(22,28,40,0.9),rgba(15,19,28,0.95));border:1px solid var(--bd);
+    border-radius:8px;padding:18px 20px;}
+  .hq-plan{margin-bottom:16px;}
+  .hq-cardlabel{font-size:10px;color:var(--mut2);letter-spacing:2.5px;font-weight:700;text-transform:uppercase;
+    font-family:'JetBrains Mono',monospace;margin-bottom:14px;}
+  .hq-big{font-size:18px;font-weight:800;color:#e8ecf2;line-height:1.25;margin-bottom:10px;letter-spacing:-0.3px;}
+  .hq-row{display:flex;gap:12px;padding:8px 0;border-top:1px solid var(--bd);}
+  .hq-row:first-of-type{border-top:none;}
+  .hq-k{font-size:11px;color:var(--mut2);font-weight:700;letter-spacing:0.5px;min-width:120px;
+    font-family:'JetBrains Mono',monospace;text-transform:uppercase;flex:0 0 120px;}
+  .hq-v{font-size:13.5px;color:var(--text);line-height:1.5;flex:1;}
+  .hq-muted{font-size:12.5px;color:var(--mut2);}
+  .hq-metrics{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+  .hq-metric{flex:1;min-width:88px;background:rgba(0,0,0,0.25);border:1px solid var(--bd);border-radius:7px;padding:12px;text-align:center;}
+  .hq-mv{font-size:22px;font-weight:800;color:#e8ecf2;font-family:'JetBrains Mono',monospace;letter-spacing:-0.5px;}
+  .hq-mk{font-size:9px;color:var(--mut2);letter-spacing:1.2px;font-weight:700;margin-top:5px;text-transform:uppercase;}
+  .hq-focus{border-top:1px solid var(--bd);padding-top:10px;}
+  .hq-split{margin-bottom:12px;}
+  .hq-splitbar{display:flex;height:12px;border-radius:6px;overflow:hidden;border:1px solid var(--bd);}
+  .hq-splitbar .g{background:#3eb5c4;} .hq-splitbar .s{background:var(--gold);} .hq-splitbar .e{background:#8b7bf0;}
+  .hq-splitleg{display:flex;gap:16px;margin-top:7px;font-size:11px;color:var(--mut);}
+  .hq-splitleg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle;}
+  .hq-splitleg i.dotg{background:#3eb5c4;} .hq-splitleg i.dots{background:var(--gold);} .hq-splitleg i.dote{background:#8b7bf0;}
+  .hq-chips{display:flex;flex-wrap:wrap;gap:6px;flex:1;}
+  .hq-chips span{font-size:11px;color:var(--gold);background:rgba(212,147,58,0.08);
+    border:1px solid rgba(212,147,58,0.25);padding:3px 9px;border-radius:99px;}
+  .hq-plantext{white-space:pre-wrap;font-size:13.5px;line-height:1.65;color:var(--text);margin-top:12px;
+    border-top:1px solid var(--bd);padding-top:12px;}
+  .hq-empty{text-align:center;color:var(--mut2);padding:50px 20px;font-size:13.5px;line-height:1.6;
+    border:1px dashed var(--bd2);border-radius:8px;}
+
+  /* ---- admin: assign a library video to a creator ---- */
+  .assignbar{display:flex;gap:6px;align-items:center;position:relative;margin-top:7px;flex-wrap:wrap;}
+  .abtn{flex:1;min-width:0;background:rgba(212,147,58,0.13);color:var(--gold);border:1px solid rgba(212,147,58,0.45);
+    border-radius:5px;padding:7px 9px;font-size:10px;font-weight:700;letter-spacing:0.5px;cursor:pointer;font-family:'JetBrains Mono',monospace;}
+  .abtn:hover{background:rgba(212,147,58,0.24);}
+  .awatch{background:transparent;border:1px solid var(--bd2);color:var(--mut);border-radius:5px;padding:7px 10px;font-size:11px;
+    font-weight:700;cursor:pointer;}
+  .awatch:hover{border-color:var(--gold);color:var(--gold);}
+  .amenu{position:absolute;bottom:calc(100% + 5px);left:0;right:0;background:#11151e;border:1px solid var(--bd2);border-radius:6px;
+    max-height:210px;overflow:auto;z-index:40;box-shadow:0 12px 34px rgba(0,0,0,0.55);}
+  .amenu .ac{padding:8px 11px;font-size:11.5px;color:var(--text);cursor:pointer;border-bottom:1px solid var(--bd);}
+  .amenu .ac:last-child{border-bottom:none;}
+  .amenu .ac:hover{background:rgba(212,147,58,0.13);color:var(--gold);}
+  .amenu .ac.new{color:var(--gold);font-weight:700;}
+  .assigned{width:100%;color:#5cc98a;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:0.3px;}
+  #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#141a26;border:1px solid var(--bd2);
+    color:var(--text);padding:11px 20px;border-radius:6px;font-size:12.5px;display:none;z-index:300;box-shadow:0 10px 30px rgba(0,0,0,0.5);}
+
+  /* ---- admin: creator manager (merged from swipe_admin) ---- */
+  .cm-panel{background:linear-gradient(180deg,rgba(22,28,40,0.9),rgba(15,19,28,0.95));border:1px solid var(--bd);
+    border-radius:8px;padding:16px 18px;margin-bottom:16px;}
+  .cm-h2{font-size:11px;letter-spacing:1.5px;color:var(--mut);font-weight:700;margin-bottom:12px;
+    text-transform:uppercase;font-family:'JetBrains Mono',monospace;}
+  .cm-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px;}
+  .cm-panel input,.cm-panel select,.cm-panel textarea,.cm-drawer input,.cm-drawer select,.cm-drawer textarea{
+    background:#0b0e15;border:1px solid var(--bd2);border-radius:5px;color:var(--text);padding:9px 11px;
+    font-size:13px;font-family:'Inter',sans-serif;outline:none;}
+  .cm-panel input:focus,.cm-drawer input:focus,.cm-drawer select:focus,.cm-drawer textarea:focus{border-color:var(--gold);}
+  .cm-drawer textarea{width:100%;min-height:72px;resize:vertical;line-height:1.5;}
+  .cm-hint{font-size:11px;color:var(--mut2);line-height:1.5;margin-top:6px;}
+  .cm-sm{background:var(--gold);color:#1a1206;border:none;border-radius:5px;padding:6px 11px;font-size:10px;font-weight:700;
+    letter-spacing:0.5px;cursor:pointer;font-family:'JetBrains Mono',monospace;}
+  .cm-sm:hover{background:var(--gold2);}
+  .cm-sm.ghost{background:transparent;border:1px solid var(--bd2);color:var(--mut);}
+  .cm-sm.ghost:hover{border-color:var(--gold);color:var(--gold);}
+  .cm-sm.danger{background:transparent;border:1px solid rgba(224,106,90,0.4);color:#e06a5a;}
+  .cm-cre{border:1px solid var(--bd);border-radius:7px;padding:14px 16px;margin-bottom:12px;background:rgba(15,19,28,0.6);}
+  .cm-cre.rev{opacity:0.55;}
+  .cm-crehead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .cm-name{font-size:15px;font-weight:800;color:#e8ecf2;}
+  .cm-handle{font-size:12px;color:var(--mut2);}
+  .cm-badge{font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 7px;border-radius:3px;}
+  .cm-badge.cnt{color:var(--gold);background:rgba(212,147,58,0.1);border:1px solid rgba(212,147,58,0.3);}
+  .cm-badge.rev{color:#e06a5a;background:rgba(224,106,90,0.1);border:1px solid rgba(224,106,90,0.35);}
+  .cm-linkrow{display:flex;gap:8px;margin-top:10px;align-items:center;}
+  .cm-linkrow input{flex:1;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mut);}
+  .cm-acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+  .cm-drawer{margin-top:14px;padding-top:14px;border-top:1px solid var(--bd);display:none;}
+  .cm-sub{font-size:10px;letter-spacing:1.5px;color:var(--gold);font-weight:700;margin:16px 0 9px;
+    text-transform:uppercase;font-family:'JetBrains Mono',monospace;}
+  .cm-hq{background:rgba(11,14,21,0.5);border:1px solid var(--bd);border-radius:7px;padding:6px 14px 14px;margin-bottom:12px;}
+  .cm-hq .cm-sub:first-child{margin-top:10px;}
+  .cm-idea{border:1px solid var(--bd2);border-left:3px solid var(--gold);border-radius:6px;padding:10px 12px;margin-bottom:8px;
+    display:flex;gap:10px;align-items:flex-start;}
+  .cm-it{flex:1;min-width:0;} .cm-ititle{font-size:13px;font-weight:700;color:#e8ecf2;}
+  .cm-ibody{font-size:12px;color:var(--mut);white-space:pre-wrap;margin-top:4px;line-height:1.45;}
+  .cm-iref{font-size:9px;color:var(--gold);letter-spacing:0.5px;margin-top:5px;}
+  .cm-ithumb{width:52px;height:70px;object-fit:cover;border-radius:5px;border:1px solid var(--bd2);flex:0 0 auto;background:#0b0e15;}
+  .cm-addbox{background:rgba(11,14,21,0.7);border:1px dashed var(--bd2);border-radius:6px;padding:12px;margin-top:10px;}
+  .cm-picker{border:1px solid var(--bd2);border-radius:5px;max-height:190px;overflow:auto;margin-top:6px;display:none;}
+  .cm-pick{padding:7px 10px;font-size:11.5px;color:var(--mut);border-bottom:1px solid var(--bd);cursor:pointer;}
+  .cm-pick:hover{background:rgba(212,147,58,0.08);color:var(--text);} .cm-pick b{color:var(--text);}
+  .cm-sbadge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:0.04em;padding:2px 7px;border-radius:99px;
+    border:1px solid var(--bd2);color:var(--mut);}
+  .cm-sbadge.wip{color:var(--gold);border-color:rgba(212,147,58,0.5);background:rgba(212,147,58,0.08);}
+  .cm-sbadge.done{color:#5fd29a;border-color:rgba(95,210,154,0.5);background:rgba(95,210,154,0.08);}
+
+  @media(max-width:680px){.hq-grid{grid-template-columns:1fr;}}
+  @media(max-width:560px){.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:11px;}
+    .tools input{min-width:120px;}
+    .ideas{grid-template-columns:1fr;}}
+</style></head><body>
+
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-badge">SWIPE FILE</div>
+    <h1>Winning Content Library</h1>
+    <p>Enter the creator passcode to browse the swipe file.</p>
+    <input id="pass" type="password" placeholder="passcode" autocomplete="off" autofocus>
+    <button class="btn" id="go">UNLOCK</button>
+    <div id="gerr"></div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="topbar">
+    <div class="brand">
+      <span class="tag">SWIPE FILE</span>
+      <span class="title">WINNING CONTENT LIBRARY</span>
+      <span class="meta mono" id="upd"></span>
+    </div>
+    <div class="tools">
+      <div id="filterTools" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <input id="q" placeholder="search caption, #tag, account…">
+        <div class="seg" id="platseg">
+          <button data-p="all" class="on">ALL</button>
+          <button data-p="instagram">IG</button>
+          <button data-p="facebook">FB</button>
+          <button data-p="tiktok">TIKTOK</button>
+        </div>
+        <div class="seg" id="dateseg">
+          <button data-d="all" class="on">ALL TIME</button>
+          <button data-d="7">7D</button>
+          <button data-d="30">30D</button>
+          <button data-d="90">90D</button>
+        </div>
+        <select id="sort">
+          <option value="views">Most views</option>
+          <option value="recent">Most recent</option>
+          <option value="likes">Most likes</option>
+          <option value="comments">Most comments</option>
+        </select>
+      </div>
+      <button class="tbtn ghost" id="syncBtn" style="display:none;">SYNC ↻</button>
+      <button class="tbtn" id="pubBtn" style="display:none;">PUBLISH ↗</button>
+      <span id="pubStatus" class="mono" style="font-size:10px;letter-spacing:0.5px;color:#7a8aa8;max-width:300px;line-height:1.3;"></span>
+    </div>
+  </div>
+
+  <div class="subnav" id="subnav" style="display:none;"></div>
+
+  <div class="wrap">
+    <!-- creator: personalized dashboard (concept / plan / progress) -->
+    <div id="hqPanel" style="display:none;">
+      <div class="sechead">
+        <span class="sh-tag">YOUR HQ</span>
+        <span class="sh-title">YOUR DASHBOARD</span>
+        <span class="sh-sub" id="hqSub"></span>
+      </div>
+      <div id="hqBody"></div>
+    </div>
+
+    <!-- creator: the videos assigned to them -->
+    <div id="ideasPanel" style="display:none;">
+      <div class="sechead">
+        <span class="sh-tag">FOR YOU</span>
+        <span class="sh-title">MY VIDEOS</span>
+        <span class="sh-sub" id="ideasSub"></span>
+      </div>
+      <div class="ideas" id="ideasGrid"></div>
+    </div>
+
+    <!-- creator: the adaptations assigned to them (read-only — no good/great/bad rating) -->
+    <div id="adaptsPanel" style="display:none;">
+      <div class="sechead">
+        <span class="sh-tag">TO FILM</span>
+        <span class="sh-title">ADAPT QUEUE</span>
+        <span class="sh-sub" id="adaptsSub"></span>
+      </div>
+      <div id="adaptsGrid"></div>
+    </div>
+
+    <!-- admin: create / manage creator links + HQ + ideas -->
+    <div id="adminCreators" style="display:none;">
+      <div class="cm-panel">
+        <div class="cm-h2">New creator link</div>
+        <div class="cm-row">
+          <input id="cmName" placeholder="creator name (e.g. Jessica)" style="min-width:200px;">
+          <input id="cmHandle" placeholder="@handle (optional)" style="min-width:160px;">
+          <button class="cm-sm" onclick="mintCreator()">MINT LINK</button>
+        </div>
+        <p class="cm-hint">Each link is the creator's password — anyone with it sees their HQ + assigned videos + the library. Send it to that creator only. Revoke to kill a link. Changes go live for creators after you hit PUBLISH.</p>
+      </div>
+      <div class="cm-panel">
+        <div class="cm-h2">Creators</div>
+        <div id="cmList"><p class="cm-hint">Loading…</p></div>
+      </div>
+    </div>
+
+    <!-- shared winning-content library (creator LIBRARY tab + admin ASSIGN tab + public) -->
+    <div id="libHead" class="sechead libhead" style="display:none;">
+      <span class="sh-tag">SWIPE FILE</span>
+      <span class="sh-title">WINNING CONTENT LIBRARY</span>
+      <span class="sh-sub">proven videos to model</span>
+    </div>
+    <div class="count" id="count"></div>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty" style="display:none;">No videos match your filters.</div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="data.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+let VIDEOS=[], IDEAS=[], ADAPTS=[], CREATOR=null, TOKEN='', CREATORS=[], SECTION='lib', PICK_CACHE={}, LIB_PLATS=null;
+// Admin mode: only when this exact page is served from the bot on Jayden's Mac
+// (localhost). The public GitHub Pages copy is never admin — its assign API isn't reachable.
+const ADMIN=['localhost','127.0.0.1'].includes(location.hostname);
+// Cloudflare Worker base for status sync-back. Empty string => localStorage-only.
+let STATUS_API=(window.SWIPE_STATUS_API||'').replace(/\/+$/,'');
+
+function fmt(n){n=+n||0;if(n>=1e6)return (n/1e6).toFixed(n>=1e7?0:1)+'M';if(n>=1e3)return (n/1e3).toFixed(n>=1e4?0:1)+'K';return ''+n;}
+function ago(ts){if(!ts)return '';const d=Date.now()/1000-ts;const day=86400;
+  if(d<day)return 'today';if(d<2*day)return '1d ago';if(d<30*day)return Math.floor(d/day)+'d ago';
+  if(d<365*day)return Math.floor(d/(30*day))+'mo ago';return Math.floor(d/(365*day))+'y ago';}
+function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+// ---- shared little helpers (toast + same-origin API) ----
+function toast(m){const t=$('toast');if(!t)return;t.textContent=m;t.style.display='block';
+  clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',2600);}
+async function api(path,opts){
+  const r=await fetch(path,Object.assign({headers:{'Content-Type':'application/json'}},opts||{}));
+  let j={};try{j=await r.json();}catch(e){}
+  if(!r.ok) throw new Error(j.error||('HTTP '+r.status));
+  return j;
+}
+
+// ---- section router (page tabs replace the old toggle) ----
+// creator tabs: hq | mine | lib   ·   admin tabs: assign | creators
+function setNav(tabs, active){
+  const nav=$('subnav');
+  nav.innerHTML=tabs.map(t=>`<button data-s="${t.id}"${t.id===active?' class="on"':''}>${esc(t.label)}</button>`).join('');
+  nav.style.display='flex';
+}
+function showSection(name){
+  SECTION=name;
+  LIB_PLATS = name==='linkbio' ? ['instagram','facebook']
+            : name==='tiktok'  ? ['tiktok']
+            : null;                          // null = use the #platseg filter (admin assign / public)
+  const isLib=(name==='lib'||name==='assign'||name==='linkbio'||name==='tiktok');
+  $('hqPanel').style.display     = name==='hq'?'block':'none';
+  $('ideasPanel').style.display  = name==='mine'?'block':'none';
+  $('adaptsPanel').style.display = name==='adapts'?'block':'none';
+  $('adminCreators').style.display = name==='creators'?'block':'none';
+  $('libHead').style.display     = (isLib && !ADMIN && CREATOR)?'flex':'none';
+  $('count').style.display       = isLib?'block':'none';
+  $('grid').style.display        = isLib?'grid':'none';
+  $('empty').style.display       = 'none';
+  $('filterTools').style.display = isLib?'flex':'none';
+  $('platseg').style.display     = LIB_PLATS?'none':'';   // platform is the tab now → no platform filter
+  const lt=document.querySelector('#libHead .sh-title');
+  if(lt) lt.textContent = name==='linkbio'?'LINK IN BIO SCRAPER':(name==='tiktok'?'TIKTOK SCRAPER':'WINNING CONTENT LIBRARY');
+  document.querySelectorAll('#subnav button').forEach(b=>b.classList.toggle('on',b.dataset.s===name));
+  if(isLib) render();                       // (re)draw the library grid with current filters
+  if(name==='creators' && ADMIN) loadCreators();
+}
+
+// ---- creator HQ: render the personalized dashboard from cd.hq ----
+function hqChips(s){
+  return (s||'').split(/[,\n]/).map(x=>x.trim()).filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('');
+}
+function renderHQ(hq){
+  hq=hq||{};
+  const wrap=$('hqBody');
+  const has=Object.keys(hq).some(k=>(''+(hq[k]||'')).trim());
+  if(!has){
+    wrap.innerHTML=`<div class="hq-empty">Your personalized plan is being set up.<br>Check back soon — or open a <b>Scraper</b> tab to browse winning content.</div>`;
+    return;
+  }
+  const row=(label,val)=> val?`<div class="hq-row"><div class="hq-k">${label}</div><div class="hq-v">${esc(val)}</div></div>`:'';
+  const metric=(label,val)=>`<div class="hq-metric"><div class="hq-mv">${val?esc(val):'—'}</div><div class="hq-mk">${label}</div></div>`;
+  const g=parseFloat(hq.split_growth), s=parseFloat(hq.split_sales), e=parseFloat(hq.split_edu);
+  let splitBar='';
+  if(isFinite(g)||isFinite(s)||isFinite(e)){
+    const gv=isFinite(g)?g:0, sv=isFinite(s)?s:0, ev=isFinite(e)?e:0, tot=(gv+sv+ev)||100;
+    const gp=Math.round(gv/tot*100), sp=Math.round(sv/tot*100), ep=Math.max(0,100-gp-sp);
+    splitBar=`<div class="hq-split"><div class="hq-splitbar"><div class="g" style="width:${gp}%"></div><div class="s" style="width:${sp}%"></div><div class="e" style="width:${ep}%"></div></div>
+      <div class="hq-splitleg"><span><i class="dotg"></i>Growth ${gp}%</span><span><i class="dots"></i>Sales ${sp}%</span>${ev?`<span><i class="dote"></i>Educational ${ep}%</span>`:''}</div></div>`;
+  }
+  const conceptEmpty=!(hq.avatar||hq.niche||hq.style);
+  wrap.innerHTML=`
+    <div class="hq-grid">
+      <div class="hqcard">
+        <div class="hq-cardlabel">// Concept</div>
+        ${hq.avatar?`<div class="hq-big">${esc(hq.avatar)}</div>`:''}
+        ${row('Niche',hq.niche)}
+        ${row('Style',hq.style)}
+        ${conceptEmpty?'<div class="hq-muted">No concept set yet.</div>':''}
+      </div>
+      <div class="hqcard">
+        <div class="hq-cardlabel">// Progress</div>
+        <div class="hq-metrics">${metric('Followers',hq.m_followers)}${metric('Videos posted',hq.m_videos)}${metric('Sales',hq.m_sales)}</div>
+        ${hq.focus?`<div class="hq-focus"><div class="hq-k" style="margin-bottom:5px;">Current focus</div><div class="hq-v">${esc(hq.focus)}</div></div>`:''}
+      </div>
+    </div>
+    <div class="hqcard hq-plan">
+      <div class="hq-cardlabel">// Content plan</div>
+      ${splitBar}
+      ${row('Posting cadence',hq.cadence)}
+      ${hq.formats?`<div class="hq-row"><div class="hq-k">Formats</div><div class="hq-chips">${hqChips(hq.formats)}</div></div>`:''}
+      ${hq.plan?`<div class="hq-plantext">${esc(hq.plan)}</div>`:''}
+    </div>`;
+}
+
+// ---- admin: assign a library video to a creator's personalized section ----
+function closeMenus(except){document.querySelectorAll('.amenu').forEach(m=>{if(m!==except)m.style.display='none';});}
+function buildMenu(vid){
+  const m=document.createElement('div'); m.className='amenu';
+  const active=CREATORS.filter(c=>!c.revoked);
+  let h=`<div class="ac new" data-vid="${esc(vid)}" data-new="1">+ New creator…</div>`;
+  if(!active.length) h+=`<div class="ac" style="cursor:default;color:var(--mut2)">No creators yet — use “New creator…”</div>`;
+  for(const c of active)
+    h+=`<div class="ac" data-vid="${esc(vid)}" data-token="${esc(c.token)}" data-name="${esc(c.name)}">${esc(c.name)}${c.handle?' · @'+esc(c.handle):''}</div>`;
+  m.innerHTML=h; return m;
+}
+async function onPick(ac){
+  const vid=ac.dataset.vid; let token=ac.dataset.token, name=ac.dataset.name;
+  if(ac.dataset.new){
+    const nm=(prompt('New creator name:')||'').trim(); if(!nm){closeMenus();return;}
+    try{const r=await api('/swipe/creators',{method:'POST',body:JSON.stringify({name:nm})});
+      CREATORS.push(r); token=r.token; name=r.name;}
+    catch(e){toast('Error: '+e.message); return;}
+  }
+  closeMenus();
+  if(token) await assignTo(vid,token,name);
+}
+async function assignTo(vid,token,name){
+  const v=VIDEOS.find(x=>x.id===vid)||{};
+  const title=((v.desc||'').slice(0,70).trim())||('Winning video — @'+(v.handle||''));
+  const notes=prompt('Notes / iterations for '+name+' (optional, shown on their dashboard):','');
+  if(notes===null) return;
+  const script=prompt('Script for this video (optional, shown alongside the notes). Leave blank to skip:','')||'';
+  try{
+    await api('/swipe/creators/'+token+'/ideas',{method:'POST',
+      body:JSON.stringify({title,body:notes.trim(),script:script.trim(),ref_type:'video',ref_id:vid})});
+    toast('Added to '+name+' — hit PUBLISH to push it live');
+    const btn=[...document.querySelectorAll('.card .abtn')].find(b=>b.dataset.vid===vid);
+    if(btn){const bar=btn.parentElement; let chip=bar.querySelector('.assigned');
+      if(!chip){chip=document.createElement('span');chip.className='assigned';bar.appendChild(chip);}
+      chip.textContent='✓ assigned to '+name;}
+    loadCreators();   // refresh idea counts in the CREATORS tab
+  }catch(e){toast('Error: '+e.message);}
+}
+let PUBLISHING=false;
+function _setPubStatus(txt,color){ const s=$('pubStatus'); if(!s) return; s.textContent=txt; s.style.color=color||'#7a8aa8'; }
+async function doPublish(){
+  if(PUBLISHING) return;                       // ignore double-clicks while a publish is running
+  const b=$('pubBtn'), o=b.textContent, t0=Date.now();
+  PUBLISHING=true; b.disabled=true; b.textContent='PUBLISHING…';
+  _setPubStatus('● publishing… 0s · do NOT refresh','#d4933a');
+  const tick=setInterval(()=>_setPubStatus('● publishing… '+Math.round((Date.now()-t0)/1000)+'s · do NOT refresh','#d4933a'),1000);
+  try{
+    const r=await api('/swipe/publish',{method:'POST',body:'{}'});
+    clearInterval(tick);
+    const secs=Math.round((Date.now()-t0)/1000);
+    if(r.status==='ok'){
+      _setPubStatus('✓ PUBLISHED '+new Date().toLocaleTimeString()+' ('+secs+'s) · creators update in ~1 min','#8fb33f');
+      b.textContent='PUBLISHED ✓'; toast('Published ✓ creators see updates in ~1 min');
+      setTimeout(()=>{ if(!PUBLISHING) b.textContent=o; },6000);
+    }else{
+      _setPubStatus('✗ finished with errors (code '+r.returncode+') · nothing changed live','#d62929');
+      b.textContent=o; toast('Publish finished with errors');
+    }
+  }catch(e){
+    clearInterval(tick);
+    _setPubStatus('✗ publish failed: '+e.message+' · nothing went live, try again','#d62929');
+    b.textContent=o; toast('Publish failed: '+e.message);
+  }
+  PUBLISHING=false; b.disabled=false;
+}
+window.addEventListener('beforeunload',e=>{ if(PUBLISHING){ e.preventDefault(); e.returnValue=''; } });
+
+// ---- admin: creator manager (mint links, manage HQ + ideas) ----
+function copyLink(link){ navigator.clipboard.writeText(link).then(()=>toast('Link copied')).catch(()=>toast('Copy failed')); }
+function statusBadge(s){
+  if(s==='done') return '<span class="cm-sbadge done">✓ POSTED</span>';
+  if(s==='wip')  return '<span class="cm-sbadge wip">● FILMING</span>';
+  if(s==='todo') return '<span class="cm-sbadge">○ TO DO</span>';
+  return '';
+}
+async function loadCreators(){
+  try{ CREATORS=await api('/swipe/creators'); }
+  catch(e){ CREATORS=[]; const box=$('cmList'); if(box) box.innerHTML='<p class="cm-hint">Could not load ('+esc(e.message)+'). Is the bot running on this Mac?</p>'; return; }
+  renderCreatorManager();
+}
+function renderCreatorManager(){
+  const box=$('cmList'); if(!box) return;
+  const list=CREATORS||[];
+  if(!list.length){box.innerHTML='<p class="cm-hint">No creators yet. Mint a link above.</p>';return;}
+  box.innerHTML=list.map(c=>{
+    const cnt=c.idea_count||0;
+    return `<div class="cm-cre${c.revoked?' rev':''}" id="cmcre-${c.token}">
+      <div class="cm-crehead">
+        <span class="cm-name">${esc(c.name)}</span>
+        ${c.handle?`<span class="cm-handle">@${esc(c.handle)}</span>`:''}
+        <span class="cm-badge cnt">${cnt} idea${cnt===1?'':'s'}</span>
+        ${c.revoked?'<span class="cm-badge rev">REVOKED</span>':''}
+      </div>
+      <div class="cm-linkrow">
+        <input readonly value="${esc(c.link)}" onclick="this.select()">
+        <button class="cm-sm" onclick="copyLink('${esc(c.link)}')">COPY</button>
+      </div>
+      <div class="cm-acts">
+        <button class="cm-sm ghost" onclick="toggleDrawer('${c.token}')">EDIT HQ + VIDEOS ▾</button>
+        <button class="cm-sm ghost" onclick="toggleRevoke('${c.token}')">${c.revoked?'RESTORE':'REVOKE'}</button>
+        <button class="cm-sm danger" onclick="delCreator('${c.token}')">DELETE</button>
+      </div>
+      <div class="cm-drawer" id="cmdrawer-${c.token}"></div>
+    </div>`;
+  }).join('');
+}
+async function mintCreator(){
+  const name=$('cmName').value.trim();
+  if(!name){toast('Enter a name');return;}
+  const handle=$('cmHandle').value.trim();
+  try{
+    const r=await api('/swipe/creators',{method:'POST',body:JSON.stringify({name,handle})});
+    $('cmName').value='';$('cmHandle').value='';
+    await loadCreators(); copyLink(r.link); toast('Link minted + copied');
+  }catch(e){toast('Error: '+e.message);}
+}
+async function toggleRevoke(token){
+  const c=(CREATORS||[]).find(x=>x.token===token)||{};
+  try{ await api('/swipe/creators/'+token+'/revoke',{method:'POST',body:JSON.stringify({unrevoke:!!c.revoked})});
+    toast(c.revoked?'Restored — publish to apply':'Revoked — publish to apply'); await loadCreators();
+  }catch(e){toast('Error: '+e.message);}
+}
+async function delCreator(token){
+  const c=(CREATORS||[]).find(x=>x.token===token)||{};
+  if(!confirm('Delete '+(c.name||'this creator')+' and all their ideas? This cannot be undone.'))return;
+  try{ await api('/swipe/creators/'+token,{method:'DELETE'}); toast('Deleted'); await loadCreators(); }
+  catch(e){toast('Error: '+e.message);}
+}
+async function toggleDrawer(token){
+  const d=$('cmdrawer-'+token);
+  if(d.style.display==='block'){d.style.display='none';return;}
+  d.style.display='block';
+  await renderDrawer(token);
+}
+async function renderDrawer(token){
+  const d=$('cmdrawer-'+token);
+  d.innerHTML='<p class="cm-hint">Loading…</p>';
+  let ideas=[], hqResp={data:{}};
+  try{ [ideas,hqResp]=await Promise.all([
+      api('/swipe/creators/'+token+'/ideas'),
+      api('/swipe/creators/'+token+'/hq')
+    ]); }catch(e){ d.innerHTML='<p class="cm-hint">'+esc(e.message)+'</p>'; return; }
+  // resolve video pins -> thumbnail + account + views so you can SEE what's on their videos
+  const vmap={};
+  if(ideas.some(it=>(it.ref_type||'')==='video' && it.ref_id)){
+    try{
+      const [igRows, ttRows] = await Promise.all([
+        api('/social/videos?sort=views&limit=400').catch(()=>[]),
+        api('/scraper/videos?sort=views&limit=400').catch(()=>[])
+      ]);
+      for(const r of igRows){ vmap[await sha1hex16(r.platform+':'+r.video_id)]=r; }
+      for(const r of ttRows){ r.platform='tiktok'; vmap[await sha1hex16('tiktok:'+r.video_id)]=r; }
+    }catch(e){}
+  }
+  const items=ideas.map(it=>{
+    const v=((it.ref_type||'')==='video' && it.ref_id) ? vmap[it.ref_id] : null;
+    const cover = v ? (v.platform==='tiktok'
+      ? `/cover/${encodeURIComponent(v.video_id)}`
+      : `/social/cover/${esc(v.platform)}/${encodeURIComponent(v.video_id)}`) : '';
+    const thumb = v
+      ? `<img class="cm-ithumb" src="${cover}" alt="" referrerpolicy="no-referrer" onerror="this.style.display='none';">`
+      : '';
+    const ref = v
+      ? `<div class="cm-iref">▶ ${esc(v.platform)} · @${esc(v.handle)} · ${Number(v.play_count||0).toLocaleString()} views</div>`
+      : (it.ref_type?`<div class="cm-iref">↳ ${esc(it.ref_type)} #${esc(it.ref_id)}</div>`:'');
+    return `
+    <div class="cm-idea">
+      ${thumb}
+      <div class="cm-it">
+        <div class="cm-ititle">${esc(it.title)} ${statusBadge(it.live_status)}</div>
+        ${it.body?`<div class="cm-ibody">${esc(it.body)}</div>`:''}
+        ${it.script?`<div class="cm-ibody" style="margin-top:6px;border-top:1px dashed var(--bd2);padding-top:6px;"><span style="color:var(--gold);font-size:9px;letter-spacing:1px;font-weight:700;">SCRIPT</span><br>${esc(it.script)}</div>`:''}
+        ${ref}
+      </div>
+      <button class="cm-sm danger" onclick="delIdea(${it.id},'${token}')">×</button>
+    </div>`;
+  }).join('') || '<p class="cm-hint">No videos assigned yet. Use the ASSIGN tab to drop in library videos, or add one below.</p>';
+  d.innerHTML = renderHQEditor(token, hqResp.data||{}) + `
+    <div class="cm-sub">Assigned videos & ideas</div>
+    ${items}
+    <div class="cm-addbox">
+      <div class="cm-row"><input id="addtitle-${token}" placeholder="idea title (e.g. NECK angle — saggy neck reveal)" style="flex:1;min-width:220px;"></div>
+      <div class="cm-row"><textarea id="addbody-${token}" placeholder="the tailored direction: hook, what to film, why it fits them…"></textarea></div>
+      <div class="cm-row">
+        <select id="reftype-${token}" onchange="onRefType('${token}')">
+          <option value="">No reference</option>
+          <option value="saved_script">Attach saved script</option>
+          <option value="adaptation">Attach scraper adaptation</option>
+          <option value="video">Attach library video</option>
+        </select>
+        <input id="refsearch-${token}" placeholder="search to attach…" style="flex:1;min-width:160px;display:none;" oninput="filterPicker('${token}')">
+        <button class="cm-sm" onclick="addIdea('${token}')">ADD IDEA</button>
+      </div>
+      <input type="hidden" id="refid-${token}">
+      <div class="cm-picker" id="picker-${token}"></div>
+    </div>`;
+}
+function renderHQEditor(token, hq){
+  hq=hq||{};
+  const v=k=>esc(hq[k]||'');
+  return `<div class="cm-hq">
+    <div class="cm-sub">Creator HQ — concept</div>
+    <div class="cm-row"><input id="hq-avatar-${token}" placeholder="Avatar / on-camera persona (e.g. gay Korean skincare expert, 30s)" value="${v('avatar')}" style="flex:1;min-width:260px;"></div>
+    <div class="cm-row">
+      <input id="hq-niche-${token}" placeholder="Niche / angle" value="${v('niche')}" style="flex:1;min-width:170px;">
+      <input id="hq-style-${token}" placeholder="Style / concept" value="${v('style')}" style="flex:1;min-width:170px;">
+    </div>
+    <div class="cm-sub">Content plan</div>
+    <div class="cm-row">
+      <input id="hq-split_growth-${token}" type="number" placeholder="growth %" value="${v('split_growth')}" style="width:90px;">
+      <input id="hq-split_sales-${token}" type="number" placeholder="sales %" value="${v('split_sales')}" style="width:90px;">
+      <input id="hq-split_edu-${token}" type="number" placeholder="edu %" value="${v('split_edu')}" style="width:90px;">
+      <input id="hq-cadence-${token}" placeholder="cadence (e.g. per 4 videos: 2 growth, 1 sales, 1 edu)" value="${v('cadence')}" style="flex:1;min-width:200px;">
+    </div>
+    <div class="cm-row"><input id="hq-formats-${token}" placeholder="formats, comma-separated (Recipe videos, Transformation, Store reviews)" value="${v('formats')}" style="flex:1;min-width:260px;"></div>
+    <div class="cm-row"><textarea id="hq-plan-${token}" placeholder="the content plan / direction for this creator…">${esc(hq.plan||'')}</textarea></div>
+    <div class="cm-sub">Progress</div>
+    <div class="cm-row">
+      <select id="hq-acct_platform-${token}" style="width:130px;">
+        <option value=""${hq.acct_platform?'':' selected'}>— link acct —</option>
+        <option value="instagram"${hq.acct_platform==='instagram'?' selected':''}>Instagram</option>
+        <option value="facebook"${hq.acct_platform==='facebook'?' selected':''}>Facebook</option>
+        <option value="tiktok"${hq.acct_platform==='tiktok'?' selected':''}>TikTok</option>
+      </select>
+      <input id="hq-acct_handle-${token}" placeholder="handle / page id (auto-fills followers + videos)" value="${v('acct_handle')}" style="flex:1;min-width:200px;">
+    </div>
+    <div class="cm-row">
+      <input id="hq-m_followers-${token}" placeholder="followers (blank = auto from linked acct)" value="${v('m_followers')}" style="flex:1;min-width:110px;">
+      <input id="hq-m_videos-${token}" placeholder="videos posted (blank = auto)" value="${v('m_videos')}" style="flex:1;min-width:110px;">
+      <input id="hq-m_sales-${token}" placeholder="sales" value="${v('m_sales')}" style="flex:1;min-width:110px;">
+    </div>
+    <div class="cm-row"><input id="hq-focus-${token}" placeholder="current focus / next milestone" value="${v('focus')}" style="flex:1;min-width:260px;"></div>
+    <div class="cm-row"><button class="cm-sm" onclick="saveHQ('${token}')">SAVE HQ</button><span class="cm-hint" id="hqmsg-${token}" style="margin-top:0;"></span></div>
+  </div>`;
+}
+async function saveHQ(token){
+  const f=['avatar','niche','style','split_growth','split_sales','split_edu','cadence','formats','plan','focus','m_followers','m_videos','m_sales','acct_platform','acct_handle'];
+  const body={}; f.forEach(k=>{const el=$('hq-'+k+'-'+token); if(el) body[k]=el.value;});
+  try{ await api('/swipe/creators/'+token+'/hq',{method:'POST',body:JSON.stringify(body)});
+    const m=$('hqmsg-'+token); if(m) m.textContent='✓ saved — publish to push live';
+    toast('HQ saved — hit PUBLISH to push it live');
+  }catch(e){toast('Error: '+e.message);}
+}
+async function sha1hex16(s){
+  // Pure-JS SHA-1 (first 16 hex). Matches python hashlib.sha1(s.utf8).hexdigest()[:16].
+  // Do NOT switch back to crypto.subtle: it is undefined on plain-HTTP LAN origins.
+  function utf8(str){
+    const out=[];
+    for(let i=0;i<str.length;i++){
+      let c=str.charCodeAt(i);
+      if(c<0x80){ out.push(c); }
+      else if(c<0x800){ out.push(0xc0|(c>>6),0x80|(c&0x3f)); }
+      else if(c<0xd800||c>=0xe000){ out.push(0xe0|(c>>12),0x80|((c>>6)&0x3f),0x80|(c&0x3f)); }
+      else { i++; c=0x10000+(((c&0x3ff)<<10)|(str.charCodeAt(i)&0x3ff));
+        out.push(0xf0|(c>>18),0x80|((c>>12)&0x3f),0x80|((c>>6)&0x3f),0x80|(c&0x3f)); }
+    }
+    return out;
+  }
+  const msg=utf8(s), ml=msg.length*8;
+  msg.push(0x80);
+  while(msg.length%64!==56) msg.push(0);
+  const hi=Math.floor(ml/0x100000000), lo=ml>>>0;
+  msg.push((hi>>>24)&0xff,(hi>>>16)&0xff,(hi>>>8)&0xff,hi&0xff,(lo>>>24)&0xff,(lo>>>16)&0xff,(lo>>>8)&0xff,lo&0xff);
+  let h0=0x67452301,h1=0xEFCDAB89,h2=0x98BADCFE,h3=0x10325476,h4=0xC3D2E1F0;
+  const w=new Array(80);
+  for(let i=0;i<msg.length;i+=64){
+    for(let j=0;j<16;j++){ w[j]=(msg[i+j*4]<<24)|(msg[i+j*4+1]<<16)|(msg[i+j*4+2]<<8)|(msg[i+j*4+3]); }
+    for(let j=16;j<80;j++){ const n=w[j-3]^w[j-8]^w[j-14]^w[j-16]; w[j]=(n<<1)|(n>>>31); }
+    let a=h0,b=h1,c=h2,d=h3,e=h4;
+    for(let j=0;j<80;j++){
+      let f,k;
+      if(j<20){ f=(b&c)|((~b)&d); k=0x5A827999; }
+      else if(j<40){ f=b^c^d; k=0x6ED9EBA1; }
+      else if(j<60){ f=(b&c)|(b&d)|(c&d); k=0x8F1BBCDC; }
+      else { f=b^c^d; k=0xCA62C1D6; }
+      const t=(((a<<5)|(a>>>27))+f+e+k+w[j])|0;
+      e=d; d=c; c=(b<<30)|(b>>>2); b=a; a=t;
+    }
+    h0=(h0+a)|0; h1=(h1+b)|0; h2=(h2+c)|0; h3=(h3+d)|0; h4=(h4+e)|0;
+  }
+  function hx(x){ let h=(x>>>0).toString(16); while(h.length<8) h='0'+h; return h; }
+  return (hx(h0)+hx(h1)+hx(h2)+hx(h3)+hx(h4)).slice(0,16);
+}
+async function onRefType(token){
+  const type=$('reftype-'+token).value;
+  const search=$('refsearch-'+token), picker=$('picker-'+token);
+  $('refid-'+token).value='';
+  if(!type){ search.style.display='none'; picker.style.display='none'; return; }
+  search.style.display='block'; search.value=''; picker.style.display='block';
+  picker.innerHTML='<div class="cm-pick">Loading…</div>';
+  try{ PICK_CACHE[type]=await fetchOptions(type); filterPicker(token); }
+  catch(e){ picker.innerHTML='<div class="cm-pick">'+esc(e.message)+'</div>'; }
+}
+async function fetchOptions(type){
+  if(type==='saved_script'){
+    const rows=await api('/scripts');
+    return rows.map(r=>({id:String(r.id), title:(r.hook_text||'').slice(0,90), sub:'script #'+r.id+' · '+(r.status||'')}));
+  }
+  if(type==='adaptation'){
+    const rows=await api('/scraper/adaptations');
+    return rows.map(r=>({id:String(r.id), title:(r.description||r.source_hook_verbatim||'adaptation').slice(0,90), sub:'adapt #'+r.id+' · @'+(r.handle||'')}));
+  }
+  if(type==='video'){
+    const [igRows, ttRows] = await Promise.all([
+      api('/social/videos?sort=views&limit=80').catch(()=>[]),
+      api('/scraper/videos?sort=views&limit=80').catch(()=>[])
+    ]);
+    const out=[];
+    for(const r of igRows){ const vk=await sha1hex16(r.platform+':'+r.video_id);
+      out.push({id:vk, title:(r.description||'(no caption)').slice(0,90), sub:r.platform+' · '+(r.play_count||0).toLocaleString()+' views'}); }
+    for(const r of ttRows){ const vk=await sha1hex16('tiktok:'+r.video_id);
+      out.push({id:vk, title:(r.description||'(no caption)').slice(0,90), sub:'tiktok · '+(r.play_count||0).toLocaleString()+' views'}); }
+    return out;
+  }
+  return [];
+}
+function filterPicker(token){
+  const type=$('reftype-'+token).value;
+  const q=($('refsearch-'+token).value||'').toLowerCase();
+  const opts=(PICK_CACHE[type]||[]).filter(o=>!q || (o.title+' '+o.sub).toLowerCase().includes(q)).slice(0,60);
+  const picker=$('picker-'+token);
+  if(!opts.length){ picker.innerHTML='<div class="cm-pick">No matches.</div>'; return; }
+  picker.innerHTML=opts.map(o=>`<div class="cm-pick" onclick="pickRef('${token}','${esc(o.id)}','${esc(o.title).replace(/'/g,'&#39;')}')"><b>${esc(o.title)}</b><br>${esc(o.sub)}</div>`).join('');
+}
+function pickRef(token,id,title){
+  $('refid-'+token).value=id;
+  if(!$('addtitle-'+token).value.trim()) $('addtitle-'+token).value=title;
+  $('picker-'+token).style.display='none';
+  toast('Reference attached');
+}
+async function addIdea(token){
+  const title=$('addtitle-'+token).value.trim();
+  if(!title){toast('Idea needs a title');return;}
+  const body=$('addbody-'+token).value.trim();
+  const ref_type=$('reftype-'+token).value;
+  const ref_id=$('refid-'+token).value;
+  try{
+    await api('/swipe/creators/'+token+'/ideas',{method:'POST',
+      body:JSON.stringify({title,body,ref_type:ref_type||'',ref_id:ref_id||''})});
+    await renderDrawer(token); loadCreators(); toast('Idea added');
+  }catch(e){toast('Error: '+e.message);}
+}
+async function delIdea(id,token){
+  try{ await api('/swipe/ideas/'+id,{method:'DELETE'}); await renderDrawer(token); loadCreators(); }
+  catch(e){toast('Error: '+e.message);}
+}
+async function adminSyncStatus(){
+  const b=$('syncBtn'); if(b)b.disabled=true; const o=b?b.textContent:''; if(b)b.textContent='SYNCING…';
+  try{
+    const r=await api('/swipe/sync',{method:'POST',body:'{}'});
+    if(!r.configured){ toast('Status sync not set up yet'); }
+    else if(r.error){ toast('Sync error: '+r.error); }
+    else{
+      const nd=(r.newly_done||[]).length;
+      toast('Synced — '+(r.updated||0)+' updated'+(nd?(', '+nd+' newly posted'):''));
+      document.querySelectorAll('.cm-drawer').forEach(d=>{ if(d.style.display==='block') renderDrawer(d.id.replace('cmdrawer-','')); });
+    }
+  }catch(e){ toast('Sync failed: '+e.message); }
+  if(b){b.disabled=false; b.textContent=o;}
+}
+async function bootAdmin(){
+  try{
+    document.querySelector('.brand .tag').textContent='ADMIN';
+    document.querySelector('.brand .title').textContent='SCRAPER · ADMIN';
+    const lib=await api('/swipe/library'); VIDEOS=lib.videos||[];
+    await loadCreators();   // sets CREATORS + renders the manager (hidden until CREATORS tab)
+    const nC=(CREATORS||[]).filter(c=>!c.revoked).length;
+    $('upd').textContent=VIDEOS.length+' videos · '+nC+' creator'+(nC===1?'':'s');
+    $('gate').style.display='none'; $('app').style.display='block';
+    $('pubBtn').style.display='inline-block';
+    $('syncBtn').style.display='inline-block';
+    setNav([{id:'assign',label:'ASSIGN VIDEOS'},{id:'creators',label:'CREATORS'}],'assign');
+    showSection('assign');
+  }catch(e){
+    $('gerr').textContent='Admin load failed: '+e.message+' — is the bot running on this Mac?';
+  }
+}
+
+async function decryptBlob(b64, iters, passcode){
+  const raw=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));
+  const salt=raw.slice(0,16), iv=raw.slice(16,28), ct=raw.slice(28);
+  const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(passcode),'PBKDF2',false,['deriveKey']);
+  const key=await crypto.subtle.deriveKey(
+    {name:'PBKDF2',salt,iterations:iters,hash:'SHA-256'},
+    km,{name:'AES-GCM',length:256},false,['decrypt']);
+  const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv},key,ct);
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+async function decrypt(passcode){
+  return decryptBlob(window.SWIPE_ENC, window.SWIPE_META.iters, passcode);
+}
+async function sha256hex(s){
+  const buf=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function loadScript(src){
+  return new Promise((res,rej)=>{const s=document.createElement('script');
+    s.src=src; s.onload=res; s.onerror=()=>rej(new Error('load fail')); document.head.appendChild(s);});
+}
+
+// ---- creator portal: tailored video ideas ----
+function ideaKey(id){return 'swipe_idea_'+TOKEN+'_'+id;}
+function ideaStatus(id){try{return localStorage.getItem(ideaKey(id))||'todo';}catch(e){return 'todo';}}
+function setIdeaStatus(id,v){try{localStorage.setItem(ideaKey(id),v);}catch(e){}}
+function statLabel(s){return s==='done'?'✓ POSTED':s==='wip'?'● FILMING':'○ TO DO';}
+
+// ---- status sync-back (active only when a Worker URL was baked into data.js) ----
+// localStorage stays the on-device cache; the Worker is the shared source of truth
+// so Jayden sees taps too. Taps that fail (offline) queue and retry on next load.
+function qKey(){return 'swipe_q_'+TOKEN;}
+function loadQueue(){try{return JSON.parse(localStorage.getItem(qKey())||'[]');}catch(e){return [];}}
+function saveQueue(q){try{localStorage.setItem(qKey(),JSON.stringify(q));}catch(e){}}
+function enqueue(id,status){const q=loadQueue().filter(x=>x.id!=id);q.push({id:+id,status:status});saveQueue(q);}
+async function postStatus(id,status){
+  // text/plain keeps this a CORS "simple" request (no preflight); Worker parses the body
+  const r=await fetch(STATUS_API+'/status',{method:'POST',
+    headers:{'Content-Type':'text/plain;charset=UTF-8'},
+    body:JSON.stringify({c:TOKEN,idea_id:+id,status:status})});
+  if(!r.ok) throw new Error('status '+r.status);
+  return true;
+}
+async function pushStatus(id,status){
+  if(!STATUS_API) return;                 // localStorage-only mode
+  try{await postStatus(id,status);}       // UI already updated optimistically
+  catch(e){enqueue(id,status);}           // offline → retry next load
+}
+async function flushQueue(){
+  if(!STATUS_API) return;
+  const q=loadQueue(); if(!q.length) return;
+  const keep=[];
+  for(const it of q){try{await postStatus(it.id,it.status);}catch(e){keep.push(it);}}
+  saveQueue(keep);
+}
+async function pullStatus(){
+  if(!STATUS_API) return;
+  let r; try{r=await fetch(STATUS_API+'/portal?c='+encodeURIComponent(TOKEN));}catch(e){return;}
+  if(!r.ok) return;
+  let data; try{data=await r.json();}catch(e){return;}
+  const m=data.statuses||{};
+  for(const k in m){if(m[k]==='todo'||m[k]==='wip'||m[k]==='done') setIdeaStatus(k,m[k]);}
+}
+async function syncStatus(){try{await flushQueue();await pullStatus();}catch(e){}}
+
+function ideaCard(it){
+  const st=ideaStatus(it.id);
+  const card=document.createElement('div'); card.className='idea';
+  const ithumbsrc=it.thumb||it.cover||'';
+  const thumb=ithumbsrc?`<div class="ithumb"><img loading="lazy" referrerpolicy="no-referrer" src="${esc(ithumbsrc)}" onerror="this.closest('.ithumb').style.display='none'"></div>`:'';
+  const ref=it.url?`<a class="iwatch" href="${esc(it.url)}" target="_blank" rel="noopener">REFERENCE ↗</a>`:'';
+  const platAbbr=it.platform==='instagram'?'IG':(it.platform==='tiktok'?'TT':(it.platform?'FB':''));
+  const platColor=it.platform==='instagram'?'#d62976':(it.platform==='tiktok'?'#0a8c96':'#1877f2');
+  const platTag=platAbbr?`<span style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:0.5px;padding:2px 5px;border-radius:3px;background:${platColor};color:#fff;margin-right:6px;vertical-align:middle;">${platAbbr}</span>`:'';
+  card.innerHTML=`${thumb}<div class="ibody">
+      <div class="ititle">${platTag}${esc(it.title)}</div>
+      ${it.body?`<div class="itext">${esc(it.body)}</div>`:''}
+      ${it.script?`<div class="itext" style="margin-top:8px;border-left:2px solid var(--gold);padding:6px 0 6px 9px;background:rgba(212,147,58,0.06);border-radius:0 5px 5px 0;"><span style="display:block;font-size:8px;font-weight:800;letter-spacing:1.5px;color:var(--gold);margin-bottom:3px;">SCRIPT</span>${esc(it.script)}</div>`:''}
+      <div class="ifoot"><button class="istat ${st}" data-id="${esc(''+it.id)}">${statLabel(st)}</button>${ref}</div>
+    </div>`;
+  return card;
+}
+function renderIdeas(){
+  const wrap=$('ideasGrid'); wrap.innerHTML='';
+  if(!IDEAS.length){
+    $('ideasSub').textContent='nothing assigned yet';
+    wrap.innerHTML=`<div class="hq-empty">No videos assigned to you yet.<br>Browse the <b>scrapers</b> — Jayden will drop your picks here.</div>`;
+    return;
+  }
+  $('ideasSub').textContent=IDEAS.length+(IDEAS.length===1?' idea':' ideas')+' tailored for you';
+  const frag=document.createDocumentFragment();
+  for(const it of IDEAS) frag.appendChild(ideaCard(it));
+  wrap.appendChild(frag);
+}
+
+// ---- creator ADAPT QUEUE: read-only adapt cards (same info as the admin queue,
+// full iterations, but NO good/great/bad rating — rating stays admin-only) ----
+function adaptCard(a){
+  const v=a.verdict||'maybe';
+  const vc = v==='yes'?'#8fb33f':v==='maybe'?'#d4933a':'#7a8aa8';
+  const vbg= v==='yes'?'rgba(143,179,63,0.08)':v==='maybe'?'rgba(212,147,58,0.08)':'rgba(122,138,168,0.06)';
+  const vbd= v==='yes'?'rgba(143,179,63,0.4)':v==='maybe'?'rgba(212,147,58,0.4)':'rgba(122,138,168,0.3)';
+  const imgsrc=a.thumb||a.cover||'';
+  const thumb=imgsrc?`<img loading="lazy" referrerpolicy="no-referrer" src="${esc(imgsrc)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.outerHTML='🎬'">`:'🎬';
+  const hooks=Array.isArray(a.hook_options)?a.hook_options:[];
+  const tweaks=Array.isArray(a.review_style_tweaks)?a.review_style_tweaks:[];
+  const tx=a.transcript||'';
+  return `
+    <div style="background:rgba(0,0,0,0.25);border:1px solid var(--bd);border-left:3px solid ${vc};border-radius:0 3px 3px 0;padding:18px 22px;margin-bottom:14px;display:grid;grid-template-columns:84px 1fr;gap:18px;">
+      <div style="width:84px;height:110px;border-radius:2px;overflow:hidden;background:#1c2230;display:flex;align-items:center;justify-content:center;font-size:22px;color:#3e4859;">${thumb}</div>
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+          <span class="mono" style="font-size:11px;padding:3px 9px;border-radius:99px;font-weight:700;letter-spacing:1.5px;color:${vc};background:${vbg};border:1px solid ${vbd};">${v.toUpperCase()} · ${a.score||'?'}/10</span>
+          <span class="mono" style="font-size:10px;color:var(--mut2);">from @${esc(a.handle||'')} · ${fmt(a.views||0)} views</span>
+          ${a.url?`<a href="${esc(a.url)}" target="_blank" rel="noopener" class="mono" style="font-size:10px;color:#3eb5c4;letter-spacing:1.5px;font-weight:700;">SOURCE ↗</a>`:''}
+        </div>
+        ${a.notes?`
+          <div class="mono" style="font-size:10px;color:var(--gold);letter-spacing:1.8px;font-weight:700;margin-bottom:6px;">📌 NOTES FROM JAYDEN</div>
+          <div style="padding:11px 14px;background:rgba(212,147,58,0.09);border-left:2px solid var(--gold);border-radius:0 2px 2px 0;font-size:13px;color:#eef0f5;line-height:1.6;margin-bottom:14px;white-space:pre-wrap;">${esc(a.notes)}</div>`:''}
+        ${tx?`
+          <div class="mono" style="font-size:10px;color:#3eb5c4;letter-spacing:1.8px;font-weight:700;margin-bottom:6px;">📝 ACTUAL SPOKEN HOOK + BODY</div>
+          <div style="padding:10px 14px;background:rgba(62,181,196,0.04);border-left:2px solid rgba(62,181,196,0.4);border-radius:0 2px 2px 0;font-size:13px;color:var(--text);line-height:1.6;margin-bottom:14px;font-style:italic;">${esc(tx.slice(0,420))}${tx.length>420?'…':''}</div>`
+        :(a.description?`<div style="font-size:12.5px;color:#a0a8b8;font-style:italic;margin-bottom:12px;line-height:1.5;">"${esc(a.description.slice(0,180))}"</div>`:'')}
+        ${a.why?`
+          <div class="mono" style="font-size:11px;color:var(--mut2);letter-spacing:1.5px;font-weight:700;margin-bottom:6px;">WHAT'S WORTH TESTING</div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:14px;">${esc(a.why)}</div>`:''}
+        ${a.source_hook_verbatim?`
+          <div class="mono" style="font-size:11px;color:var(--mut2);letter-spacing:1.5px;font-weight:700;margin-bottom:6px;">SOURCE HOOK ${a.source_hook_usable==='yes'?'<span style="color:#8fb33f;margin-left:6px;">· USABLE AS-IS</span>':'<span style="color:#d4933a;margin-left:6px;">· NEEDS REFRAME</span>'}</div>
+          <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border-left:2px solid var(--bd2);border-radius:0 2px 2px 0;font-size:13.5px;color:#eef0f5;line-height:1.6;margin-bottom:8px;">"${esc(a.source_hook_verbatim)}"</div>
+          ${a.source_hook_reframe?`
+            <div class="mono" style="font-size:10px;color:var(--gold);letter-spacing:1.5px;font-weight:700;margin:8px 0 4px;">↳ REFRAMED FOR REVIEW STYLE</div>
+            <div style="padding:10px 14px;background:rgba(212,147,58,0.07);border-left:2px solid rgba(212,147,58,0.5);border-radius:0 2px 2px 0;font-size:13.5px;color:#eef0f5;line-height:1.6;margin-bottom:14px;">"${esc(a.source_hook_reframe)}"</div>`:'<div style="margin-bottom:14px;"></div>'}`:''}
+        ${hooks.length?`
+          <div class="mono" style="font-size:11px;color:var(--mut2);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">HOOK ITERATIONS</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+            ${hooks.map((h,i)=>`
+              <div style="padding:11px 14px;background:rgba(212,147,58,0.05);border-left:2px solid rgba(212,147,58,0.4);border-radius:0 2px 2px 0;">
+                <div style="font-size:13.5px;color:#eef0f5;line-height:1.55;"><span class="mono" style="color:var(--gold);font-size:9px;letter-spacing:1.5px;margin-right:8px;">${String.fromCharCode(65+i)}</span>"${esc(h)}"</div>
+              </div>`).join('')}
+          </div>`:''}
+        ${tweaks.length?`
+          <div class="mono" style="font-size:10px;color:#8fb33f;letter-spacing:1.8px;font-weight:700;margin-bottom:6px;">🔧 REVIEW STYLE TWEAK</div>
+          <div style="padding:10px 14px;background:rgba(143,179,63,0.05);border-left:2px solid rgba(143,179,63,0.4);border-radius:0 2px 2px 0;font-size:13px;color:var(--text);line-height:1.6;margin-bottom:14px;">${tweaks.map(t=>esc(t)).join('<br><br>')}</div>`:''}
+        ${(a.alt_format_verdict==='yes'&&a.alt_format_note)?`
+          <div style="padding:12px 14px;background:rgba(62,181,196,0.06);border-left:2px solid rgba(62,181,196,0.4);border-radius:0 2px 2px 0;margin-bottom:14px;">
+            <div class="mono" style="font-size:10px;color:#3eb5c4;letter-spacing:1.8px;font-weight:700;margin-bottom:6px;">⚡ ALTERNATIVE FORMAT WORTH TESTING</div>
+            <div style="font-size:13px;color:var(--text);line-height:1.6;">${esc(a.alt_format_note)}</div>
+          </div>`:''}
+        ${a.klareva_fit?`
+          <div class="mono" style="font-size:11px;color:var(--mut2);letter-spacing:1.5px;font-weight:700;margin-bottom:4px;">HYDROCOLLOID FIT</div>
+          <div style="font-size:12px;color:#a0a8b8;line-height:1.55;font-style:italic;">${esc(a.klareva_fit)}</div>`:''}
+      </div>
+    </div>`;
+}
+function renderAdapts(){
+  const wrap=$('adaptsGrid');
+  if(!ADAPTS.length){
+    $('adaptsSub').textContent='nothing assigned yet';
+    wrap.innerHTML=`<div class="hq-empty">No adapts assigned to you yet.<br>Jayden will drop adaptation breakdowns here for you to film.</div>`;
+    return;
+  }
+  $('adaptsSub').textContent=ADAPTS.length+(ADAPTS.length===1?' adapt':' adapts')+' to film';
+  wrap.innerHTML=ADAPTS.map(adaptCard).join('');
+}
+
+function render(){
+  const q=$('q').value.trim().toLowerCase();
+  const plat = LIB_PLATS ? null : document.querySelector('#platseg button.on').dataset.p;
+  const dwin=document.querySelector('#dateseg button.on').dataset.d;
+  const sort=$('sort').value;
+  const nowS=Date.now()/1000;
+  let list=VIDEOS.filter(v=>{
+    if(LIB_PLATS){ if(!LIB_PLATS.includes(v.platform))return false; }
+    else if(plat!=='all'&&v.platform!==plat)return false;
+    if(dwin!=='all'){if(!v.posted)return false;if(nowS-v.posted>(+dwin)*86400)return false;}
+    if(q){const hay=(v.desc+' '+v.account+' '+v.handle+' '+(v.tags||[]).join(' ')).toLowerCase();
+      if(!hay.includes(q))return false;}
+    return true;});
+  const keymap={views:'views',likes:'likes',comments:'comments',recent:'posted'};
+  const k=keymap[sort];list.sort((a,b)=>(b[k]||0)-(a[k]||0));
+  const pool = LIB_PLATS ? VIDEOS.filter(v=>LIB_PLATS.includes(v.platform)).length : VIDEOS.length;
+  $('count').innerHTML='Showing <b>'+list.length+'</b> of '+pool+' winning videos';
+  const g=$('grid');g.innerHTML='';
+  $('empty').style.display=list.length?'none':'block';
+  const frag=document.createDocumentFragment();
+  for(const v of list){
+    const c=document.createElement('div');c.className='card';
+    if(!ADMIN) c.onclick=()=>{if(v.url)window.open(v.url,'_blank','noopener');};
+    const pc=v.platform==='instagram'?'ig':(v.platform==='tiktok'?'tt':'fb');
+    const pl=v.platform==='instagram'?'INSTAGRAM':(v.platform==='tiktok'?'TIKTOK':'FACEBOOK');
+    const imgsrc=v.thumb||v.cover||'';
+    const thumb=imgsrc?`<img loading="lazy" referrerpolicy="no-referrer" src="${esc(imgsrc)}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'ph',textContent:'${esc((v.account||'?')[0]).toUpperCase()}'}))">`
+      :`<div class="ph">${esc((v.account||'?')[0]).toUpperCase()}</div>`;
+    const tags=(v.tags||[]).slice(0,3).map(t=>`<span>#${esc(t.replace(/^#/,''))}</span>`).join('');
+    c.innerHTML=`<div class="thumb">${thumb}<span class="plat ${pc}">${pl}</span>
+        <span class="views"><span>▶</span> ${fmt(v.views)}</span></div>
+      <div class="body">
+        <div class="acct">@${esc(v.handle)}${v.verified?'<span class="vf">✓</span>':''}<span class="fol">${v.followers?fmt(v.followers)+' foll':''}</span></div>
+        <div class="desc">${esc(v.desc)||'<span style=color:#444>no caption</span>'}</div>
+        ${tags?`<div class="tags">${tags}</div>`:''}
+        <div class="foot"><span>♥ ${fmt(v.likes)} · 💬 ${fmt(v.comments)} · ${ago(v.posted)}</span><span class="watch">WATCH ↗</span></div>
+      </div>`;
+    if(ADMIN){
+      const bar=document.createElement('div'); bar.className='assignbar';
+      bar.innerHTML=`<button class="abtn" data-vid="${esc(v.id)}">+ ASSIGN ▾</button>`+
+        `<button class="awatch" data-url="${esc(v.url)}" title="watch">▶</button>`;
+      c.querySelector('.body').appendChild(bar);
+    }
+    frag.appendChild(c);
+  }
+  g.appendChild(frag);
+}
+
+async function unlock(){
+  const pass=$('pass').value;if(!pass)return;
+  $('go').disabled=true;$('gerr').textContent='';
+  try{
+    const data=await decrypt(pass);
+    VIDEOS=data.videos||[];
+    $('upd').textContent='updated '+(window.SWIPE_META.generated_at||'');
+    $('gate').style.display='none';$('app').style.display='block';
+    try{sessionStorage.setItem('swipe_pass',pass);}catch(e){}
+    render();
+  }catch(e){
+    $('gerr').textContent='Wrong passcode.';$('go').disabled=false;
+    $('pass').value='';$('pass').focus();
+  }
+}
+
+$('go').onclick=unlock;
+$('pass').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
+['q','sort'].forEach(id=>$(id).addEventListener('input',render));
+$('platseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('#platseg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();});
+$('dateseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('#dateseg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();});
+// cycle an idea's status: to do -> filming -> posted (stored locally on this device)
+$('ideasGrid').addEventListener('click',e=>{
+  const b=e.target.closest('.istat');if(!b)return;
+  const id=b.dataset.id;const nxt={todo:'wip',wip:'done',done:'todo'}[ideaStatus(id)];
+  setIdeaStatus(id,nxt);b.className='istat '+nxt;b.textContent=statLabel(nxt);
+  pushStatus(id,nxt);});
+// page-tab navigation (creator + admin)
+$('subnav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;showSection(b.dataset.s);});
+// admin only: assign menu on each card + publish + sync
+if(ADMIN){
+  $('pubBtn').onclick=doPublish;
+  $('syncBtn').onclick=adminSyncStatus;
+  $('grid').addEventListener('click',async e=>{
+    const w=e.target.closest('.awatch'); if(w){const u=w.dataset.url;if(u)window.open(u,'_blank','noopener');return;}
+    const ab=e.target.closest('.abtn');
+    if(ab){const bar=ab.parentElement; let m=bar.querySelector('.amenu');
+      if(!m){m=buildMenu(ab.dataset.vid); bar.appendChild(m);}
+      const wasOpen=m.style.display==='block'; closeMenus(); m.style.display=wasOpen?'none':'block'; return;}
+    const ac=e.target.closest('.ac'); if(ac){await onPick(ac); return;}
+  });
+  document.addEventListener('click',e=>{if(!e.target.closest('.assignbar'))closeMenus();});
+}
+
+// personal link (?c=<token>): load + decrypt this creator's file, show their HQ + videos,
+// then unlock the shared library with the passcode embedded inside their file.
+async function bootCreator(token){
+  try{
+    const hash=(await sha256hex(token)).slice(0,32);
+    // Cache-buster: the creator file is tiny (~5KB) and carries each assigned video's
+    // display data baked in, so ALWAYS pull a fresh copy. Without this, GitHub Pages'
+    // 10-min max-age lets a creator see a stale dashboard for up to 10 min after a
+    // publish (assigned videos "not showing"). Date.now() makes every load a unique URL.
+    await loadScript('creators/'+hash+'.js?v='+Date.now());
+    if(!window.CREATOR_ENC||!window.CREATOR_META) throw new Error('no creator data');
+    const cd=await decryptBlob(window.CREATOR_ENC, window.CREATOR_META.iters, token);
+    TOKEN=token; CREATOR=cd; IDEAS=cd.ideas||[]; ADAPTS=cd.adapts||[];
+    const nm=(cd.name||'').trim();
+    document.querySelector('.brand .tag').textContent='YOUR HUB';
+    document.querySelector('.brand .title').textContent=nm?('HEY '+nm.toUpperCase()):'WELCOME';
+    $('upd').textContent='updated '+(window.CREATOR_META.generated_at||'');
+    $('hqSub').textContent=(cd.handle?('@'+cd.handle):'');
+    const lib=await decryptBlob(window.SWIPE_ENC, window.SWIPE_META.iters, cd.lib_pass);
+    VIDEOS=lib.videos||[];
+    $('gate').style.display='none'; $('app').style.display='block';
+    await syncStatus();   // flush queued taps, then pull the shared truth (no-op if offline/unconfigured)
+    renderHQ(cd.hq||{}); renderIdeas(); renderAdapts();
+    setNav([
+      {id:'linkbio', label:'LINK IN BIO SCRAPER'},
+      {id:'tiktok',  label:'TIKTOK SCRAPER'},
+      {id:'mine',    label:'MY VIDEOS'+(IDEAS.length?' ('+IDEAS.length+')':'')},
+      {id:'adapts',  label:'ADAPT QUEUE'+(ADAPTS.length?' ('+ADAPTS.length+')':'')},
+      {id:'hq',      label:'MY HQ'}
+    ],'linkbio');
+    showSection('linkbio');   // land on the Link in Bio scraper first
+  }catch(e){
+    console.error(e);
+    document.querySelector('.gate-card h1').textContent='Link not active';
+    document.querySelector('.gate-card p').textContent='This personal link is invalid or has been turned off. Ask Jayden for a new one.';
+    $('pass').style.display='none'; $('go').style.display='none';
+  }
+}
+async function boot(){
+  if(ADMIN) return bootAdmin();
+  const token=(new URLSearchParams(location.search).get('c')||'').trim();
+  if(token) return bootCreator(token);
+  try{const p=sessionStorage.getItem('swipe_pass');if(p){$('pass').value=p;unlock();}}catch(e){}
+}
+boot();
+</script>
+</body></html>

@@ -1,1130 +1,635 @@
-<!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<title>Winning Content Library</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
-  *{box-sizing:border-box;margin:0;padding:0;}
-  :root{--bg:#0a0d14;--panel:#141a26;--panel2:#0f131c;--bd:#2a3140;--bd2:#3e4859;
-    --gold:#d4933a;--gold2:#e0a82d;--text:#d4dae8;--mut:#7a8aa8;--mut2:#5a6478;}
-  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
-    letter-spacing:-0.005em;
-    background-image:linear-gradient(rgba(62,72,89,0.10) 1px,transparent 1px),linear-gradient(90deg,rgba(62,72,89,0.10) 1px,transparent 1px);
-    background-size:32px 32px;}
-  .mono{font-family:'JetBrains Mono',monospace;}
-  a{color:var(--gold);text-decoration:none;}
-
-  /* ---- gate ---- */
-  #gate{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;
-    background:radial-gradient(1200px 600px at 50% -10%,rgba(212,147,58,0.07),transparent),var(--bg);}
-  .gate-card{background:linear-gradient(180deg,rgba(22,28,40,0.96),rgba(15,19,28,0.98));
-    border:1px solid var(--bd);border-radius:8px;padding:40px 36px;max-width:380px;width:90%;text-align:center;
-    box-shadow:0 20px 60px rgba(0,0,0,0.5);}
-  .gate-badge{font-size:9px;color:var(--gold);letter-spacing:3px;font-weight:700;padding:3px 9px;
-    border:1px solid rgba(212,147,58,0.4);border-radius:3px;background:rgba(212,147,58,0.06);display:inline-block;}
-  .gate-card h1{font-size:22px;font-weight:800;letter-spacing:-0.4px;color:#e8ecf2;margin:18px 0 6px;}
-  .gate-card p{font-size:13px;color:var(--mut);line-height:1.5;margin-bottom:22px;}
-  #pass{width:100%;background:#0b0e15;border:1px solid var(--bd2);border-radius:5px;color:var(--text);
-    padding:12px 14px;font-size:15px;font-family:'JetBrains Mono',monospace;text-align:center;letter-spacing:2px;outline:none;}
-  #pass:focus{border-color:var(--gold);}
-  .btn{margin-top:14px;width:100%;background:var(--gold);color:#1a1206;border:none;border-radius:5px;
-    padding:12px;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;font-family:'JetBrains Mono',monospace;}
-  .btn:hover{background:var(--gold2);}
-  .btn:disabled{opacity:0.55;cursor:default;}
-  #gerr{color:#e06a5a;font-size:12px;margin-top:12px;min-height:16px;}
-
-  /* ---- app ---- */
-  #app{display:none;}
-  .topbar{background:linear-gradient(180deg,rgba(10,13,20,0.99),rgba(17,21,30,0.97));
-    border-bottom:1px solid var(--bd2);padding:14px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
-    position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);box-shadow:0 1px 0 rgba(212,160,67,0.12);}
-  .brand{display:flex;align-items:center;gap:11px;}
-  .brand .tag{font-size:9px;color:var(--gold);letter-spacing:3px;font-weight:700;padding:2px 7px;
-    border:1px solid rgba(212,147,58,0.4);border-radius:2px;background:rgba(212,147,58,0.06);}
-  .brand .title{font-size:15px;font-weight:800;color:#e8ecf2;letter-spacing:1px;}
-  .meta{font-size:10px;color:var(--mut2);}
-  .tools{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
-  .tools input,.tools select{background:#0b0e15;border:1px solid var(--bd2);border-radius:5px;color:var(--text);
-    padding:8px 11px;font-size:12px;font-family:'Inter',sans-serif;outline:none;}
-  .tools input{min-width:180px;}
-  .tools input:focus,.tools select:focus{border-color:var(--gold);}
-  .seg{display:flex;border:1px solid var(--bd2);border-radius:5px;overflow:hidden;}
-  .seg button{background:transparent;border:none;color:var(--mut);padding:8px 12px;font-size:11px;font-weight:700;
-    cursor:pointer;font-family:'JetBrains Mono',monospace;letter-spacing:0.5px;}
-  .seg button.on{background:rgba(212,147,58,0.14);color:var(--gold);}
-
-  .wrap{max-width:1480px;margin:0 auto;padding:22px 24px 60px;}
-  .count{font-size:11px;color:var(--mut);margin-bottom:16px;}
-  .count b{color:var(--text);}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px;}
-  .card{background:linear-gradient(180deg,rgba(22,28,40,0.9),rgba(15,19,28,0.95));border:1px solid var(--bd);
-    border-radius:7px;overflow:hidden;cursor:pointer;transition:transform .12s,border-color .12s,box-shadow .12s;display:flex;flex-direction:column;}
-  .card:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 10px 26px rgba(0,0,0,0.45);}
-  .thumb{position:relative;width:100%;aspect-ratio:9/16;background:#0b0e15;overflow:hidden;}
-  .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
-  .thumb .ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800;
-    color:var(--bd2);background:linear-gradient(135deg,#11151e,#0b0e15);}
-  .plat{position:absolute;top:8px;left:8px;font-size:9px;font-weight:700;letter-spacing:0.5px;padding:3px 7px;border-radius:3px;
-    backdrop-filter:blur(6px);}
-  .plat.ig{background:rgba(214,41,118,0.82);color:#fff;}
-  .plat.fb{background:rgba(24,119,242,0.85);color:#fff;}
-  .plat.tt{background:rgba(10,140,150,0.88);color:#fff;}
-  .views{position:absolute;bottom:8px;left:8px;font-size:11px;font-weight:800;color:#fff;
-    background:rgba(0,0,0,0.6);padding:3px 8px;border-radius:4px;backdrop-filter:blur(4px);}
-  .views span{color:var(--gold2);}
-  .body{padding:11px 12px 12px;display:flex;flex-direction:column;gap:7px;flex:1;}
-  .acct{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text);font-weight:600;}
-  .acct .vf{color:#3eb5c4;font-size:10px;}
-  .acct .fol{color:var(--mut2);font-weight:400;margin-left:auto;}
-  .desc{font-size:11.5px;color:var(--mut);line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
-  .tags{display:flex;flex-wrap:wrap;gap:4px;}
-  .tags span{font-size:9px;color:var(--gold);background:rgba(212,147,58,0.08);border:1px solid rgba(212,147,58,0.18);
-    padding:1px 5px;border-radius:3px;}
-  .foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding-top:7px;border-top:1px solid var(--bd);
-    font-size:10px;color:var(--mut2);}
-  .foot .watch{color:var(--gold);font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:0.5px;}
-  .empty{text-align:center;color:var(--mut2);padding:60px;font-size:13px;}
-
-  /* ---- creator portal: ideas ---- */
-  .sechead{display:flex;align-items:center;gap:11px;margin:4px 0 15px;flex-wrap:wrap;}
-  .sechead .sh-tag{font-size:9px;color:var(--gold);letter-spacing:3px;font-weight:700;padding:3px 8px;
-    border:1px solid rgba(212,147,58,0.4);border-radius:3px;background:rgba(212,147,58,0.06);}
-  .sechead .sh-title{font-size:15px;font-weight:800;color:#e8ecf2;letter-spacing:1px;}
-  .sechead .sh-sub{font-size:11px;color:var(--mut2);}
-  .libhead{margin-top:36px;padding-top:24px;border-top:1px solid var(--bd);}
-  .ideas{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px;margin-bottom:6px;}
-  .idea{display:flex;background:linear-gradient(180deg,rgba(30,25,15,0.55),rgba(15,19,28,0.95));
-    border:1px solid var(--bd2);border-left:3px solid var(--gold);border-radius:7px;overflow:hidden;}
-  .idea .ithumb{width:80px;flex:0 0 80px;background:#0b0e15;}
-  .idea .ithumb img{width:100%;height:100%;object-fit:cover;display:block;}
-  .idea .ibody{padding:13px 15px;display:flex;flex-direction:column;gap:7px;flex:1;min-width:0;}
-  .idea .ititle{font-size:13.5px;font-weight:700;color:#e8ecf2;line-height:1.3;}
-  .idea .itext{font-size:12px;color:var(--mut);line-height:1.5;white-space:pre-wrap;}
-  .idea .ifoot{margin-top:auto;display:flex;align-items:center;gap:12px;padding-top:5px;}
-  .istat{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.5px;
-    border:1px solid var(--bd2);background:transparent;color:var(--mut);padding:4px 9px;border-radius:4px;cursor:pointer;}
-  .istat.wip{color:var(--gold);border-color:rgba(212,147,58,0.5);background:rgba(212,147,58,0.1);}
-  .istat.done{color:#5cc98a;border-color:rgba(92,201,138,0.45);background:rgba(92,201,138,0.1);}
-  .iwatch{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--gold);letter-spacing:0.5px;}
-
-  /* ---- topbar buttons (admin publish / sync) ---- */
-  .tbtn{background:var(--gold);color:#1a1206;border:none;border-radius:5px;padding:8px 13px;font-size:11px;font-weight:700;
-    letter-spacing:0.5px;cursor:pointer;font-family:'JetBrains Mono',monospace;}
-  .tbtn:hover{background:var(--gold2);} .tbtn:disabled{opacity:0.5;cursor:default;}
-  .tbtn.ghost{background:transparent;border:1px solid var(--bd2);color:var(--mut);}
-  .tbtn.ghost:hover{border-color:var(--gold);color:var(--gold);}
-
-  /* ---- section nav (page tabs — replaces the old toggle) ---- */
-  .subnav{background:rgba(10,13,20,0.96);border-bottom:1px solid var(--bd);padding:0 24px;display:flex;gap:4px;overflow-x:auto;}
-  .subnav button{background:transparent;border:none;border-bottom:2px solid transparent;color:var(--mut);
-    padding:13px 18px;font-size:12px;font-weight:700;letter-spacing:1.2px;cursor:pointer;
-    font-family:'JetBrains Mono',monospace;white-space:nowrap;}
-  .subnav button:hover{color:var(--text);}
-  .subnav button.on{color:var(--gold);border-bottom-color:var(--gold);}
-
-  /* ---- creator HQ (the personalized dashboard) ---- */
-  .hq-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-  .hqcard{background:linear-gradient(180deg,rgba(22,28,40,0.9),rgba(15,19,28,0.95));border:1px solid var(--bd);
-    border-radius:8px;padding:18px 20px;}
-  .hq-plan{margin-bottom:16px;}
-  .hq-cardlabel{font-size:10px;color:var(--mut2);letter-spacing:2.5px;font-weight:700;text-transform:uppercase;
-    font-family:'JetBrains Mono',monospace;margin-bottom:14px;}
-  .hq-big{font-size:18px;font-weight:800;color:#e8ecf2;line-height:1.25;margin-bottom:10px;letter-spacing:-0.3px;}
-  .hq-row{display:flex;gap:12px;padding:8px 0;border-top:1px solid var(--bd);}
-  .hq-row:first-of-type{border-top:none;}
-  .hq-k{font-size:11px;color:var(--mut2);font-weight:700;letter-spacing:0.5px;min-width:120px;
-    font-family:'JetBrains Mono',monospace;text-transform:uppercase;flex:0 0 120px;}
-  .hq-v{font-size:13.5px;color:var(--text);line-height:1.5;flex:1;}
-  .hq-muted{font-size:12.5px;color:var(--mut2);}
-  .hq-metrics{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
-  .hq-metric{flex:1;min-width:88px;background:rgba(0,0,0,0.25);border:1px solid var(--bd);border-radius:7px;padding:12px;text-align:center;}
-  .hq-mv{font-size:22px;font-weight:800;color:#e8ecf2;font-family:'JetBrains Mono',monospace;letter-spacing:-0.5px;}
-  .hq-mk{font-size:9px;color:var(--mut2);letter-spacing:1.2px;font-weight:700;margin-top:5px;text-transform:uppercase;}
-  .hq-focus{border-top:1px solid var(--bd);padding-top:10px;}
-  .hq-split{margin-bottom:12px;}
-  .hq-splitbar{display:flex;height:12px;border-radius:6px;overflow:hidden;border:1px solid var(--bd);}
-  .hq-splitbar .g{background:#3eb5c4;} .hq-splitbar .s{background:var(--gold);} .hq-splitbar .e{background:#8b7bf0;}
-  .hq-splitleg{display:flex;gap:16px;margin-top:7px;font-size:11px;color:var(--mut);}
-  .hq-splitleg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle;}
-  .hq-splitleg i.dotg{background:#3eb5c4;} .hq-splitleg i.dots{background:var(--gold);} .hq-splitleg i.dote{background:#8b7bf0;}
-  .hq-chips{display:flex;flex-wrap:wrap;gap:6px;flex:1;}
-  .hq-chips span{font-size:11px;color:var(--gold);background:rgba(212,147,58,0.08);
-    border:1px solid rgba(212,147,58,0.25);padding:3px 9px;border-radius:99px;}
-  .hq-plantext{white-space:pre-wrap;font-size:13.5px;line-height:1.65;color:var(--text);margin-top:12px;
-    border-top:1px solid var(--bd);padding-top:12px;}
-  .hq-empty{text-align:center;color:var(--mut2);padding:50px 20px;font-size:13.5px;line-height:1.6;
-    border:1px dashed var(--bd2);border-radius:8px;}
-
-  /* ---- admin: assign a library video to a creator ---- */
-  .assignbar{display:flex;gap:6px;align-items:center;position:relative;margin-top:7px;flex-wrap:wrap;}
-  .abtn{flex:1;min-width:0;background:rgba(212,147,58,0.13);color:var(--gold);border:1px solid rgba(212,147,58,0.45);
-    border-radius:5px;padding:7px 9px;font-size:10px;font-weight:700;letter-spacing:0.5px;cursor:pointer;font-family:'JetBrains Mono',monospace;}
-  .abtn:hover{background:rgba(212,147,58,0.24);}
-  .awatch{background:transparent;border:1px solid var(--bd2);color:var(--mut);border-radius:5px;padding:7px 10px;font-size:11px;
-    font-weight:700;cursor:pointer;}
-  .awatch:hover{border-color:var(--gold);color:var(--gold);}
-  .amenu{position:absolute;bottom:calc(100% + 5px);left:0;right:0;background:#11151e;border:1px solid var(--bd2);border-radius:6px;
-    max-height:210px;overflow:auto;z-index:40;box-shadow:0 12px 34px rgba(0,0,0,0.55);}
-  .amenu .ac{padding:8px 11px;font-size:11.5px;color:var(--text);cursor:pointer;border-bottom:1px solid var(--bd);}
-  .amenu .ac:last-child{border-bottom:none;}
-  .amenu .ac:hover{background:rgba(212,147,58,0.13);color:var(--gold);}
-  .amenu .ac.new{color:var(--gold);font-weight:700;}
-  .assigned{width:100%;color:#5cc98a;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:0.3px;}
-  #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#141a26;border:1px solid var(--bd2);
-    color:var(--text);padding:11px 20px;border-radius:6px;font-size:12.5px;display:none;z-index:300;box-shadow:0 10px 30px rgba(0,0,0,0.5);}
-
-  /* ---- admin: creator manager (merged from swipe_admin) ---- */
-  .cm-panel{background:linear-gradient(180deg,rgba(22,28,40,0.9),rgba(15,19,28,0.95));border:1px solid var(--bd);
-    border-radius:8px;padding:16px 18px;margin-bottom:16px;}
-  .cm-h2{font-size:11px;letter-spacing:1.5px;color:var(--mut);font-weight:700;margin-bottom:12px;
-    text-transform:uppercase;font-family:'JetBrains Mono',monospace;}
-  .cm-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px;}
-  .cm-panel input,.cm-panel select,.cm-panel textarea,.cm-drawer input,.cm-drawer select,.cm-drawer textarea{
-    background:#0b0e15;border:1px solid var(--bd2);border-radius:5px;color:var(--text);padding:9px 11px;
-    font-size:13px;font-family:'Inter',sans-serif;outline:none;}
-  .cm-panel input:focus,.cm-drawer input:focus,.cm-drawer select:focus,.cm-drawer textarea:focus{border-color:var(--gold);}
-  .cm-drawer textarea{width:100%;min-height:72px;resize:vertical;line-height:1.5;}
-  .cm-hint{font-size:11px;color:var(--mut2);line-height:1.5;margin-top:6px;}
-  .cm-sm{background:var(--gold);color:#1a1206;border:none;border-radius:5px;padding:6px 11px;font-size:10px;font-weight:700;
-    letter-spacing:0.5px;cursor:pointer;font-family:'JetBrains Mono',monospace;}
-  .cm-sm:hover{background:var(--gold2);}
-  .cm-sm.ghost{background:transparent;border:1px solid var(--bd2);color:var(--mut);}
-  .cm-sm.ghost:hover{border-color:var(--gold);color:var(--gold);}
-  .cm-sm.danger{background:transparent;border:1px solid rgba(224,106,90,0.4);color:#e06a5a;}
-  .cm-cre{border:1px solid var(--bd);border-radius:7px;padding:14px 16px;margin-bottom:12px;background:rgba(15,19,28,0.6);}
-  .cm-cre.rev{opacity:0.55;}
-  .cm-crehead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-  .cm-name{font-size:15px;font-weight:800;color:#e8ecf2;}
-  .cm-handle{font-size:12px;color:var(--mut2);}
-  .cm-badge{font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 7px;border-radius:3px;}
-  .cm-badge.cnt{color:var(--gold);background:rgba(212,147,58,0.1);border:1px solid rgba(212,147,58,0.3);}
-  .cm-badge.rev{color:#e06a5a;background:rgba(224,106,90,0.1);border:1px solid rgba(224,106,90,0.35);}
-  .cm-linkrow{display:flex;gap:8px;margin-top:10px;align-items:center;}
-  .cm-linkrow input{flex:1;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mut);}
-  .cm-acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
-  .cm-drawer{margin-top:14px;padding-top:14px;border-top:1px solid var(--bd);display:none;}
-  .cm-sub{font-size:10px;letter-spacing:1.5px;color:var(--gold);font-weight:700;margin:16px 0 9px;
-    text-transform:uppercase;font-family:'JetBrains Mono',monospace;}
-  .cm-hq{background:rgba(11,14,21,0.5);border:1px solid var(--bd);border-radius:7px;padding:6px 14px 14px;margin-bottom:12px;}
-  .cm-hq .cm-sub:first-child{margin-top:10px;}
-  .cm-idea{border:1px solid var(--bd2);border-left:3px solid var(--gold);border-radius:6px;padding:10px 12px;margin-bottom:8px;
-    display:flex;gap:10px;align-items:flex-start;}
-  .cm-it{flex:1;min-width:0;} .cm-ititle{font-size:13px;font-weight:700;color:#e8ecf2;}
-  .cm-ibody{font-size:12px;color:var(--mut);white-space:pre-wrap;margin-top:4px;line-height:1.45;}
-  .cm-iref{font-size:9px;color:var(--gold);letter-spacing:0.5px;margin-top:5px;}
-  .cm-ithumb{width:52px;height:70px;object-fit:cover;border-radius:5px;border:1px solid var(--bd2);flex:0 0 auto;background:#0b0e15;}
-  .cm-addbox{background:rgba(11,14,21,0.7);border:1px dashed var(--bd2);border-radius:6px;padding:12px;margin-top:10px;}
-  .cm-picker{border:1px solid var(--bd2);border-radius:5px;max-height:190px;overflow:auto;margin-top:6px;display:none;}
-  .cm-pick{padding:7px 10px;font-size:11.5px;color:var(--mut);border-bottom:1px solid var(--bd);cursor:pointer;}
-  .cm-pick:hover{background:rgba(212,147,58,0.08);color:var(--text);} .cm-pick b{color:var(--text);}
-  .cm-sbadge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:0.04em;padding:2px 7px;border-radius:99px;
-    border:1px solid var(--bd2);color:var(--mut);}
-  .cm-sbadge.wip{color:var(--gold);border-color:rgba(212,147,58,0.5);background:rgba(212,147,58,0.08);}
-  .cm-sbadge.done{color:#5fd29a;border-color:rgba(95,210,154,0.5);background:rgba(95,210,154,0.08);}
-
-  @media(max-width:680px){.hq-grid{grid-template-columns:1fr;}}
-  @media(max-width:560px){.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:11px;}
-    .tools input{min-width:120px;}
-    .ideas{grid-template-columns:1fr;}}
-</style></head><body>
-
-<div id="gate">
-  <div class="gate-card">
-    <div class="gate-badge">SWIPE FILE</div>
-    <h1>Winning Content Library</h1>
-    <p>Enter the creator passcode to browse the swipe file.</p>
-    <input id="pass" type="password" placeholder="passcode" autocomplete="off" autofocus>
-    <button class="btn" id="go">UNLOCK</button>
-    <div id="gerr"></div>
-  </div>
-</div>
-
-<div id="app">
-  <div class="topbar">
-    <div class="brand">
-      <span class="tag">SWIPE FILE</span>
-      <span class="title">WINNING CONTENT LIBRARY</span>
-      <span class="meta mono" id="upd"></span>
-    </div>
-    <div class="tools">
-      <div id="filterTools" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-        <input id="q" placeholder="search caption, #tag, account…">
-        <div class="seg" id="platseg">
-          <button data-p="all" class="on">ALL</button>
-          <button data-p="instagram">IG</button>
-          <button data-p="facebook">FB</button>
-          <button data-p="tiktok">TIKTOK</button>
-        </div>
-        <div class="seg" id="dateseg">
-          <button data-d="all" class="on">ALL TIME</button>
-          <button data-d="7">7D</button>
-          <button data-d="30">30D</button>
-          <button data-d="90">90D</button>
-        </div>
-        <select id="sort">
-          <option value="views">Most views</option>
-          <option value="recent">Most recent</option>
-          <option value="likes">Most likes</option>
-          <option value="comments">Most comments</option>
-        </select>
-      </div>
-      <button class="tbtn ghost" id="syncBtn" style="display:none;">SYNC ↻</button>
-      <button class="tbtn" id="pubBtn" style="display:none;">PUBLISH ↗</button>
-      <span id="pubStatus" class="mono" style="font-size:10px;letter-spacing:0.5px;color:#7a8aa8;max-width:300px;line-height:1.3;"></span>
-    </div>
-  </div>
-
-  <div class="subnav" id="subnav" style="display:none;"></div>
-
-  <div class="wrap">
-    <!-- creator: personalized dashboard (concept / plan / progress) -->
-    <div id="hqPanel" style="display:none;">
-      <div class="sechead">
-        <span class="sh-tag">YOUR HQ</span>
-        <span class="sh-title">YOUR DASHBOARD</span>
-        <span class="sh-sub" id="hqSub"></span>
-      </div>
-      <div id="hqBody"></div>
-    </div>
-
-    <!-- creator: the videos assigned to them -->
-    <div id="ideasPanel" style="display:none;">
-      <div class="sechead">
-        <span class="sh-tag">FOR YOU</span>
-        <span class="sh-title">MY VIDEOS</span>
-        <span class="sh-sub" id="ideasSub"></span>
-      </div>
-      <div class="ideas" id="ideasGrid"></div>
-    </div>
-
-    <!-- creator: the adaptations assigned to them (read-only — no good/great/bad rating) -->
-    <div id="adaptsPanel" style="display:none;">
-      <div class="sechead">
-        <span class="sh-tag">TO FILM</span>
-        <span class="sh-title">ADAPT QUEUE</span>
-        <span class="sh-sub" id="adaptsSub"></span>
-      </div>
-      <div id="adaptsGrid"></div>
-    </div>
-
-    <!-- admin: create / manage creator links + HQ + ideas -->
-    <div id="adminCreators" style="display:none;">
-      <div class="cm-panel">
-        <div class="cm-h2">New creator link</div>
-        <div class="cm-row">
-          <input id="cmName" placeholder="creator name (e.g. Jessica)" style="min-width:200px;">
-          <input id="cmHandle" placeholder="@handle (optional)" style="min-width:160px;">
-          <button class="cm-sm" onclick="mintCreator()">MINT LINK</button>
-        </div>
-        <p class="cm-hint">Each link is the creator's password — anyone with it sees their HQ + assigned videos + the library. Send it to that creator only. Revoke to kill a link. Changes go live for creators after you hit PUBLISH.</p>
-      </div>
-      <div class="cm-panel">
-        <div class="cm-h2">Creators</div>
-        <div id="cmList"><p class="cm-hint">Loading…</p></div>
-      </div>
-    </div>
-
-    <!-- shared winning-content library (creator LIBRARY tab + admin ASSIGN tab + public) -->
-    <div id="libHead" class="sechead libhead" style="display:none;">
-      <span class="sh-tag">SWIPE FILE</span>
-      <span class="sh-title">WINNING CONTENT LIBRARY</span>
-      <span class="sh-sub">proven videos to model</span>
-    </div>
-    <div class="count" id="count"></div>
-    <div class="grid" id="grid"></div>
-    <div class="empty" id="empty" style="display:none;">No videos match your filters.</div>
-  </div>
-</div>
-
-<div id="toast"></div>
-
-<script src="data.js"></script>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Klareva Creator Hub — everything you need to make videos.">
 <script>
-const $=id=>document.getElementById(id);
-let VIDEOS=[], IDEAS=[], ADAPTS=[], CREATOR=null, TOKEN='', CREATORS=[], SECTION='lib', PICK_CACHE={}, LIB_PLATS=null;
-// Admin mode: only when this exact page is served from the bot on Jayden's Mac
-// (localhost). The public GitHub Pages copy is never admin — its assign API isn't reachable.
-const ADMIN=['localhost','127.0.0.1'].includes(location.hostname);
-// Cloudflare Worker base for status sync-back. Empty string => localStorage-only.
-let STATUS_API=(window.SWIPE_STATUS_API||'').replace(/\/+$/,'');
-
-function fmt(n){n=+n||0;if(n>=1e6)return (n/1e6).toFixed(n>=1e7?0:1)+'M';if(n>=1e3)return (n/1e3).toFixed(n>=1e4?0:1)+'K';return ''+n;}
-function ago(ts){if(!ts)return '';const d=Date.now()/1000-ts;const day=86400;
-  if(d<day)return 'today';if(d<2*day)return '1d ago';if(d<30*day)return Math.floor(d/day)+'d ago';
-  if(d<365*day)return Math.floor(d/(30*day))+'mo ago';return Math.floor(d/(365*day))+'y ago';}
-function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-
-// ---- shared little helpers (toast + same-origin API) ----
-function toast(m){const t=$('toast');if(!t)return;t.textContent=m;t.style.display='block';
-  clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',2600);}
-async function api(path,opts){
-  const r=await fetch(path,Object.assign({headers:{'Content-Type':'application/json'}},opts||{}));
-  let j={};try{j=await r.json();}catch(e){}
-  if(!r.ok) throw new Error(j.error||('HTTP '+r.status));
-  return j;
-}
-
-// ---- section router (page tabs replace the old toggle) ----
-// creator tabs: hq | mine | lib   ·   admin tabs: assign | creators
-function setNav(tabs, active){
-  const nav=$('subnav');
-  nav.innerHTML=tabs.map(t=>`<button data-s="${t.id}"${t.id===active?' class="on"':''}>${esc(t.label)}</button>`).join('');
-  nav.style.display='flex';
-}
-function showSection(name){
-  SECTION=name;
-  LIB_PLATS = name==='linkbio' ? ['instagram','facebook']
-            : name==='tiktok'  ? ['tiktok']
-            : null;                          // null = use the #platseg filter (admin assign / public)
-  const isLib=(name==='lib'||name==='assign'||name==='linkbio'||name==='tiktok');
-  $('hqPanel').style.display     = name==='hq'?'block':'none';
-  $('ideasPanel').style.display  = name==='mine'?'block':'none';
-  $('adaptsPanel').style.display = name==='adapts'?'block':'none';
-  $('adminCreators').style.display = name==='creators'?'block':'none';
-  $('libHead').style.display     = (isLib && !ADMIN && CREATOR)?'flex':'none';
-  $('count').style.display       = isLib?'block':'none';
-  $('grid').style.display        = isLib?'grid':'none';
-  $('empty').style.display       = 'none';
-  $('filterTools').style.display = isLib?'flex':'none';
-  $('platseg').style.display     = LIB_PLATS?'none':'';   // platform is the tab now → no platform filter
-  const lt=document.querySelector('#libHead .sh-title');
-  if(lt) lt.textContent = name==='linkbio'?'LINK IN BIO SCRAPER':(name==='tiktok'?'TIKTOK SCRAPER':'WINNING CONTENT LIBRARY');
-  document.querySelectorAll('#subnav button').forEach(b=>b.classList.toggle('on',b.dataset.s===name));
-  if(isLib) render();                       // (re)draw the library grid with current filters
-  if(name==='creators' && ADMIN) loadCreators();
-}
-
-// ---- creator HQ: render the personalized dashboard from cd.hq ----
-function hqChips(s){
-  return (s||'').split(/[,\n]/).map(x=>x.trim()).filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join('');
-}
-function renderHQ(hq){
-  hq=hq||{};
-  const wrap=$('hqBody');
-  const has=Object.keys(hq).some(k=>(''+(hq[k]||'')).trim());
-  if(!has){
-    wrap.innerHTML=`<div class="hq-empty">Your personalized plan is being set up.<br>Check back soon — or open a <b>Scraper</b> tab to browse winning content.</div>`;
-    return;
-  }
-  const row=(label,val)=> val?`<div class="hq-row"><div class="hq-k">${label}</div><div class="hq-v">${esc(val)}</div></div>`:'';
-  const metric=(label,val)=>`<div class="hq-metric"><div class="hq-mv">${val?esc(val):'—'}</div><div class="hq-mk">${label}</div></div>`;
-  const g=parseFloat(hq.split_growth), s=parseFloat(hq.split_sales), e=parseFloat(hq.split_edu);
-  let splitBar='';
-  if(isFinite(g)||isFinite(s)||isFinite(e)){
-    const gv=isFinite(g)?g:0, sv=isFinite(s)?s:0, ev=isFinite(e)?e:0, tot=(gv+sv+ev)||100;
-    const gp=Math.round(gv/tot*100), sp=Math.round(sv/tot*100), ep=Math.max(0,100-gp-sp);
-    splitBar=`<div class="hq-split"><div class="hq-splitbar"><div class="g" style="width:${gp}%"></div><div class="s" style="width:${sp}%"></div><div class="e" style="width:${ep}%"></div></div>
-      <div class="hq-splitleg"><span><i class="dotg"></i>Growth ${gp}%</span><span><i class="dots"></i>Sales ${sp}%</span>${ev?`<span><i class="dote"></i>Educational ${ep}%</span>`:''}</div></div>`;
-  }
-  const conceptEmpty=!(hq.avatar||hq.niche||hq.style);
-  wrap.innerHTML=`
-    <div class="hq-grid">
-      <div class="hqcard">
-        <div class="hq-cardlabel">// Concept</div>
-        ${hq.avatar?`<div class="hq-big">${esc(hq.avatar)}</div>`:''}
-        ${row('Niche',hq.niche)}
-        ${row('Style',hq.style)}
-        ${conceptEmpty?'<div class="hq-muted">No concept set yet.</div>':''}
-      </div>
-      <div class="hqcard">
-        <div class="hq-cardlabel">// Progress</div>
-        <div class="hq-metrics">${metric('Followers',hq.m_followers)}${metric('Videos posted',hq.m_videos)}${metric('Sales',hq.m_sales)}</div>
-        ${hq.focus?`<div class="hq-focus"><div class="hq-k" style="margin-bottom:5px;">Current focus</div><div class="hq-v">${esc(hq.focus)}</div></div>`:''}
-      </div>
-    </div>
-    <div class="hqcard hq-plan">
-      <div class="hq-cardlabel">// Content plan</div>
-      ${splitBar}
-      ${row('Posting cadence',hq.cadence)}
-      ${hq.formats?`<div class="hq-row"><div class="hq-k">Formats</div><div class="hq-chips">${hqChips(hq.formats)}</div></div>`:''}
-      ${hq.plan?`<div class="hq-plantext">${esc(hq.plan)}</div>`:''}
-    </div>`;
-}
-
-// ---- admin: assign a library video to a creator's personalized section ----
-function closeMenus(except){document.querySelectorAll('.amenu').forEach(m=>{if(m!==except)m.style.display='none';});}
-function buildMenu(vid){
-  const m=document.createElement('div'); m.className='amenu';
-  const active=CREATORS.filter(c=>!c.revoked);
-  let h=`<div class="ac new" data-vid="${esc(vid)}" data-new="1">+ New creator…</div>`;
-  if(!active.length) h+=`<div class="ac" style="cursor:default;color:var(--mut2)">No creators yet — use “New creator…”</div>`;
-  for(const c of active)
-    h+=`<div class="ac" data-vid="${esc(vid)}" data-token="${esc(c.token)}" data-name="${esc(c.name)}">${esc(c.name)}${c.handle?' · @'+esc(c.handle):''}</div>`;
-  m.innerHTML=h; return m;
-}
-async function onPick(ac){
-  const vid=ac.dataset.vid; let token=ac.dataset.token, name=ac.dataset.name;
-  if(ac.dataset.new){
-    const nm=(prompt('New creator name:')||'').trim(); if(!nm){closeMenus();return;}
-    try{const r=await api('/swipe/creators',{method:'POST',body:JSON.stringify({name:nm})});
-      CREATORS.push(r); token=r.token; name=r.name;}
-    catch(e){toast('Error: '+e.message); return;}
-  }
-  closeMenus();
-  if(token) await assignTo(vid,token,name);
-}
-async function assignTo(vid,token,name){
-  const v=VIDEOS.find(x=>x.id===vid)||{};
-  const title=((v.desc||'').slice(0,70).trim())||('Winning video — @'+(v.handle||''));
-  const notes=prompt('Notes / iterations for '+name+' (optional, shown on their dashboard):','');
-  if(notes===null) return;
-  const script=prompt('Script for this video (optional, shown alongside the notes). Leave blank to skip:','')||'';
-  try{
-    await api('/swipe/creators/'+token+'/ideas',{method:'POST',
-      body:JSON.stringify({title,body:notes.trim(),script:script.trim(),ref_type:'video',ref_id:vid})});
-    toast('Added to '+name+' — hit PUBLISH to push it live');
-    const btn=[...document.querySelectorAll('.card .abtn')].find(b=>b.dataset.vid===vid);
-    if(btn){const bar=btn.parentElement; let chip=bar.querySelector('.assigned');
-      if(!chip){chip=document.createElement('span');chip.className='assigned';bar.appendChild(chip);}
-      chip.textContent='✓ assigned to '+name;}
-    loadCreators();   // refresh idea counts in the CREATORS tab
-  }catch(e){toast('Error: '+e.message);}
-}
-let PUBLISHING=false;
-function _setPubStatus(txt,color){ const s=$('pubStatus'); if(!s) return; s.textContent=txt; s.style.color=color||'#7a8aa8'; }
-async function doPublish(){
-  if(PUBLISHING) return;                       // ignore double-clicks while a publish is running
-  const b=$('pubBtn'), o=b.textContent, t0=Date.now();
-  PUBLISHING=true; b.disabled=true; b.textContent='PUBLISHING…';
-  _setPubStatus('● publishing… 0s · do NOT refresh','#d4933a');
-  const tick=setInterval(()=>_setPubStatus('● publishing… '+Math.round((Date.now()-t0)/1000)+'s · do NOT refresh','#d4933a'),1000);
-  try{
-    const r=await api('/swipe/publish',{method:'POST',body:'{}'});
-    clearInterval(tick);
-    const secs=Math.round((Date.now()-t0)/1000);
-    if(r.status==='ok'){
-      _setPubStatus('✓ PUBLISHED '+new Date().toLocaleTimeString()+' ('+secs+'s) · creators update in ~1 min','#8fb33f');
-      b.textContent='PUBLISHED ✓'; toast('Published ✓ creators see updates in ~1 min');
-      setTimeout(()=>{ if(!PUBLISHING) b.textContent=o; },6000);
-    }else{
-      _setPubStatus('✗ finished with errors (code '+r.returncode+') · nothing changed live','#d62929');
-      b.textContent=o; toast('Publish finished with errors');
+  /* Personal creator links (/?c=<token>) belong to the library at /library/. */
+  (function () {
+    var qs = window.location.search;
+    if (qs && /[?&]c=/.test(qs)) {
+      window.location.replace('library/' + qs + window.location.hash);
     }
-  }catch(e){
-    clearInterval(tick);
-    _setPubStatus('✗ publish failed: '+e.message+' · nothing went live, try again','#d62929');
-    b.textContent=o; toast('Publish failed: '+e.message);
-  }
-  PUBLISHING=false; b.disabled=false;
-}
-window.addEventListener('beforeunload',e=>{ if(PUBLISHING){ e.preventDefault(); e.returnValue=''; } });
-
-// ---- admin: creator manager (mint links, manage HQ + ideas) ----
-function copyLink(link){ navigator.clipboard.writeText(link).then(()=>toast('Link copied')).catch(()=>toast('Copy failed')); }
-function statusBadge(s){
-  if(s==='done') return '<span class="cm-sbadge done">✓ POSTED</span>';
-  if(s==='wip')  return '<span class="cm-sbadge wip">● FILMING</span>';
-  if(s==='todo') return '<span class="cm-sbadge">○ TO DO</span>';
-  return '';
-}
-async function loadCreators(){
-  try{ CREATORS=await api('/swipe/creators'); }
-  catch(e){ CREATORS=[]; const box=$('cmList'); if(box) box.innerHTML='<p class="cm-hint">Could not load ('+esc(e.message)+'). Is the bot running on this Mac?</p>'; return; }
-  renderCreatorManager();
-}
-function renderCreatorManager(){
-  const box=$('cmList'); if(!box) return;
-  const list=CREATORS||[];
-  if(!list.length){box.innerHTML='<p class="cm-hint">No creators yet. Mint a link above.</p>';return;}
-  box.innerHTML=list.map(c=>{
-    const cnt=c.idea_count||0;
-    return `<div class="cm-cre${c.revoked?' rev':''}" id="cmcre-${c.token}">
-      <div class="cm-crehead">
-        <span class="cm-name">${esc(c.name)}</span>
-        ${c.handle?`<span class="cm-handle">@${esc(c.handle)}</span>`:''}
-        <span class="cm-badge cnt">${cnt} idea${cnt===1?'':'s'}</span>
-        ${c.revoked?'<span class="cm-badge rev">REVOKED</span>':''}
-      </div>
-      <div class="cm-linkrow">
-        <input readonly value="${esc(c.link)}" onclick="this.select()">
-        <button class="cm-sm" onclick="copyLink('${esc(c.link)}')">COPY</button>
-      </div>
-      <div class="cm-acts">
-        <button class="cm-sm ghost" onclick="toggleDrawer('${c.token}')">EDIT HQ + VIDEOS ▾</button>
-        <button class="cm-sm ghost" onclick="toggleRevoke('${c.token}')">${c.revoked?'RESTORE':'REVOKE'}</button>
-        <button class="cm-sm danger" onclick="delCreator('${c.token}')">DELETE</button>
-      </div>
-      <div class="cm-drawer" id="cmdrawer-${c.token}"></div>
-    </div>`;
-  }).join('');
-}
-async function mintCreator(){
-  const name=$('cmName').value.trim();
-  if(!name){toast('Enter a name');return;}
-  const handle=$('cmHandle').value.trim();
-  try{
-    const r=await api('/swipe/creators',{method:'POST',body:JSON.stringify({name,handle})});
-    $('cmName').value='';$('cmHandle').value='';
-    await loadCreators(); copyLink(r.link); toast('Link minted + copied');
-  }catch(e){toast('Error: '+e.message);}
-}
-async function toggleRevoke(token){
-  const c=(CREATORS||[]).find(x=>x.token===token)||{};
-  try{ await api('/swipe/creators/'+token+'/revoke',{method:'POST',body:JSON.stringify({unrevoke:!!c.revoked})});
-    toast(c.revoked?'Restored — publish to apply':'Revoked — publish to apply'); await loadCreators();
-  }catch(e){toast('Error: '+e.message);}
-}
-async function delCreator(token){
-  const c=(CREATORS||[]).find(x=>x.token===token)||{};
-  if(!confirm('Delete '+(c.name||'this creator')+' and all their ideas? This cannot be undone.'))return;
-  try{ await api('/swipe/creators/'+token,{method:'DELETE'}); toast('Deleted'); await loadCreators(); }
-  catch(e){toast('Error: '+e.message);}
-}
-async function toggleDrawer(token){
-  const d=$('cmdrawer-'+token);
-  if(d.style.display==='block'){d.style.display='none';return;}
-  d.style.display='block';
-  await renderDrawer(token);
-}
-async function renderDrawer(token){
-  const d=$('cmdrawer-'+token);
-  d.innerHTML='<p class="cm-hint">Loading…</p>';
-  let ideas=[], hqResp={data:{}};
-  try{ [ideas,hqResp]=await Promise.all([
-      api('/swipe/creators/'+token+'/ideas'),
-      api('/swipe/creators/'+token+'/hq')
-    ]); }catch(e){ d.innerHTML='<p class="cm-hint">'+esc(e.message)+'</p>'; return; }
-  // resolve video pins -> thumbnail + account + views so you can SEE what's on their videos
-  const vmap={};
-  if(ideas.some(it=>(it.ref_type||'')==='video' && it.ref_id)){
-    try{
-      const [igRows, ttRows] = await Promise.all([
-        api('/social/videos?sort=views&limit=400').catch(()=>[]),
-        api('/scraper/videos?sort=views&limit=400').catch(()=>[])
-      ]);
-      for(const r of igRows){ vmap[await sha1hex16(r.platform+':'+r.video_id)]=r; }
-      for(const r of ttRows){ r.platform='tiktok'; vmap[await sha1hex16('tiktok:'+r.video_id)]=r; }
-    }catch(e){}
-  }
-  const items=ideas.map(it=>{
-    const v=((it.ref_type||'')==='video' && it.ref_id) ? vmap[it.ref_id] : null;
-    const cover = v ? (v.platform==='tiktok'
-      ? `/cover/${encodeURIComponent(v.video_id)}`
-      : `/social/cover/${esc(v.platform)}/${encodeURIComponent(v.video_id)}`) : '';
-    const thumb = v
-      ? `<img class="cm-ithumb" src="${cover}" alt="" referrerpolicy="no-referrer" onerror="this.style.display='none';">`
-      : '';
-    const ref = v
-      ? `<div class="cm-iref">▶ ${esc(v.platform)} · @${esc(v.handle)} · ${Number(v.play_count||0).toLocaleString()} views</div>`
-      : (it.ref_type?`<div class="cm-iref">↳ ${esc(it.ref_type)} #${esc(it.ref_id)}</div>`:'');
-    return `
-    <div class="cm-idea">
-      ${thumb}
-      <div class="cm-it">
-        <div class="cm-ititle">${esc(it.title)} ${statusBadge(it.live_status)}</div>
-        ${it.body?`<div class="cm-ibody">${esc(it.body)}</div>`:''}
-        ${it.script?`<div class="cm-ibody" style="margin-top:6px;border-top:1px dashed var(--bd2);padding-top:6px;"><span style="color:var(--gold);font-size:9px;letter-spacing:1px;font-weight:700;">SCRIPT</span><br>${esc(it.script)}</div>`:''}
-        ${ref}
-      </div>
-      <button class="cm-sm danger" onclick="delIdea(${it.id},'${token}')">×</button>
-    </div>`;
-  }).join('') || '<p class="cm-hint">No videos assigned yet. Use the ASSIGN tab to drop in library videos, or add one below.</p>';
-  d.innerHTML = renderHQEditor(token, hqResp.data||{}) + `
-    <div class="cm-sub">Assigned videos & ideas</div>
-    ${items}
-    <div class="cm-addbox">
-      <div class="cm-row"><input id="addtitle-${token}" placeholder="idea title (e.g. NECK angle — saggy neck reveal)" style="flex:1;min-width:220px;"></div>
-      <div class="cm-row"><textarea id="addbody-${token}" placeholder="the tailored direction: hook, what to film, why it fits them…"></textarea></div>
-      <div class="cm-row">
-        <select id="reftype-${token}" onchange="onRefType('${token}')">
-          <option value="">No reference</option>
-          <option value="saved_script">Attach saved script</option>
-          <option value="adaptation">Attach scraper adaptation</option>
-          <option value="video">Attach library video</option>
-        </select>
-        <input id="refsearch-${token}" placeholder="search to attach…" style="flex:1;min-width:160px;display:none;" oninput="filterPicker('${token}')">
-        <button class="cm-sm" onclick="addIdea('${token}')">ADD IDEA</button>
-      </div>
-      <input type="hidden" id="refid-${token}">
-      <div class="cm-picker" id="picker-${token}"></div>
-    </div>`;
-}
-function renderHQEditor(token, hq){
-  hq=hq||{};
-  const v=k=>esc(hq[k]||'');
-  return `<div class="cm-hq">
-    <div class="cm-sub">Creator HQ — concept</div>
-    <div class="cm-row"><input id="hq-avatar-${token}" placeholder="Avatar / on-camera persona (e.g. gay Korean skincare expert, 30s)" value="${v('avatar')}" style="flex:1;min-width:260px;"></div>
-    <div class="cm-row">
-      <input id="hq-niche-${token}" placeholder="Niche / angle" value="${v('niche')}" style="flex:1;min-width:170px;">
-      <input id="hq-style-${token}" placeholder="Style / concept" value="${v('style')}" style="flex:1;min-width:170px;">
-    </div>
-    <div class="cm-sub">Content plan</div>
-    <div class="cm-row">
-      <input id="hq-split_growth-${token}" type="number" placeholder="growth %" value="${v('split_growth')}" style="width:90px;">
-      <input id="hq-split_sales-${token}" type="number" placeholder="sales %" value="${v('split_sales')}" style="width:90px;">
-      <input id="hq-split_edu-${token}" type="number" placeholder="edu %" value="${v('split_edu')}" style="width:90px;">
-      <input id="hq-cadence-${token}" placeholder="cadence (e.g. per 4 videos: 2 growth, 1 sales, 1 edu)" value="${v('cadence')}" style="flex:1;min-width:200px;">
-    </div>
-    <div class="cm-row"><input id="hq-formats-${token}" placeholder="formats, comma-separated (Recipe videos, Transformation, Store reviews)" value="${v('formats')}" style="flex:1;min-width:260px;"></div>
-    <div class="cm-row"><textarea id="hq-plan-${token}" placeholder="the content plan / direction for this creator…">${esc(hq.plan||'')}</textarea></div>
-    <div class="cm-sub">Progress</div>
-    <div class="cm-row">
-      <select id="hq-acct_platform-${token}" style="width:130px;">
-        <option value=""${hq.acct_platform?'':' selected'}>— link acct —</option>
-        <option value="instagram"${hq.acct_platform==='instagram'?' selected':''}>Instagram</option>
-        <option value="facebook"${hq.acct_platform==='facebook'?' selected':''}>Facebook</option>
-        <option value="tiktok"${hq.acct_platform==='tiktok'?' selected':''}>TikTok</option>
-      </select>
-      <input id="hq-acct_handle-${token}" placeholder="handle / page id (auto-fills followers + videos)" value="${v('acct_handle')}" style="flex:1;min-width:200px;">
-    </div>
-    <div class="cm-row">
-      <input id="hq-m_followers-${token}" placeholder="followers (blank = auto from linked acct)" value="${v('m_followers')}" style="flex:1;min-width:110px;">
-      <input id="hq-m_videos-${token}" placeholder="videos posted (blank = auto)" value="${v('m_videos')}" style="flex:1;min-width:110px;">
-      <input id="hq-m_sales-${token}" placeholder="sales" value="${v('m_sales')}" style="flex:1;min-width:110px;">
-    </div>
-    <div class="cm-row"><input id="hq-focus-${token}" placeholder="current focus / next milestone" value="${v('focus')}" style="flex:1;min-width:260px;"></div>
-    <div class="cm-row"><button class="cm-sm" onclick="saveHQ('${token}')">SAVE HQ</button><span class="cm-hint" id="hqmsg-${token}" style="margin-top:0;"></span></div>
-  </div>`;
-}
-async function saveHQ(token){
-  const f=['avatar','niche','style','split_growth','split_sales','split_edu','cadence','formats','plan','focus','m_followers','m_videos','m_sales','acct_platform','acct_handle'];
-  const body={}; f.forEach(k=>{const el=$('hq-'+k+'-'+token); if(el) body[k]=el.value;});
-  try{ await api('/swipe/creators/'+token+'/hq',{method:'POST',body:JSON.stringify(body)});
-    const m=$('hqmsg-'+token); if(m) m.textContent='✓ saved — publish to push live';
-    toast('HQ saved — hit PUBLISH to push it live');
-  }catch(e){toast('Error: '+e.message);}
-}
-async function sha1hex16(s){
-  // Pure-JS SHA-1 (first 16 hex). Matches python hashlib.sha1(s.utf8).hexdigest()[:16].
-  // Do NOT switch back to crypto.subtle: it is undefined on plain-HTTP LAN origins.
-  function utf8(str){
-    const out=[];
-    for(let i=0;i<str.length;i++){
-      let c=str.charCodeAt(i);
-      if(c<0x80){ out.push(c); }
-      else if(c<0x800){ out.push(0xc0|(c>>6),0x80|(c&0x3f)); }
-      else if(c<0xd800||c>=0xe000){ out.push(0xe0|(c>>12),0x80|((c>>6)&0x3f),0x80|(c&0x3f)); }
-      else { i++; c=0x10000+(((c&0x3ff)<<10)|(str.charCodeAt(i)&0x3ff));
-        out.push(0xf0|(c>>18),0x80|((c>>12)&0x3f),0x80|((c>>6)&0x3f),0x80|(c&0x3f)); }
-    }
-    return out;
-  }
-  const msg=utf8(s), ml=msg.length*8;
-  msg.push(0x80);
-  while(msg.length%64!==56) msg.push(0);
-  const hi=Math.floor(ml/0x100000000), lo=ml>>>0;
-  msg.push((hi>>>24)&0xff,(hi>>>16)&0xff,(hi>>>8)&0xff,hi&0xff,(lo>>>24)&0xff,(lo>>>16)&0xff,(lo>>>8)&0xff,lo&0xff);
-  let h0=0x67452301,h1=0xEFCDAB89,h2=0x98BADCFE,h3=0x10325476,h4=0xC3D2E1F0;
-  const w=new Array(80);
-  for(let i=0;i<msg.length;i+=64){
-    for(let j=0;j<16;j++){ w[j]=(msg[i+j*4]<<24)|(msg[i+j*4+1]<<16)|(msg[i+j*4+2]<<8)|(msg[i+j*4+3]); }
-    for(let j=16;j<80;j++){ const n=w[j-3]^w[j-8]^w[j-14]^w[j-16]; w[j]=(n<<1)|(n>>>31); }
-    let a=h0,b=h1,c=h2,d=h3,e=h4;
-    for(let j=0;j<80;j++){
-      let f,k;
-      if(j<20){ f=(b&c)|((~b)&d); k=0x5A827999; }
-      else if(j<40){ f=b^c^d; k=0x6ED9EBA1; }
-      else if(j<60){ f=(b&c)|(b&d)|(c&d); k=0x8F1BBCDC; }
-      else { f=b^c^d; k=0xCA62C1D6; }
-      const t=(((a<<5)|(a>>>27))+f+e+k+w[j])|0;
-      e=d; d=c; c=(b<<30)|(b>>>2); b=a; a=t;
-    }
-    h0=(h0+a)|0; h1=(h1+b)|0; h2=(h2+c)|0; h3=(h3+d)|0; h4=(h4+e)|0;
-  }
-  function hx(x){ let h=(x>>>0).toString(16); while(h.length<8) h='0'+h; return h; }
-  return (hx(h0)+hx(h1)+hx(h2)+hx(h3)+hx(h4)).slice(0,16);
-}
-async function onRefType(token){
-  const type=$('reftype-'+token).value;
-  const search=$('refsearch-'+token), picker=$('picker-'+token);
-  $('refid-'+token).value='';
-  if(!type){ search.style.display='none'; picker.style.display='none'; return; }
-  search.style.display='block'; search.value=''; picker.style.display='block';
-  picker.innerHTML='<div class="cm-pick">Loading…</div>';
-  try{ PICK_CACHE[type]=await fetchOptions(type); filterPicker(token); }
-  catch(e){ picker.innerHTML='<div class="cm-pick">'+esc(e.message)+'</div>'; }
-}
-async function fetchOptions(type){
-  if(type==='saved_script'){
-    const rows=await api('/scripts');
-    return rows.map(r=>({id:String(r.id), title:(r.hook_text||'').slice(0,90), sub:'script #'+r.id+' · '+(r.status||'')}));
-  }
-  if(type==='adaptation'){
-    const rows=await api('/scraper/adaptations');
-    return rows.map(r=>({id:String(r.id), title:(r.description||r.source_hook_verbatim||'adaptation').slice(0,90), sub:'adapt #'+r.id+' · @'+(r.handle||'')}));
-  }
-  if(type==='video'){
-    const [igRows, ttRows] = await Promise.all([
-      api('/social/videos?sort=views&limit=80').catch(()=>[]),
-      api('/scraper/videos?sort=views&limit=80').catch(()=>[])
-    ]);
-    const out=[];
-    for(const r of igRows){ const vk=await sha1hex16(r.platform+':'+r.video_id);
-      out.push({id:vk, title:(r.description||'(no caption)').slice(0,90), sub:r.platform+' · '+(r.play_count||0).toLocaleString()+' views'}); }
-    for(const r of ttRows){ const vk=await sha1hex16('tiktok:'+r.video_id);
-      out.push({id:vk, title:(r.description||'(no caption)').slice(0,90), sub:'tiktok · '+(r.play_count||0).toLocaleString()+' views'}); }
-    return out;
-  }
-  return [];
-}
-function filterPicker(token){
-  const type=$('reftype-'+token).value;
-  const q=($('refsearch-'+token).value||'').toLowerCase();
-  const opts=(PICK_CACHE[type]||[]).filter(o=>!q || (o.title+' '+o.sub).toLowerCase().includes(q)).slice(0,60);
-  const picker=$('picker-'+token);
-  if(!opts.length){ picker.innerHTML='<div class="cm-pick">No matches.</div>'; return; }
-  picker.innerHTML=opts.map(o=>`<div class="cm-pick" onclick="pickRef('${token}','${esc(o.id)}','${esc(o.title).replace(/'/g,'&#39;')}')"><b>${esc(o.title)}</b><br>${esc(o.sub)}</div>`).join('');
-}
-function pickRef(token,id,title){
-  $('refid-'+token).value=id;
-  if(!$('addtitle-'+token).value.trim()) $('addtitle-'+token).value=title;
-  $('picker-'+token).style.display='none';
-  toast('Reference attached');
-}
-async function addIdea(token){
-  const title=$('addtitle-'+token).value.trim();
-  if(!title){toast('Idea needs a title');return;}
-  const body=$('addbody-'+token).value.trim();
-  const ref_type=$('reftype-'+token).value;
-  const ref_id=$('refid-'+token).value;
-  try{
-    await api('/swipe/creators/'+token+'/ideas',{method:'POST',
-      body:JSON.stringify({title,body,ref_type:ref_type||'',ref_id:ref_id||''})});
-    await renderDrawer(token); loadCreators(); toast('Idea added');
-  }catch(e){toast('Error: '+e.message);}
-}
-async function delIdea(id,token){
-  try{ await api('/swipe/ideas/'+id,{method:'DELETE'}); await renderDrawer(token); loadCreators(); }
-  catch(e){toast('Error: '+e.message);}
-}
-async function adminSyncStatus(){
-  const b=$('syncBtn'); if(b)b.disabled=true; const o=b?b.textContent:''; if(b)b.textContent='SYNCING…';
-  try{
-    const r=await api('/swipe/sync',{method:'POST',body:'{}'});
-    if(!r.configured){ toast('Status sync not set up yet'); }
-    else if(r.error){ toast('Sync error: '+r.error); }
-    else{
-      const nd=(r.newly_done||[]).length;
-      toast('Synced — '+(r.updated||0)+' updated'+(nd?(', '+nd+' newly posted'):''));
-      document.querySelectorAll('.cm-drawer').forEach(d=>{ if(d.style.display==='block') renderDrawer(d.id.replace('cmdrawer-','')); });
-    }
-  }catch(e){ toast('Sync failed: '+e.message); }
-  if(b){b.disabled=false; b.textContent=o;}
-}
-async function bootAdmin(){
-  try{
-    document.querySelector('.brand .tag').textContent='ADMIN';
-    document.querySelector('.brand .title').textContent='SCRAPER · ADMIN';
-    const lib=await api('/swipe/library'); VIDEOS=lib.videos||[];
-    await loadCreators();   // sets CREATORS + renders the manager (hidden until CREATORS tab)
-    const nC=(CREATORS||[]).filter(c=>!c.revoked).length;
-    $('upd').textContent=VIDEOS.length+' videos · '+nC+' creator'+(nC===1?'':'s');
-    $('gate').style.display='none'; $('app').style.display='block';
-    $('pubBtn').style.display='inline-block';
-    $('syncBtn').style.display='inline-block';
-    setNav([{id:'assign',label:'ASSIGN VIDEOS'},{id:'creators',label:'CREATORS'}],'assign');
-    showSection('assign');
-  }catch(e){
-    $('gerr').textContent='Admin load failed: '+e.message+' — is the bot running on this Mac?';
-  }
-}
-
-async function decryptBlob(b64, iters, passcode){
-  const raw=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));
-  const salt=raw.slice(0,16), iv=raw.slice(16,28), ct=raw.slice(28);
-  const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(passcode),'PBKDF2',false,['deriveKey']);
-  const key=await crypto.subtle.deriveKey(
-    {name:'PBKDF2',salt,iterations:iters,hash:'SHA-256'},
-    km,{name:'AES-GCM',length:256},false,['decrypt']);
-  const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv},key,ct);
-  return JSON.parse(new TextDecoder().decode(pt));
-}
-async function decrypt(passcode){
-  return decryptBlob(window.SWIPE_ENC, window.SWIPE_META.iters, passcode);
-}
-async function sha256hex(s){
-  const buf=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
-  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-function loadScript(src){
-  return new Promise((res,rej)=>{const s=document.createElement('script');
-    s.src=src; s.onload=res; s.onerror=()=>rej(new Error('load fail')); document.head.appendChild(s);});
-}
-
-// ---- creator portal: tailored video ideas ----
-function ideaKey(id){return 'swipe_idea_'+TOKEN+'_'+id;}
-function ideaStatus(id){try{return localStorage.getItem(ideaKey(id))||'todo';}catch(e){return 'todo';}}
-function setIdeaStatus(id,v){try{localStorage.setItem(ideaKey(id),v);}catch(e){}}
-function statLabel(s){return s==='done'?'✓ POSTED':s==='wip'?'● FILMING':'○ TO DO';}
-
-// ---- status sync-back (active only when a Worker URL was baked into data.js) ----
-// localStorage stays the on-device cache; the Worker is the shared source of truth
-// so Jayden sees taps too. Taps that fail (offline) queue and retry on next load.
-function qKey(){return 'swipe_q_'+TOKEN;}
-function loadQueue(){try{return JSON.parse(localStorage.getItem(qKey())||'[]');}catch(e){return [];}}
-function saveQueue(q){try{localStorage.setItem(qKey(),JSON.stringify(q));}catch(e){}}
-function enqueue(id,status){const q=loadQueue().filter(x=>x.id!=id);q.push({id:+id,status:status});saveQueue(q);}
-async function postStatus(id,status){
-  // text/plain keeps this a CORS "simple" request (no preflight); Worker parses the body
-  const r=await fetch(STATUS_API+'/status',{method:'POST',
-    headers:{'Content-Type':'text/plain;charset=UTF-8'},
-    body:JSON.stringify({c:TOKEN,idea_id:+id,status:status})});
-  if(!r.ok) throw new Error('status '+r.status);
-  return true;
-}
-async function pushStatus(id,status){
-  if(!STATUS_API) return;                 // localStorage-only mode
-  try{await postStatus(id,status);}       // UI already updated optimistically
-  catch(e){enqueue(id,status);}           // offline → retry next load
-}
-async function flushQueue(){
-  if(!STATUS_API) return;
-  const q=loadQueue(); if(!q.length) return;
-  const keep=[];
-  for(const it of q){try{await postStatus(it.id,it.status);}catch(e){keep.push(it);}}
-  saveQueue(keep);
-}
-async function pullStatus(){
-  if(!STATUS_API) return;
-  let r; try{r=await fetch(STATUS_API+'/portal?c='+encodeURIComponent(TOKEN));}catch(e){return;}
-  if(!r.ok) return;
-  let data; try{data=await r.json();}catch(e){return;}
-  const m=data.statuses||{};
-  for(const k in m){if(m[k]==='todo'||m[k]==='wip'||m[k]==='done') setIdeaStatus(k,m[k]);}
-}
-async function syncStatus(){try{await flushQueue();await pullStatus();}catch(e){}}
-
-function ideaCard(it){
-  const st=ideaStatus(it.id);
-  const card=document.createElement('div'); card.className='idea';
-  const ithumbsrc=it.thumb||it.cover||'';
-  const thumb=ithumbsrc?`<div class="ithumb"><img loading="lazy" referrerpolicy="no-referrer" src="${esc(ithumbsrc)}" onerror="this.closest('.ithumb').style.display='none'"></div>`:'';
-  const ref=it.url?`<a class="iwatch" href="${esc(it.url)}" target="_blank" rel="noopener">REFERENCE ↗</a>`:'';
-  const platAbbr=it.platform==='instagram'?'IG':(it.platform==='tiktok'?'TT':(it.platform?'FB':''));
-  const platColor=it.platform==='instagram'?'#d62976':(it.platform==='tiktok'?'#0a8c96':'#1877f2');
-  const platTag=platAbbr?`<span style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:0.5px;padding:2px 5px;border-radius:3px;background:${platColor};color:#fff;margin-right:6px;vertical-align:middle;">${platAbbr}</span>`:'';
-  card.innerHTML=`${thumb}<div class="ibody">
-      <div class="ititle">${platTag}${esc(it.title)}</div>
-      ${it.body?`<div class="itext">${esc(it.body)}</div>`:''}
-      ${it.script?`<div class="itext" style="margin-top:8px;border-left:2px solid var(--gold);padding:6px 0 6px 9px;background:rgba(212,147,58,0.06);border-radius:0 5px 5px 0;"><span style="display:block;font-size:8px;font-weight:800;letter-spacing:1.5px;color:var(--gold);margin-bottom:3px;">SCRIPT</span>${esc(it.script)}</div>`:''}
-      <div class="ifoot"><button class="istat ${st}" data-id="${esc(''+it.id)}">${statLabel(st)}</button>${ref}</div>
-    </div>`;
-  return card;
-}
-function renderIdeas(){
-  const wrap=$('ideasGrid'); wrap.innerHTML='';
-  if(!IDEAS.length){
-    $('ideasSub').textContent='nothing assigned yet';
-    wrap.innerHTML=`<div class="hq-empty">No videos assigned to you yet.<br>Browse the <b>scrapers</b> — Jayden will drop your picks here.</div>`;
-    return;
-  }
-  $('ideasSub').textContent=IDEAS.length+(IDEAS.length===1?' idea':' ideas')+' tailored for you';
-  const frag=document.createDocumentFragment();
-  for(const it of IDEAS) frag.appendChild(ideaCard(it));
-  wrap.appendChild(frag);
-}
-
-// ---- creator ADAPT QUEUE: read-only adapt cards (same info as the admin queue,
-// full iterations, but NO good/great/bad rating — rating stays admin-only) ----
-function adaptCard(a){
-  const v=a.verdict||'maybe';
-  const vc = v==='yes'?'#8fb33f':v==='maybe'?'#d4933a':'#7a8aa8';
-  const vbg= v==='yes'?'rgba(143,179,63,0.08)':v==='maybe'?'rgba(212,147,58,0.08)':'rgba(122,138,168,0.06)';
-  const vbd= v==='yes'?'rgba(143,179,63,0.4)':v==='maybe'?'rgba(212,147,58,0.4)':'rgba(122,138,168,0.3)';
-  const imgsrc=a.thumb||a.cover||'';
-  const thumb=imgsrc?`<img loading="lazy" referrerpolicy="no-referrer" src="${esc(imgsrc)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.outerHTML='🎬'">`:'🎬';
-  const hooks=Array.isArray(a.hook_options)?a.hook_options:[];
-  const tweaks=Array.isArray(a.review_style_tweaks)?a.review_style_tweaks:[];
-  const tx=a.transcript||'';
-  return `
-    <div style="background:rgba(0,0,0,0.25);border:1px solid var(--bd);border-left:3px solid ${vc};border-radius:0 3px 3px 0;padding:18px 22px;margin-bottom:14px;display:grid;grid-template-columns:84px 1fr;gap:18px;">
-      <div style="width:84px;height:110px;border-radius:2px;overflow:hidden;background:#1c2230;display:flex;align-items:center;justify-content:center;font-size:22px;color:#3e4859;">${thumb}</div>
-      <div>
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
-          <span class="mono" style="font-size:11px;padding:3px 9px;border-radius:99px;font-weight:700;letter-spacing:1.5px;color:${vc};background:${vbg};border:1px solid ${vbd};">${v.toUpperCase()} · ${a.score||'?'}/10</span>
-          <span class="mono" style="font-size:10px;color:var(--mut2);">from @${esc(a.handle||'')} · ${fmt(a.views||0)} views</span>
-          ${a.url?`<a href="${esc(a.url)}" target="_blank" rel="noopener" class="mono" style="font-size:10px;color:#3eb5c4;letter-spacing:1.5px;font-weight:700;">SOURCE ↗</a>`:''}
-        </div>
-        ${a.notes?`
-          <div class="mono" style="font-size:10px;color:var(--gold);letter-spacing:1.8px;font-weight:700;margin-bottom:6px;">📌 NOTES FROM JAYDEN</div>
-          <div style="padding:11px 14px;background:rgba(212,147,58,0.09);border-left:2px solid var(--gold);border-radius:0 2px 2px 0;font-size:13px;color:#eef0f5;line-height:1.6;margin-bottom:14px;white-space:pre-wrap;">${esc(a.notes)}</div>`:''}
-        ${tx?`
-          <div class="mono" style="font-size:10px;color:#3eb5c4;letter-spacing:1.8px;font-weight:700;margin-bottom:6px;">📝 ACTUAL SPOKEN HOOK + BODY</div>
-          <div style="padding:10px 14px;background:rgba(62,181,196,0.04);border-left:2px solid rgba(62,181,196,0.4);border-radius:0 2px 2px 0;font-size:13px;color:var(--text);line-height:1.6;margin-bottom:14px;font-style:italic;">${esc(tx.slice(0,420))}${tx.length>420?'…':''}</div>`
-        :(a.description?`<div style="font-size:12.5px;color:#a0a8b8;font-style:italic;margin-bottom:12px;line-height:1.5;">"${esc(a.description.slice(0,180))}"</div>`:'')}
-        ${a.why?`
-          <div class="mono" style="font-size:11px;color:var(--mut2);letter-spacing:1.5px;font-weight:700;margin-bottom:6px;">WHAT'S WORTH TESTING</div>
-          <div style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:14px;">${esc(a.why)}</div>`:''}
-        ${a.source_hook_verbatim?`
-          <div class="mono" style="font-size:11px;color:var(--mut2);letter-spacing:1.5px;font-weight:700;margin-bottom:6px;">SOURCE HOOK ${a.source_hook_usable==='yes'?'<span style="color:#8fb33f;margin-left:6px;">· USABLE AS-IS</span>':'<span style="color:#d4933a;margin-left:6px;">· NEEDS REFRAME</span>'}</div>
-          <div style="padding:10px 14px;background:rgba(255,255,255,0.02);border-left:2px solid var(--bd2);border-radius:0 2px 2px 0;font-size:13.5px;color:#eef0f5;line-height:1.6;margin-bottom:8px;">"${esc(a.source_hook_verbatim)}"</div>
-          ${a.source_hook_reframe?`
-            <div class="mono" style="font-size:10px;color:var(--gold);letter-spacing:1.5px;font-weight:700;margin:8px 0 4px;">↳ REFRAMED FOR REVIEW STYLE</div>
-            <div style="padding:10px 14px;background:rgba(212,147,58,0.07);border-left:2px solid rgba(212,147,58,0.5);border-radius:0 2px 2px 0;font-size:13.5px;color:#eef0f5;line-height:1.6;margin-bottom:14px;">"${esc(a.source_hook_reframe)}"</div>`:'<div style="margin-bottom:14px;"></div>'}`:''}
-        ${hooks.length?`
-          <div class="mono" style="font-size:11px;color:var(--mut2);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">HOOK ITERATIONS</div>
-          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
-            ${hooks.map((h,i)=>`
-              <div style="padding:11px 14px;background:rgba(212,147,58,0.05);border-left:2px solid rgba(212,147,58,0.4);border-radius:0 2px 2px 0;">
-                <div style="font-size:13.5px;color:#eef0f5;line-height:1.55;"><span class="mono" style="color:var(--gold);font-size:9px;letter-spacing:1.5px;margin-right:8px;">${String.fromCharCode(65+i)}</span>"${esc(h)}"</div>
-              </div>`).join('')}
-          </div>`:''}
-        ${tweaks.length?`
-          <div class="mono" style="font-size:10px;color:#8fb33f;letter-spacing:1.8px;font-weight:700;margin-bottom:6px;">🔧 REVIEW STYLE TWEAK</div>
-          <div style="padding:10px 14px;background:rgba(143,179,63,0.05);border-left:2px solid rgba(143,179,63,0.4);border-radius:0 2px 2px 0;font-size:13px;color:var(--text);line-height:1.6;margin-bottom:14px;">${tweaks.map(t=>esc(t)).join('<br><br>')}</div>`:''}
-        ${(a.alt_format_verdict==='yes'&&a.alt_format_note)?`
-          <div style="padding:12px 14px;background:rgba(62,181,196,0.06);border-left:2px solid rgba(62,181,196,0.4);border-radius:0 2px 2px 0;margin-bottom:14px;">
-            <div class="mono" style="font-size:10px;color:#3eb5c4;letter-spacing:1.8px;font-weight:700;margin-bottom:6px;">⚡ ALTERNATIVE FORMAT WORTH TESTING</div>
-            <div style="font-size:13px;color:var(--text);line-height:1.6;">${esc(a.alt_format_note)}</div>
-          </div>`:''}
-        ${a.klareva_fit?`
-          <div class="mono" style="font-size:11px;color:var(--mut2);letter-spacing:1.5px;font-weight:700;margin-bottom:4px;">HYDROCOLLOID FIT</div>
-          <div style="font-size:12px;color:#a0a8b8;line-height:1.55;font-style:italic;">${esc(a.klareva_fit)}</div>`:''}
-      </div>
-    </div>`;
-}
-function renderAdapts(){
-  const wrap=$('adaptsGrid');
-  if(!ADAPTS.length){
-    $('adaptsSub').textContent='nothing assigned yet';
-    wrap.innerHTML=`<div class="hq-empty">No adapts assigned to you yet.<br>Jayden will drop adaptation breakdowns here for you to film.</div>`;
-    return;
-  }
-  $('adaptsSub').textContent=ADAPTS.length+(ADAPTS.length===1?' adapt':' adapts')+' to film';
-  wrap.innerHTML=ADAPTS.map(adaptCard).join('');
-}
-
-function render(){
-  const q=$('q').value.trim().toLowerCase();
-  const plat = LIB_PLATS ? null : document.querySelector('#platseg button.on').dataset.p;
-  const dwin=document.querySelector('#dateseg button.on').dataset.d;
-  const sort=$('sort').value;
-  const nowS=Date.now()/1000;
-  let list=VIDEOS.filter(v=>{
-    if(LIB_PLATS){ if(!LIB_PLATS.includes(v.platform))return false; }
-    else if(plat!=='all'&&v.platform!==plat)return false;
-    if(dwin!=='all'){if(!v.posted)return false;if(nowS-v.posted>(+dwin)*86400)return false;}
-    if(q){const hay=(v.desc+' '+v.account+' '+v.handle+' '+(v.tags||[]).join(' ')).toLowerCase();
-      if(!hay.includes(q))return false;}
-    return true;});
-  const keymap={views:'views',likes:'likes',comments:'comments',recent:'posted'};
-  const k=keymap[sort];list.sort((a,b)=>(b[k]||0)-(a[k]||0));
-  const pool = LIB_PLATS ? VIDEOS.filter(v=>LIB_PLATS.includes(v.platform)).length : VIDEOS.length;
-  $('count').innerHTML='Showing <b>'+list.length+'</b> of '+pool+' winning videos';
-  const g=$('grid');g.innerHTML='';
-  $('empty').style.display=list.length?'none':'block';
-  const frag=document.createDocumentFragment();
-  for(const v of list){
-    const c=document.createElement('div');c.className='card';
-    if(!ADMIN) c.onclick=()=>{if(v.url)window.open(v.url,'_blank','noopener');};
-    const pc=v.platform==='instagram'?'ig':(v.platform==='tiktok'?'tt':'fb');
-    const pl=v.platform==='instagram'?'INSTAGRAM':(v.platform==='tiktok'?'TIKTOK':'FACEBOOK');
-    const imgsrc=v.thumb||v.cover||'';
-    const thumb=imgsrc?`<img loading="lazy" referrerpolicy="no-referrer" src="${esc(imgsrc)}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'ph',textContent:'${esc((v.account||'?')[0]).toUpperCase()}'}))">`
-      :`<div class="ph">${esc((v.account||'?')[0]).toUpperCase()}</div>`;
-    const tags=(v.tags||[]).slice(0,3).map(t=>`<span>#${esc(t.replace(/^#/,''))}</span>`).join('');
-    c.innerHTML=`<div class="thumb">${thumb}<span class="plat ${pc}">${pl}</span>
-        <span class="views"><span>▶</span> ${fmt(v.views)}</span></div>
-      <div class="body">
-        <div class="acct">@${esc(v.handle)}${v.verified?'<span class="vf">✓</span>':''}<span class="fol">${v.followers?fmt(v.followers)+' foll':''}</span></div>
-        <div class="desc">${esc(v.desc)||'<span style=color:#444>no caption</span>'}</div>
-        ${tags?`<div class="tags">${tags}</div>`:''}
-        <div class="foot"><span>♥ ${fmt(v.likes)} · 💬 ${fmt(v.comments)} · ${ago(v.posted)}</span><span class="watch">WATCH ↗</span></div>
-      </div>`;
-    if(ADMIN){
-      const bar=document.createElement('div'); bar.className='assignbar';
-      bar.innerHTML=`<button class="abtn" data-vid="${esc(v.id)}">+ ASSIGN ▾</button>`+
-        `<button class="awatch" data-url="${esc(v.url)}" title="watch">▶</button>`;
-      c.querySelector('.body').appendChild(bar);
-    }
-    frag.appendChild(c);
-  }
-  g.appendChild(frag);
-}
-
-async function unlock(){
-  const pass=$('pass').value;if(!pass)return;
-  $('go').disabled=true;$('gerr').textContent='';
-  try{
-    const data=await decrypt(pass);
-    VIDEOS=data.videos||[];
-    $('upd').textContent='updated '+(window.SWIPE_META.generated_at||'');
-    $('gate').style.display='none';$('app').style.display='block';
-    try{sessionStorage.setItem('swipe_pass',pass);}catch(e){}
-    render();
-  }catch(e){
-    $('gerr').textContent='Wrong passcode.';$('go').disabled=false;
-    $('pass').value='';$('pass').focus();
-  }
-}
-
-$('go').onclick=unlock;
-$('pass').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
-['q','sort'].forEach(id=>$(id).addEventListener('input',render));
-$('platseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-  document.querySelectorAll('#platseg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();});
-$('dateseg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-  document.querySelectorAll('#dateseg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();});
-// cycle an idea's status: to do -> filming -> posted (stored locally on this device)
-$('ideasGrid').addEventListener('click',e=>{
-  const b=e.target.closest('.istat');if(!b)return;
-  const id=b.dataset.id;const nxt={todo:'wip',wip:'done',done:'todo'}[ideaStatus(id)];
-  setIdeaStatus(id,nxt);b.className='istat '+nxt;b.textContent=statLabel(nxt);
-  pushStatus(id,nxt);});
-// page-tab navigation (creator + admin)
-$('subnav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;showSection(b.dataset.s);});
-// admin only: assign menu on each card + publish + sync
-if(ADMIN){
-  $('pubBtn').onclick=doPublish;
-  $('syncBtn').onclick=adminSyncStatus;
-  $('grid').addEventListener('click',async e=>{
-    const w=e.target.closest('.awatch'); if(w){const u=w.dataset.url;if(u)window.open(u,'_blank','noopener');return;}
-    const ab=e.target.closest('.abtn');
-    if(ab){const bar=ab.parentElement; let m=bar.querySelector('.amenu');
-      if(!m){m=buildMenu(ab.dataset.vid); bar.appendChild(m);}
-      const wasOpen=m.style.display==='block'; closeMenus(); m.style.display=wasOpen?'none':'block'; return;}
-    const ac=e.target.closest('.ac'); if(ac){await onPick(ac); return;}
-  });
-  document.addEventListener('click',e=>{if(!e.target.closest('.assignbar'))closeMenus();});
-}
-
-// personal link (?c=<token>): load + decrypt this creator's file, show their HQ + videos,
-// then unlock the shared library with the passcode embedded inside their file.
-async function bootCreator(token){
-  try{
-    const hash=(await sha256hex(token)).slice(0,32);
-    // Cache-buster: the creator file is tiny (~5KB) and carries each assigned video's
-    // display data baked in, so ALWAYS pull a fresh copy. Without this, GitHub Pages'
-    // 10-min max-age lets a creator see a stale dashboard for up to 10 min after a
-    // publish (assigned videos "not showing"). Date.now() makes every load a unique URL.
-    await loadScript('creators/'+hash+'.js?v='+Date.now());
-    if(!window.CREATOR_ENC||!window.CREATOR_META) throw new Error('no creator data');
-    const cd=await decryptBlob(window.CREATOR_ENC, window.CREATOR_META.iters, token);
-    TOKEN=token; CREATOR=cd; IDEAS=cd.ideas||[]; ADAPTS=cd.adapts||[];
-    const nm=(cd.name||'').trim();
-    document.querySelector('.brand .tag').textContent='YOUR HUB';
-    document.querySelector('.brand .title').textContent=nm?('HEY '+nm.toUpperCase()):'WELCOME';
-    $('upd').textContent='updated '+(window.CREATOR_META.generated_at||'');
-    $('hqSub').textContent=(cd.handle?('@'+cd.handle):'');
-    const lib=await decryptBlob(window.SWIPE_ENC, window.SWIPE_META.iters, cd.lib_pass);
-    VIDEOS=lib.videos||[];
-    $('gate').style.display='none'; $('app').style.display='block';
-    await syncStatus();   // flush queued taps, then pull the shared truth (no-op if offline/unconfigured)
-    renderHQ(cd.hq||{}); renderIdeas(); renderAdapts();
-    setNav([
-      {id:'linkbio', label:'LINK IN BIO SCRAPER'},
-      {id:'tiktok',  label:'TIKTOK SCRAPER'},
-      {id:'mine',    label:'MY VIDEOS'+(IDEAS.length?' ('+IDEAS.length+')':'')},
-      {id:'adapts',  label:'ADAPT QUEUE'+(ADAPTS.length?' ('+ADAPTS.length+')':'')},
-      {id:'hq',      label:'MY HQ'}
-    ],'linkbio');
-    showSection('linkbio');   // land on the Link in Bio scraper first
-  }catch(e){
-    console.error(e);
-    document.querySelector('.gate-card h1').textContent='Link not active';
-    document.querySelector('.gate-card p').textContent='This personal link is invalid or has been turned off. Ask Jayden for a new one.';
-    $('pass').style.display='none'; $('go').style.display='none';
-  }
-}
-async function boot(){
-  if(ADMIN) return bootAdmin();
-  const token=(new URLSearchParams(location.search).get('c')||'').trim();
-  if(token) return bootCreator(token);
-  try{const p=sessionStorage.getItem('swipe_pass');if(p){$('pass').value=p;unlock();}}catch(e){}
-}
-boot();
+  })();
 </script>
-</body></html>
+<title>Klareva — Creator Hub</title>
+<style>
+  html,body{margin:0;padding:0;background:#0F0D14;}
+  :root{
+    --bg:#0F0D14;
+    --side:#131018;
+    --panel:#1A1622;
+    --panel2:#221D2C;
+    --line:#2A2436;
+    --line2:#372F45;
+    --text:#F6F4FA;
+    --body:#C8C2D6;
+    --mute:#9A94A8;
+    --faint:#736C82;
+    --peach:#F2B59D;
+    --pink:#D67BA6;
+    --plum:#8B6BA8;
+  }
+  *{box-sizing:border-box}
+  ::selection{background:rgba(242,181,157,.25)}
+
+  .app{display:flex;min-height:100vh;background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased}
+
+  /* ---------- sidebar ---------- */
+  .side{width:236px;flex:0 0 236px;background:var(--side);border-right:1px solid var(--line);
+    padding:1.4rem 0 2rem;position:sticky;top:0;height:100vh;overflow-y:auto;
+    display:flex;flex-direction:column;gap:1px}
+  .brand{padding:0 1.25rem 1.4rem;display:flex;align-items:center;gap:.6rem}
+  .dot{width:26px;height:26px;border-radius:7px;flex:0 0 26px;
+    background:linear-gradient(140deg,#F2B59D 0%,#D67BA6 55%,#8B6BA8 100%)}
+  .brand b{font-size:.95rem;font-weight:650;letter-spacing:-.01em}
+  .brand i{display:block;font-style:normal;font-size:.66rem;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--faint);margin-top:1px}
+
+  .navlbl{padding:1.15rem 1.25rem .45rem;font-size:.62rem;letter-spacing:.15em;
+    text-transform:uppercase;color:var(--faint);font-weight:600}
+  .navbtn{appearance:none;background:none;border:0;width:calc(100% - 1rem);margin:0 .5rem;
+    text-align:left;padding:.5rem .75rem;border-radius:7px;color:var(--mute);
+    font-size:.885rem;font-family:inherit;cursor:pointer;transition:background .13s,color .13s}
+  .navbtn:hover{background:rgba(255,255,255,.04);color:var(--text)}
+  .navbtn.on{background:rgba(242,181,157,.1);color:var(--peach);font-weight:600}
+  .navbtn:focus-visible{outline:1.5px solid var(--peach);outline-offset:-1px}
+
+  /* ---------- main ---------- */
+  main{flex:1;padding:3rem 3rem 6rem;max-width:1060px}
+  .sec{display:none;animation:in .18s ease-out}
+  .sec.on{display:block}
+  @keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.sec{animation:none}}
+
+  .eyebrow{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.63rem;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--peach);font-weight:600}
+  h1{font-size:2.1rem;font-weight:660;letter-spacing:-.028em;margin:.5rem 0 .55rem;line-height:1.1}
+  .lede{color:var(--body);font-size:1.02rem;line-height:1.62;margin:0 0 2.4rem;max-width:64ch}
+
+  h2{font-size:.72rem;font-weight:700;letter-spacing:.17em;text-transform:uppercase;
+    color:var(--peach);margin:0 0 1.1rem;padding-bottom:.75rem;border-bottom:1px solid var(--line)}
+  h3{font-size:1.02rem;font-weight:640;margin:1.7rem 0 .55rem;letter-spacing:-.01em;color:var(--text)}
+  p{margin:0 0 1rem;line-height:1.75;color:var(--body);max-width:66ch;font-size:1rem}
+  p strong,li strong{color:var(--text);font-weight:600}
+  ul,ol{margin:0 0 1.1rem;padding-left:1.2rem;display:flex;flex-direction:column;gap:.6rem}
+  li{line-height:1.7;color:var(--body);max-width:64ch;font-size:1rem}
+  li::marker{color:var(--faint)}
+  a{color:var(--peach);text-decoration:none;border-bottom:1px solid rgba(242,181,157,.25)}
+  a:hover{border-bottom-color:var(--peach)}
+
+  .note{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--peach);
+    border-radius:0 8px 8px 0;padding:.9rem 1.05rem;margin:1.1rem 0;max-width:68ch}
+  .note p{margin:0;color:var(--text);font-size:.97rem;line-height:1.7}
+
+  .cmd{background:#08070B;border:1px solid var(--line2);border-radius:7px;
+    padding:.7rem .9rem;margin:.45rem 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:.86rem;color:var(--peach);max-width:68ch}
+
+  /* ---------- tables ---------- */
+  .scroll{overflow-x:auto;margin:0 0 1.4rem;border:1px solid var(--line);border-radius:9px;background:var(--panel)}
+
+  table{width:100%;border-collapse:collapse;font-size:.895rem}
+  th{text-align:left;padding:.7rem .95rem;font-family:ui-monospace,Menlo,monospace;
+    font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:var(--faint);
+    font-weight:600;border-bottom:1px solid var(--line)}
+  td{padding:.78rem .95rem;border-bottom:1px solid var(--line);color:var(--body);vertical-align:top}
+  tr:last-child td{border-bottom:0}
+  tbody tr:hover td{background:rgba(255,255,255,.018)}
+  td:first-child{color:var(--text);font-weight:550}
+  .num{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .big{color:var(--peach);font-weight:600}
+
+  /* ---------- courses ---------- */
+  .mod{border:1px solid var(--line);border-radius:10px;background:var(--panel);
+    margin-bottom:.7rem;overflow:hidden}
+  .modhead{display:flex;align-items:center;gap:.85rem;padding:.95rem 1.1rem;
+    background:var(--panel2);border-bottom:1px solid var(--line)}
+  .modnum{font-family:ui-monospace,Menlo,monospace;font-size:.72rem;color:var(--peach);
+    background:rgba(242,181,157,.1);border-radius:5px;padding:.28rem .45rem;letter-spacing:.03em}
+  .modhead b{font-size:.95rem;font-weight:620;letter-spacing:-.01em}
+  .modhead span{margin-left:auto;font-size:.75rem;color:var(--faint);font-variant-numeric:tabular-nums}
+  .les{display:flex;align-items:center;gap:.85rem;padding:.68rem 1.1rem;
+    border-bottom:1px solid var(--line);font-size:.9rem;transition:background .12s}
+  .les:last-child{border-bottom:0}
+  .les:hover{background:rgba(255,255,255,.022)}
+  a.les{color:inherit}
+  a.les:hover .ti{color:var(--peach)}
+  a.les:hover .rt{color:var(--peach)}
+  .les .ix{font-family:ui-monospace,Menlo,monospace;font-size:.72rem;color:var(--faint);min-width:2.5rem}
+  .les .ti{flex:1;color:var(--text);font-weight:480}
+  .les .rt{font-size:.74rem;color:var(--faint);font-variant-numeric:tabular-nums}
+  .pending{font-size:.7rem;color:var(--faint);border:1px solid var(--line2);
+    border-radius:20px;padding:.16rem .55rem;letter-spacing:.02em}
+
+  /* ---------- blocks ---------- */
+  .block{margin:0 0 2.6rem;padding:1.6rem 1.75rem 1.75rem;background:var(--panel);
+    border:1px solid var(--line);border-radius:12px}
+  .block > *:last-child{margin-bottom:0}
+
+  .steps{display:flex;flex-direction:column;gap:.55rem;margin:0}
+  .step{display:flex;gap:1rem;align-items:flex-start;padding:.85rem 1rem;
+    background:var(--panel2);border:1px solid var(--line);border-radius:9px}
+  .step .n{font-family:ui-monospace,Menlo,monospace;font-size:.78rem;color:var(--peach);
+    background:rgba(242,181,157,.11);border-radius:6px;padding:.3rem .5rem;line-height:1;flex:0 0 auto}
+  .step .t{font-size:.97rem;line-height:1.6;color:var(--body)}
+  .step .t b{color:var(--text);font-weight:620}
+
+  /* collapsible step */
+  details.step{display:block;padding:0;overflow:hidden;transition:border-color .14s}
+  details.step[open]{border-color:var(--line2)}
+  details.step summary{display:flex;gap:1rem;align-items:flex-start;padding:.85rem 1rem;
+    cursor:pointer;list-style:none;transition:background .12s}
+  details.step summary::-webkit-details-marker{display:none}
+  details.step summary:hover{background:rgba(255,255,255,.025)}
+  details.step summary:focus-visible{outline:1.5px solid var(--peach);outline-offset:-2px}
+  .chev{margin-left:auto;color:var(--faint);font-size:1rem;line-height:1.4;flex:0 0 auto;
+    transition:transform .16s}
+  details.step[open] .chev{transform:rotate(90deg);color:var(--peach)}
+  .stepbody{padding:.2rem 1rem 1.05rem 3.35rem;border-top:1px solid var(--line);
+    margin-top:.1rem;padding-top:.95rem}
+  .stepbody p{font-size:.93rem;margin:0 0 .6rem;max-width:60ch}
+  .stepbody p:last-child{margin-bottom:0}
+  .stepbody .cmd{margin:.35rem 0;font-size:.82rem}
+  .stepbody a{font-size:.93rem}
+  .rowlinks{display:flex;flex-wrap:wrap;gap:.45rem;margin:.15rem 0 0}
+  .lnk{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .7rem;border-radius:7px;
+    background:var(--panel);border:1px solid var(--line2);color:var(--text);font-size:.86rem;
+    text-decoration:none;transition:border-color .13s,color .13s}
+  .lnk:hover{border-color:var(--peach);color:var(--peach)}
+  .lnk.todo{color:var(--faint);border-style:dashed;cursor:default}
+  .lnk.todo:hover{border-color:var(--line2);color:var(--faint)}
+
+  /* ---------- cards ---------- */
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:1.05rem 1.15rem;margin-bottom:.65rem;transition:border-color .14s}
+  .card:hover{border-color:var(--line2)}
+  .card h3{margin:0 0 .3rem}
+  .card h3 a{border-bottom:0}
+  .card p{margin:0;font-size:.94rem;color:var(--body)}
+
+  /* ---------- settings ---------- */
+  label{display:block;font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--faint);margin:1.1rem 0 .4rem}
+  input{width:100%;max-width:400px;padding:.6rem .8rem;border:1px solid var(--line2);
+    border-radius:7px;background:#08070B;color:var(--text);font-family:inherit;font-size:.92rem}
+  input::placeholder{color:var(--faint)}
+  input:focus{outline:none;border-color:var(--peach)}
+  .btn{appearance:none;border:1px solid var(--peach);background:var(--peach);color:#0F0D14;
+    padding:.55rem 1.05rem;border-radius:7px;font-family:inherit;font-size:.875rem;
+    font-weight:640;cursor:pointer;margin-top:1.1rem}
+  .btn:hover{filter:brightness(1.06)}
+  .btn.ghost{background:none;color:var(--mute);border-color:var(--line2);margin-left:.45rem}
+  .btn.ghost:hover{color:var(--text);border-color:var(--faint);filter:none}
+  .btn:focus-visible{outline:1.5px solid var(--peach);outline-offset:2px}
+  .chip{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;background:#08070B;
+    border:1px solid var(--line2);border-radius:7px;margin-bottom:.35rem;max-width:400px;font-size:.89rem}
+  .chip b{flex:1;font-weight:550;color:var(--text)}
+  .chip button{appearance:none;border:0;background:none;color:var(--faint);cursor:pointer;
+    font-size:1.1rem;line-height:1;padding:0 .15rem}
+  .chip button:hover{color:var(--pink)}
+  .ok{color:var(--peach);font-size:.82rem;margin-left:.7rem}
+
+  @media (max-width:860px){
+    .app{flex-direction:column}
+    .side{width:100%;flex:none;height:auto;position:static;flex-direction:row;flex-wrap:wrap;
+      padding:.9rem;border-right:0;border-bottom:1px solid var(--line);gap:.25rem}
+    .brand{width:100%;padding:0 .3rem .8rem}
+    .navlbl{display:none}
+    .navbtn{width:auto;margin:0}
+    main{padding:1.8rem 1.15rem 4rem}
+    h1{font-size:1.65rem}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+<nav class="side">
+  <div class="brand"><span class="dot"></span><span><b>Klareva</b><i>Creator Hub</i></span></div>
+  <button class="navbtn on" data-go="intro">Introduction</button>
+  <button class="navbtn" data-go="courses">Courses</button>
+  <button class="navbtn" data-go="radar">Viral Radar</button>
+  <div class="navlbl">Resources</div>
+  <button class="navbtn" data-go="scripts">Scripts</button>
+  <button class="navbtn" data-go="docs">Documents</button>
+  <div class="navlbl">Account</div>
+  <button class="navbtn" data-go="settings">Settings</button>
+</nav>
+
+<main>
+
+<!-- INTRO -->
+<section class="sec on" id="intro">
+  <div class="eyebrow">Start here</div>
+  <h1>Introduction</h1>
+  <p class="lede">Top to bottom, once. First what you are building, then what you do today, then how you work every day after.</p>
+
+  <div class="block">
+    <h2>1 &nbsp;&middot;&nbsp; How this works</h2>
+    <p><strong>You run three accounts posting AI-made videos for Klareva</strong>, a skincare product. You never film anything and you are never on camera. AI avatars are.</p>
+    <p><strong>Your affiliate link sits in the bio of every account.</strong> Someone buys through it, you get paid. That is the whole business.</p>
+    <p><strong>There are two kinds of videos and nothing else.</strong> Short lifestyle videos that grow the accounts, and long product reviews that make the money.</p>
+  </div>
+
+  <div class="block">
+    <h2>2 &nbsp;&middot;&nbsp; Your accounts and what they post</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Account</th><th>Posts</th><th>Avatar</th><th>Per day</th></tr></thead>
+      <tbody>
+        <tr><td>Lifestyle 1</td><td>Lifestyle videos</td><td>Older woman</td><td>3 videos</td></tr>
+        <tr><td>Lifestyle 2</td><td>Lifestyle videos</td><td>Older woman</td><td>3 videos</td></tr>
+        <tr><td>Review</td><td>Product reviews</td><td>Gay man</td><td>1&ndash;2 videos</td></tr>
+      </tbody></table></div>
+    <p>Every account is an Instagram <strong>and</strong> a Facebook page posting the same videos.</p>
+
+    <h3 style="margin-top:1.5rem">Lifestyle videos &nbsp;&middot;&nbsp; short &nbsp;&middot;&nbsp; about 5 minutes each</h3>
+    <p>One clip. An older woman who looks far younger than her age, text over the top with her age, and the description lists what she does, with our product sitting quietly in the middle of that list. A comment keyword in the caption triggers the DM automation.</p>
+    <p><strong>The avatar is the whole video.</strong> She plainly reads her age, but her skin looks shocking for it. That mismatch is what stops the scroll.</p>
+
+    <h3>Product reviews &nbsp;&middot;&nbsp; long &nbsp;&middot;&nbsp; about an hour 20 each</h3>
+    <p>Opens on a problem, neck or hands or under eyes, then reviews products, usually in a store. The last product is ours and it is the one that makes everything else work. <strong>This is where the money comes from.</strong></p>
+
+    <div class="note"><p><strong>The lanes do not mix.</strong> The Viral Radar is for review videos only. Never copy those for your lifestyle accounts.</p></div>
+  </div>
+
+  <div class="block">
+    <h2>3 &nbsp;&middot;&nbsp; Day one, in order</h2>
+    <p style="margin-bottom:1.2rem">Open each one for what you actually need. Do them in this order.</p>
+    <div class="steps">
+
+<details class="step">
+        <summary><span class="n">01</span><span class="t"><b>Message the Google Flow supplier</b> on Telegram. He can take a day, so do this first.</span><span class="chev">&rsaquo;</span></summary>
+        <div class="stepbody">
+          <p>Google Flow is where every image and video gets made. Nano Banana Pro makes the images, Veo turns them into video. <strong>$19 a month.</strong> Do not buy it from the website, it costs far more.</p>
+          <p>Message him on Telegram and send exactly this:</p>
+          <div class="cmd">Jayden sent me</div>
+          <div class="cmd">I need a Google Flow family plan invite, ultra plan, 5k credits</div>
+          <p>Give him a backup Gmail, not one you care about. He invites it to a family plan and you are in for the month.</p>
+          <div class="rowlinks"><a class="lnk" href="https://t.me/phuoctain002" target="_blank" rel="noopener">Telegram &nbsp;@phuoctain002</a></div>
+        </div>
+      </details>
+
+      <details class="step">
+        <summary><span class="n">02</span><span class="t"><b>Get Claude and CapCut.</b></span><span class="chev">&rsaquo;</span></summary>
+        <div class="stepbody">
+          <p>Claude writes your image prompts and converts your scripts. CapCut puts the clips together.</p>
+          <p>Do not pay full price for CapCut Pro. Buy it from G2G for around $2.</p>
+          <div class="rowlinks">
+            <a class="lnk" href="https://claude.ai" target="_blank" rel="noopener">Claude</a>
+            <a class="lnk" href="https://www.g2g.com/categories/capcut-accounts/offer/group?fa=c0107a82%3A89c8e24a&amp;region_id=0f76ac42-3267-4d77-9fba-f9d9d719dac9" target="_blank" rel="noopener">CapCut Pro on G2G</a>
+          </div>
+          <p style="margin-top:.9rem"><strong>Signing into CapCut, do it in this order or it will not work:</strong></p>
+          <ol style="margin:.4rem 0 0;font-size:.93rem">
+            <li>Sign into the CapCut account <strong>on your phone</strong> first</li>
+            <li>On your computer, open CapCut and choose <strong>sign in with QR code</strong></li>
+            <li>Scan the QR code on your computer screen using your phone</li>
+          </ol>
+          <p style="margin-top:.55rem">That is what logs you in on desktop.</p>
+        </div>
+      </details>
+
+      <details class="step">
+        <summary><span class="n">03</span><span class="t"><b>Set up your proxy, then make your first Instagram account and Facebook page.</b> One per day for three days.</span><span class="chev">&rsaquo;</span></summary>
+        <div class="stepbody">
+          <p><strong>If you live outside the US, set your proxy up first.</strong> Before you make a single account. Watch the proxy course, get it running on your phone, then start making accounts. If you are in the US, skip it.</p>
+          <p>Three Instagram accounts and three Facebook pages, one of each per day. Never two in a day, it looks like a bot. Wait two full days after making an account before you post on it.</p>
+          <div class="scroll" style="margin:.6rem 0 .9rem"><table>
+            <thead><tr><th>Day</th><th>Make</th><th>Can post</th></tr></thead>
+            <tbody>
+              <tr><td>Today</td><td>Instagram 1 + Facebook page 1</td><td>In 2 days</td></tr>
+              <tr><td>Tomorrow</td><td>Instagram 2 + Facebook page 2</td><td>In 3 days</td></tr>
+              <tr><td>Day 3</td><td>Instagram 3 + Facebook page 3</td><td>In 4 days</td></tr>
+            </tbody></table></div>
+          <p>Facebook has to be a <strong>page</strong>, not a profile. You make it under your existing personal profile.</p>
+          <ol style="margin:.3rem 0 .6rem;font-size:.93rem">
+            <li>Open Facebook on desktop</li>
+            <li>Click your profile picture, top right, then <b>See all profiles</b></li>
+            <li>Click <b>Create new Page</b></li>
+            <li>Name it, pick a category, hit Create</li>
+          </ol>
+          <p>Nobody can see the page is connected to you, and you can run up to ten pages off one profile.</p>
+          <div class="rowlinks">
+            <a class="lnk" href="https://www.loom.com/share/cded63656f304186930bb8b592a24f9b" target="_blank" rel="noopener">Course 01.1 &mdash; Proxy setup, outside the US</a>
+            <span class="lnk todo">Course 01.2 &mdash; Instagram + Facebook pages</span>
+          </div>
+        </div>
+      </details>
+
+      <details class="step">
+        <summary><span class="n">04</span><span class="t"><b>Get your affiliate link</b> from the GoAffiliatePro portal.</span><span class="chev">&rsaquo;</span></summary>
+        <div class="stepbody">
+          <p>This is how you get paid, so do it as soon as your accounts exist. The link goes in the bio of every account you run.</p>
+          <p>When the Amazon listing launches your link switches to an Amazon one. Jayden will tell you when.</p>
+          <div class="rowlinks"><a class="lnk" href="https://klareva.goaffpro.com/create-account" target="_blank" rel="noopener">Create your GoAffPro account</a></div>
+        </div>
+      </details>
+
+      <details class="step">
+        <summary><span class="n">05</span><span class="t"><b>Build your three avatars</b> and send them to Jayden before you use them.</span><span class="chev">&rsaquo;</span></summary>
+        <div class="stepbody">
+          <p>Two older women for your lifestyle accounts, one gay man for your review account.</p>
+          <p>Send all three to Jayden before you post anything with them. He will tell you which to lock in and what to change.</p>
+          <p><strong>Open the Avatar Builder document, download it, and give the whole thing to your Claude.</strong> Paste it into a fresh chat. It interviews you about each avatar, then hands you a finished image prompt to generate from.</p>
+          <p>That same chat then becomes your prompt writer for every video after this, so keep it open.</p>
+          <div class="rowlinks">
+            <a class="lnk" href="https://www.loom.com/share/215aa4ec2e9b4f898a477a7cb611e36c" target="_blank" rel="noopener">Course 02.1 &mdash; How to make an avatar</a>
+            <a class="lnk" href="https://docs.google.com/document/d/1d87V7h6h_pa-iWrYhm0X9YU086oEcyvTlcJgPOjQt38/edit?usp=sharing" target="_blank" rel="noopener">Avatar Builder document</a>
+          </div>
+        </div>
+      </details>
+
+      <details class="step">
+        <summary><span class="n">06</span><span class="t"><b>Watch the courses, then start making videos immediately.</b></span><span class="chev">&rsaquo;</span></summary>
+        <div class="stepbody">
+          <p>Watch the courses all the way through first. Then start making videos straight away, before your accounts are even ready to post.</p>
+          <p>You are waiting two days on each account anyway. Use that time to build up a stack of finished videos, so the moment an account is clear you are scheduling a backlog instead of starting from zero.</p>
+          <p>The people who wait around during those two days lose a week getting going. The people who build ahead are posting properly from day one.</p>
+          <div class="rowlinks"><a class="lnk" href="#" data-jump="courses">Go to Courses</a></div>
+        </div>
+      </details>
+
+    </div>
+  </div>
+
+<div class="block">
+    <h2>Every day after that &mdash; how videos get made</h2>
+    <p>You are never writing a video from scratch. You are taking one that already worked and transplanting it.</p>
+    <div class="steps">
+      <div class="step"><span class="n">01</span><span class="t"><b>Find a viral video</b> in the Viral Radar, or in the video ideas channel in Discord. Look for one that did way better than that account normally does.</span></div>
+      <div class="step"><span class="n">02</span><span class="t"><b>Transcribe it.</b> Work from what is actually spoken, never the caption or on-screen text.</span></div>
+      <div class="step"><span class="n">03</span><span class="t"><b>Open a new Claude chat and paste in the whole METHOD document.</b> METHOD is the file that teaches Claude how we turn other people&rsquo;s videos into ours. You do not read it, you just copy all of it, paste it into Claude and hit send. Once per chat, then keep using that same chat.</span></div>
+      <div class="step"><span class="n">04</span><span class="t"><b>Paste in the transcript and tell Claude what to change.</b> For example: &ldquo;this video is about the face, make it about the neck instead. Film it inside a Costco. The last product should be Klareva.&rdquo; It hands you back the finished script.</span></div>
+    </div>
+    <div class="note" style="margin-top:1.2rem">
+      <p style="margin-bottom:.6rem"><strong>You need the METHOD document to do any of this.</strong></p>
+      <p style="margin-bottom:.6rem">METHOD is a set of instructions written for Claude, not for you. It teaches Claude how we take a video that already went viral and rebuild it as ours. It keeps what made the original work, the structure, the pacing, the way the hook is worded, and swaps out the parts that need to change: the body part being talked about, the four products being reviewed, and the last product, which is always Klareva.</p>
+      <p style="margin-bottom:.7rem">So you do not read it. You copy the whole thing, paste it into Claude once, and then keep using that same chat every day.</p>
+      <div class="rowlinks"><a class="lnk" href="https://app.notion.com/p/3bbf54400d5d811294e8de11ff40a7f5" target="_blank" rel="noopener">Open METHOD &nbsp;&rarr;</a></div>
+    </div>
+  </div>
+
+<div class="block">
+    <h2>Rules that never change</h2>
+    <ul>
+      <li><strong>Klareva is a hydrocolloid.</strong> On camera it is the small cube. Always the winner, always last.</li>
+      <li><strong>No em dashes in any spoken line.</strong> Commas only. Em dashes break Veo&rsquo;s speech generation.</li>
+      <li><strong>Never invent a product name.</strong> Every product has to be real and spelled exactly as on the packaging, because it gets said out loud.</li>
+    </ul>
+  </div>
+
+<div class="block">
+    <h2>Last thing</h2>
+    <p>You are going to be overwhelmed on day one. Everyone is. That is not a sign this is not for you, it is just what day one feels like.</p>
+    <p>The people who make money are the ones who ask constantly. Jayden replies in a minute or two and you can hop on a call any time. The people who go quiet stall out.</p>
+    <div class="note"><p><strong>Do not sit on a problem for three days.</strong> That is three days you do not get back.</p></div>
+  </div>
+</section>
+
+<!-- COURSES -->
+<section class="sec" id="courses">
+  <div class="eyebrow">Training</div>
+  <h1>Courses</h1>
+  <p class="lede">Work through these in order. Everything you need to take a video from nothing to posted.</p>
+
+  <div class="mod">
+    <div class="modhead"><span class="modnum">01</span><b>Setup</b><span>2 lessons</span></div>
+    <a class="les" href="https://www.loom.com/share/cded63656f304186930bb8b592a24f9b" target="_blank" rel="noopener" style="text-decoration:none;border:0"><span class="ix">01.1</span><span class="ti">Setting up your proxy and VPN</span><span class="rt">Watch</span></a>
+    <div class="les"><span class="ix">01.2</span><span class="ti">Making Instagram accounts and Facebook pages</span><span class="pending">Loom pending</span></div>
+  </div>
+
+  <div class="mod">
+    <div class="modhead"><span class="modnum">02</span><b>Your avatar</b><span>1 lesson</span></div>
+    <a class="les" href="https://www.loom.com/share/215aa4ec2e9b4f898a477a7cb611e36c" target="_blank" rel="noopener" style="text-decoration:none;border:0"><span class="ix">02.1</span><span class="ti">How to make an avatar</span><span class="rt">Watch</span></a>
+  </div>
+
+  <div class="mod">
+    <div class="modhead"><span class="modnum">03</span><b>Lifestyle videos</b><span>1 lesson</span></div>
+    <a class="les" href="https://www.loom.com/share/4dd54ed68e9b4b2781f5e68278a5a90b" target="_blank" rel="noopener" style="text-decoration:none;border:0"><span class="ix">03.1</span><span class="ti">Making a lifestyle video</span><span class="rt">Watch</span></a>
+  </div>
+
+  <div class="mod">
+    <div class="modhead"><span class="modnum">04</span><b>Product review videos</b><span>3 lessons</span></div>
+    <a class="les" href="https://www.loom.com/share/42f63875fb80478f9745e0dea3fa059c" target="_blank" rel="noopener" style="text-decoration:none;border:0"><span class="ix">04.1</span><span class="ti">Rating</span><span class="rt">Watch</span></a>
+    <a class="les" href="https://www.loom.com/share/efb748e4f9b84bb3b399a858b94e6f4b" target="_blank" rel="noopener" style="text-decoration:none;border:0"><span class="ix">04.2</span><span class="ti">Before / after</span><span class="rt">45 min</span></a>
+    <a class="les" href="https://www.loom.com/share/0c31d842678849a3b71dea6d439cbc62" target="_blank" rel="noopener" style="text-decoration:none;border:0"><span class="ix">04.3</span><span class="ti">Store review &nbsp;&middot;&nbsp; highest converting</span><span class="rt">49 min</span></a>
+  </div>
+
+  <div class="mod">
+    <div class="modhead"><span class="modnum">05</span><b>Scripts</b><span>1 lesson</span></div>
+    <div class="les"><span class="ix">05.1</span><span class="ti">Converting a script with METHOD</span><span class="pending">Loom pending</span></div>
+  </div>
+
+</section>
+
+<!-- RADAR -->
+<section class="sec" id="radar">
+  <div class="eyebrow">Refreshed twice a day &nbsp;·&nbsp; 8am and 8pm</div>
+  <h1>Viral Radar</h1>
+  <p class="lede">Every video worth copying, in one place. This is where your day starts. You do not go hunting on Instagram for ideas, you open the library and take one.</p>
+
+  <div class="card">
+    <h3><a href="library/" target="_blank" rel="noopener">Open the Winning Content Library &nbsp;&rarr;</a></h3>
+    <p>Thousands of videos pulled from the accounts in our lane, with thumbnails, view counts and a link straight to the original. Sort by most views, most recent, most likes or most comments. It rebuilds itself twice a day, so what you see in the morning is not what you saw yesterday.</p>
+    <p><strong>It will ask for the passcode.</strong> Same one you got when you joined. If you do not have it, ask in your chat and it gets sent to you.</p>
+  </div>
+
+  <div class="note"><p><strong>Your own link is different from this one.</strong> If videos have been assigned to you personally, you were sent a link with a code on the end of it. Open that one instead and your assigned videos and scripts show up alongside the library. Keep it, it is yours and it does not change.</p></div>
+
+  <h2>How to pick one</h2>
+  <p>Do not just take the video with the biggest number. A video doing 400,000 views on an account where every video does 400,000 views teaches you nothing, that account is just big. What you want is the video that beat its own account.</p>
+  <p>So before you commit to one, tap through to the original and scroll that account's recent posts. If the video you picked looks like everything else they post, keep looking. If it is clearly outperforming the stuff around it, something in that video worked that does not normally work, and that is the thing worth rebuilding.</p>
+  <p>Then run it through METHOD and film it. One video, start to finish, before you go looking for the next one.</p>
+
+  <h2>Accounts we track</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Account</th><th class="num">Followers</th><th>Angle</th></tr></thead>
+    <tbody>
+      <tr><td><a href="https://www.instagram.com/justin.gwang/reels/" target="_blank" rel="noopener">justin.gwang</a></td><td class="num">113,052</td><td>Store walkthroughs. The blueprint.</td></tr>
+      <tr><td><a href="https://www.instagram.com/choi.koreanskin/reels/" target="_blank" rel="noopener">choi.koreanskin</a></td><td class="num">64,606</td><td>Reaction and check-this-advice openers.</td></tr>
+      <tr><td><a href="https://www.instagram.com/alexmakeup2025/reels/" target="_blank" rel="noopener">alexmakeup2025</a></td><td class="num">38,479</td><td>Exposing / mature skin framing.</td></tr>
+      <tr><td><a href="https://www.instagram.com/makeupby.kyle/reels/" target="_blank" rel="noopener">makeupby.kyle</a></td><td class="num">23,775</td><td>Look young after 50 age callouts.</td></tr>
+      <tr><td><a href="https://www.instagram.com/sujin.kremedies/reels/" target="_blank" rel="noopener">sujin.kremedies</a></td><td class="num">22,101</td><td>Tight 30 second remedies.</td></tr>
+      <tr><td><a href="https://www.instagram.com/ryan.ellis.beauty/reels/" target="_blank" rel="noopener">ryan.ellis.beauty</a></td><td class="num">18,165</td><td>High volume, one angle repeated.</td></tr>
+      <tr><td><a href="https://www.instagram.com/kyles.beauty/reels/" target="_blank" rel="noopener">kyles.beauty</a></td><td class="num">5,922</td><td>Same lane as choi. Hook variations.</td></tr>
+    </tbody></table></div>
+</section>
+
+<!-- SCRIPTS -->
+<section class="sec" id="scripts">
+  <div class="eyebrow">Word for word</div>
+  <h1>Scripts</h1>
+  <p class="lede">Ready to film. Say what's in quotes. Text in brackets means do it on camera, don't say it.</p>
+
+  <div class="card">
+    <h3><a href="https://app.notion.com/p/3b5f54400d5d8173b66efc9a770ecdcc" target="_blank" rel="noopener">Creator Sheet &nbsp;·&nbsp; 5 videos</a></h3>
+    <p>The Throw &nbsp;·&nbsp; Hawaii Bride &nbsp;·&nbsp; Under Eye Hack &nbsp;·&nbsp; Target Walkthrough &nbsp;·&nbsp; The Interview. Each with its source video linked.</p>
+  </div>
+
+  <div class="card">
+    <h3><a href="https://app.notion.com/p/3abf54400d5d810f9d24fc82377d6726" target="_blank" rel="noopener">Gay Avatars &nbsp;·&nbsp; 8 videos</a></h3>
+    <p>Podcast &nbsp;·&nbsp; Dad and daughter &nbsp;·&nbsp; Escape the trap &nbsp;·&nbsp; Hands &nbsp;·&nbsp; Ingredients ranked &nbsp;·&nbsp; Neck &nbsp;·&nbsp; Sam's Club &nbsp;·&nbsp; Mom and gay son.</p>
+  </div>
+
+  <div class="note"><p><strong>Don't film these as-is forever.</strong> Once you're comfortable, use METHOD to convert new videos off the Viral Radar yourself. That's how you stop waiting on sheets.</p></div>
+</section>
+
+<!-- DOCS -->
+<section class="sec" id="docs">
+  <div class="eyebrow">Reference</div>
+  <h1>Documents</h1>
+  <p class="lede">Two of these are not for you to read. They are instruction files you paste into Claude so it knows how to do the work.</p>
+
+  <h2>Give these to your Claude</h2>
+  <p style="margin-bottom:1rem">Open a fresh Claude chat, copy the whole document, paste it in, hit send. You do this once per chat, then keep using that same chat from then on. Do not read them and try to follow them yourself, that is not what they are for.</p>
+
+  <div class="card">
+    <h3><a href="https://app.notion.com/p/3bbf54400d5d811294e8de11ff40a7f5" target="_blank" rel="noopener">METHOD &nbsp;&middot;&nbsp; turning other people&rsquo;s videos into ours</a></h3>
+    <p>Teaches Claude how we rewrite a video that already went viral into a Klareva script. Paste this in, then give it a transcript and tell it what to change. It hands back the finished script.</p>
+  </div>
+
+  <div class="card">
+    <h3><a href="https://docs.google.com/document/d/1d87V7h6h_pa-iWrYhm0X9YU086oEcyvTlcJgPOjQt38/edit?usp=sharing" target="_blank" rel="noopener">Avatar Builder and Onboarding</a></h3>
+    <p>Builds your three avatars, then turns that same chat into your prompt writer for every image and video after. Paste it in and it starts asking you questions.</p>
+  </div>
+
+  <div class="note"><p><strong>Use two separate chats.</strong> One with METHOD in it for scripts, one with the Avatar Builder in it for images. Do not paste both into the same chat.</p></div>
+
+  <h2 style="margin-top:2.6rem">For you to read</h2>
+
+  <div class="card">
+    <h3>Content Strategy</h3>
+    <p>The two lanes, your daily numbers, what a good video looks like, where ideas come from, how to iterate. <span class="pending">Link pending</span></p>
+  </div>
+
+  <div class="card">
+    <h3><a href="https://drive.google.com/drive/folders/1PNdTIv4dnyEZdpwcAkw21d4L3KGoGO8D" target="_blank" rel="noopener">Product images</a></h3>
+    <p>Every product image you need, in one Drive folder.</p>
+  </div>
+</section>
+
+<!-- SETTINGS -->
+<section class="sec" id="settings">
+  <div class="eyebrow">Your account</div>
+  <h1>Settings</h1>
+  <p class="lede">Add the accounts you're running so Jayden can find them and check your videos.</p>
+
+  <div class="card" style="max-width:520px;padding:1.4rem 1.5rem 1.6rem">
+    <label for="em">Email</label>
+    <input id="em" type="email" placeholder="you@email.com">
+    <label for="dn">Display name</label>
+    <input id="dn" type="text" placeholder="What Jayden calls you">
+    <label for="ac">Add a social account</label>
+    <input id="ac" type="text" placeholder="@username, press Enter">
+    <div id="list" style="margin-top:.75rem"></div>
+    <button class="btn" id="save">Save</button>
+    <button class="btn ghost" id="copy">Copy for Discord</button>
+    <span class="ok" id="msg"></span>
+  </div>
+
+  <div class="note"><p><strong>This saves in your browser only.</strong> Hit <strong>Copy for Discord</strong> and paste it into your 1 on 1 chat so Jayden actually gets it.</p></div>
+</section>
+
+</main>
+</div>
+
+<script>
+(function () {
+  var navs = document.querySelectorAll('.navbtn');
+  var secs = document.querySelectorAll('.sec');
+  navs.forEach(function (b) {
+    b.addEventListener('click', function () {
+      navs.forEach(function (x) { x.classList.remove('on'); });
+      secs.forEach(function (x) { x.classList.remove('on'); });
+      b.classList.add('on');
+      document.getElementById(b.dataset.go).classList.add('on');
+      window.scrollTo(0, 0);
+    });
+  });
+
+  document.querySelectorAll('[data-jump]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      var t = a.dataset.jump;
+      navs.forEach(function (x) { x.classList.remove('on'); });
+      secs.forEach(function (x) { x.classList.remove('on'); });
+      document.querySelector('.navbtn[data-go="' + t + '"]').classList.add('on');
+      document.getElementById(t).classList.add('on');
+      window.scrollTo(0, 0);
+    });
+  });
+
+  var KEY = 'klareva_creator';
+  var accounts = [];
+  var em = document.getElementById('em');
+  var dn = document.getElementById('dn');
+  var ac = document.getElementById('ac');
+  var list = document.getElementById('list');
+  var msg = document.getElementById('msg');
+
+  function draw() {
+    list.innerHTML = '';
+    accounts.forEach(function (h, i) {
+      var row = document.createElement('div');
+      row.className = 'chip';
+      var b = document.createElement('b');
+      b.textContent = h;
+      var x = document.createElement('button');
+      x.textContent = '×';
+      x.setAttribute('aria-label', 'Remove ' + h);
+      x.addEventListener('click', function () { accounts.splice(i, 1); draw(); });
+      row.appendChild(b); row.appendChild(x); list.appendChild(row);
+    });
+  }
+
+  function flash(t) {
+    msg.textContent = t;
+    setTimeout(function () { msg.textContent = ''; }, 2200);
+  }
+
+  try {
+    var raw = localStorage.getItem(KEY);
+    if (raw) {
+      var d = JSON.parse(raw);
+      em.value = d.email || '';
+      dn.value = d.name || '';
+      accounts = d.accounts || [];
+      draw();
+    }
+  } catch (e) { }
+
+  ac.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter') return;
+    var v = ac.value.trim();
+    if (!v) return;
+    if (v.charAt(0) !== '@') v = '@' + v;
+    accounts.push(v);
+    ac.value = '';
+    draw();
+  });
+
+  document.getElementById('save').addEventListener('click', function () {
+    localStorage.setItem(KEY, JSON.stringify({
+      email: em.value.trim(), name: dn.value.trim(), accounts: accounts
+    }));
+    flash('Saved');
+  });
+
+  document.getElementById('copy').addEventListener('click', function () {
+    var lines = 'Name: ' + (dn.value.trim() || '-') + '\n'
+      + 'Email: ' + (em.value.trim() || '-') + '\n'
+      + 'Accounts: ' + (accounts.length ? accounts.join(', ') : '-');
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(lines).then(
+        function () { flash('Copied'); },
+        function () { flash('Copy failed'); }
+      );
+    } else { flash('Copy not supported'); }
+  });
+})();
+</script>
+</body>
+</html>
