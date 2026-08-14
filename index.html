@@ -846,6 +846,14 @@
   /* Creators run three accounts, so let them fill in several and save once. */
   var rowsWrap = document.getElementById('newrows');
 
+  /* People paste the profile URL, not the handle. Take whichever they give. */
+  function normHandle(raw) {
+    var v = (raw || '').trim();
+    var m = v.match(/(?:instagram|facebook)\.com\/([^\/?#\s]+)/i);
+    if (m) v = m[1];
+    return v.replace(/^@+/, '').replace(/\s+/g, '');
+  }
+
   function blankRow() {
     var row = document.createElement('div');
     row.className = 'nrow';
@@ -861,7 +869,7 @@
     var inp = document.createElement('input');
     inp.className = 'fin';
     inp.type = 'text';
-    inp.placeholder = '@username';
+    inp.placeholder = '@username or paste the profile link';
     inp.autocomplete = 'off';
     inp.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') { e.preventDefault(); addRow(); }
@@ -897,7 +905,7 @@
     var rows = [].slice.call(rowsWrap.querySelectorAll('.nrow'));
     var wanted = [];
     rows.forEach(function (r) {
-      var handle = r.querySelector('input').value.trim().replace(/^@+/, '').replace(/\s+/g, '');
+      var handle = normHandle(r.querySelector('input').value);
       if (handle) wanted.push({ platform: r.querySelector('select').value, handle: handle, row: r });
     });
     if (!wanted.length) { flash('Type a handle first'); return; }
