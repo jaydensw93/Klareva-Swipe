@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <meta name="description" content="Klareva Creator Hub — everything you need to make videos.">
+<meta name="theme-color" content="#0B0614">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23F2B59D'/%3E%3Cstop offset='.55' stop-color='%23D67BA6'/%3E%3Cstop offset='1' stop-color='%238B6BA8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='44' font-family='Arial' font-size='34' font-weight='700' text-anchor='middle' fill='%23231226'%3EK%3C/text%3E%3C/svg%3E">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3"></script>
 <script src="config.js"></script>
 <script>
@@ -18,60 +20,76 @@
 </script>
 <title>Klareva — Creator Hub</title>
 <style>
-  html,body{margin:0;padding:0;background:#0F0D14;}
+  html{background:#0B0614}
+  body{margin:0;padding:0;background:
+    radial-gradient(1000px 560px at 85% -12%, rgba(139,107,168,.16), transparent 60%),
+    radial-gradient(760px 440px at -8% -6%, rgba(214,123,166,.07), transparent 55%),
+    #0B0614}
   :root{
-    --bg:#0F0D14;
-    --side:#131018;
-    --panel:#1A1622;
-    --panel2:#221D2C;
-    --line:#2A2436;
-    --line2:#372F45;
-    --text:#F6F4FA;
-    --body:#C8C2D6;
-    --mute:#9A94A8;
-    --faint:#736C82;
+    --bg:#0B0614;
+    --side:#0E0819;
+    --panel:#151024;
+    --panel2:#1C1530;
+    --line:#251C3A;
+    --line2:#36284F;
+    --text:#F7F5FC;
+    --body:#CBC4DC;
+    --mute:#9C93B0;
+    --faint:#6F6585;
     --peach:#F2B59D;
     --pink:#D67BA6;
     --plum:#8B6BA8;
+    --ink:#231226;
   }
   *{box-sizing:border-box}
   ::selection{background:rgba(242,181,157,.25)}
 
-  .app{display:flex;min-height:100vh;background:var(--bg);color:var(--text);
+  .app{display:flex;min-height:100vh;background:transparent;color:var(--text);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
     -webkit-font-smoothing:antialiased}
 
   /* ---------- sidebar ---------- */
-  .side{width:236px;flex:0 0 236px;background:var(--side);border-right:1px solid var(--line);
-    padding:1.4rem 0 2rem;position:sticky;top:0;height:100vh;overflow-y:auto;
+  .side{width:242px;flex:0 0 242px;background:var(--side);border-right:1px solid var(--line);
+    padding:1.5rem 0 1.4rem;position:sticky;top:0;height:100vh;overflow-y:auto;
     display:flex;flex-direction:column;gap:1px}
-  .brand{padding:0 1.25rem 1.4rem;display:flex;align-items:center;gap:.6rem}
-  .dot{width:26px;height:26px;border-radius:7px;flex:0 0 26px;
-    background:linear-gradient(140deg,#F2B59D 0%,#D67BA6 55%,#8B6BA8 100%)}
+  .brand{padding:0 1.3rem 1.5rem;display:flex;align-items:center;gap:.65rem}
+  .dot{width:28px;height:28px;border-radius:8px;flex:0 0 28px;
+    background:linear-gradient(140deg,#F2B59D 0%,#D67BA6 55%,#8B6BA8 100%);
+    box-shadow:0 2px 12px rgba(214,123,166,.35)}
   .brand b{font-size:.95rem;font-weight:650;letter-spacing:-.01em}
-  .brand i{display:block;font-style:normal;font-size:.66rem;letter-spacing:.13em;
+  .brand i{display:block;font-style:normal;font-size:.64rem;letter-spacing:.14em;
     text-transform:uppercase;color:var(--faint);margin-top:1px}
 
-  .navlbl{padding:1.15rem 1.25rem .45rem;font-size:.62rem;letter-spacing:.15em;
+  .navlbl{padding:1.2rem 1.3rem .45rem;font-size:.6rem;letter-spacing:.16em;
     text-transform:uppercase;color:var(--faint);font-weight:600}
   .navbtn{appearance:none;background:none;border:0;width:calc(100% - 1rem);margin:0 .5rem;
-    text-align:left;padding:.5rem .75rem;border-radius:7px;color:var(--mute);
-    font-size:.885rem;font-family:inherit;cursor:pointer;transition:background .13s,color .13s}
-  .navbtn:hover{background:rgba(255,255,255,.04);color:var(--text)}
-  .navbtn.on{background:rgba(242,181,157,.1);color:var(--peach);font-weight:600}
+    text-align:left;padding:.54rem .8rem;border-radius:8px;color:var(--mute);
+    font-size:.885rem;font-family:inherit;cursor:pointer;
+    display:flex;align-items:center;gap:.68rem;
+    transition:background .13s,color .13s}
+  .navbtn:hover{background:rgba(255,255,255,.045);color:var(--text)}
+  .navbtn.on{background:linear-gradient(90deg,rgba(242,181,157,.15),rgba(214,123,166,.06));
+    color:var(--peach);font-weight:600}
   .navbtn:focus-visible{outline:1.5px solid var(--peach);outline-offset:-1px}
+  .ni{flex:0 0 auto;opacity:.7}
+  .navbtn.on .ni{opacity:1}
+  .whoami{margin-top:auto;padding:1rem 1.3rem 0;font-size:.72rem;color:var(--faint);
+    line-height:1.45;word-break:break-all}
+  .signout{appearance:none;background:none;border:0;color:var(--faint);cursor:pointer;
+    font-family:inherit;font-size:.78rem;padding:.35rem 1.3rem;text-align:left;width:100%}
+  .signout:hover{color:var(--peach)}
 
   /* ---------- main ---------- */
-  main{flex:1;padding:3rem 3rem 6rem;max-width:1060px}
+  main{flex:1;padding:3rem 3.2rem 6rem;max-width:1080px;min-width:0}
   .sec{display:none;animation:in .18s ease-out}
   .sec.on{display:block}
   @keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-  @media (prefers-reduced-motion:reduce){.sec{animation:none}}
+  @media (prefers-reduced-motion:reduce){.sec,.wpane{animation:none}}
 
   .eyebrow{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.63rem;
     letter-spacing:.16em;text-transform:uppercase;color:var(--peach);font-weight:600}
   h1{font-size:2.1rem;font-weight:660;letter-spacing:-.028em;margin:.5rem 0 .55rem;line-height:1.1}
-  .lede{color:var(--body);font-size:1.02rem;line-height:1.62;margin:0 0 2.4rem;max-width:64ch}
+  .lede{color:var(--body);font-size:1.02rem;line-height:1.62;margin:0 0 2.2rem;max-width:64ch}
 
   h2{font-size:.72rem;font-weight:700;letter-spacing:.17em;text-transform:uppercase;
     color:var(--peach);margin:0 0 1.1rem;padding-bottom:.75rem;border-bottom:1px solid var(--line)}
@@ -85,55 +103,178 @@
   a:hover{border-bottom-color:var(--peach)}
 
   .note{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--peach);
-    border-radius:0 8px 8px 0;padding:.9rem 1.05rem;margin:1.1rem 0;max-width:68ch}
-  .note p{margin:0;color:var(--text);font-size:.97rem;line-height:1.7}
+    border-radius:0 10px 10px 0;padding:.95rem 1.1rem;margin:1.1rem 0;max-width:68ch}
+  .note p{margin:0;color:var(--text);font-size:.96rem;line-height:1.7}
 
-  .cmd{background:#08070B;border:1px solid var(--line2);border-radius:7px;
+  .cmd{background:#0A0518;border:1px solid var(--line2);border-radius:8px;
     padding:.7rem .9rem;margin:.45rem 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
     font-size:.86rem;color:var(--peach);max-width:68ch}
 
   /* ---------- auth gate ---------- */
-  /* the gate lives outside .app, so it has to set its own font */
-  /* align-items:center would clip the top of the box off-screen, unreachable,
-     whenever the box is taller than the window. margin:auto centers it when
-     there is room and lets it scroll when there is not. */
-  .gate{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;
+  .gate{position:fixed;inset:0;z-index:100;display:flex;
     align-items:flex-start;justify-content:center;padding:1.5rem;overflow-y:auto;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
-    -webkit-font-smoothing:antialiased;color:var(--text)}
+    -webkit-font-smoothing:antialiased;color:var(--text);
+    background:
+      radial-gradient(1000px 560px at 85% -12%, rgba(139,107,168,.18), transparent 60%),
+      radial-gradient(760px 440px at -8% -6%, rgba(214,123,166,.08), transparent 55%),
+      var(--bg)}
   .gate.hide{display:none}
-  .gatebox{width:100%;max-width:380px;margin:auto;background:var(--panel);
-    border:1px solid var(--line);border-radius:12px;padding:1.9rem 1.75rem 1.75rem}
-  .gatebrand{display:flex;align-items:center;gap:.6rem;margin-bottom:1.5rem}
+  .gatebox{width:100%;max-width:384px;margin:auto;background:var(--panel);
+    border:1px solid var(--line);border-radius:15px;padding:2rem 1.8rem 1.8rem;
+    box-shadow:0 24px 70px rgba(0,0,0,.5)}
+  .gatebrand{display:flex;align-items:center;gap:.65rem;margin-bottom:1.6rem}
   .gatebrand b{font-size:.95rem;font-weight:650;letter-spacing:-.01em;color:var(--text)}
-  .gatebrand i{display:block;font-style:normal;font-size:.66rem;letter-spacing:.13em;
+  .gatebrand i{display:block;font-style:normal;font-size:.64rem;letter-spacing:.14em;
     text-transform:uppercase;color:var(--faint);margin-top:1px}
-  /* undo the global h2 (uppercase, peach, rule underneath) inside the gate */
-  .gatebox h2{font-size:1.32rem;font-weight:640;letter-spacing:-.02em;margin:0 0 .4rem;
+  .gatebox h2{font-size:1.34rem;font-weight:640;letter-spacing:-.02em;margin:0 0 .4rem;
     color:var(--text);text-transform:none;border-bottom:0;padding-bottom:0}
   .gatebox .gsub{color:var(--mute);font-size:.9rem;line-height:1.55;margin:0 0 1.4rem}
-  .gatebox label{display:block;font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;
-    color:var(--faint);margin:0 0 .35rem;font-weight:600}
+  .gatebox label{display:block;font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--faint);margin:0 0 .38rem;font-weight:600}
   .gatebox input{width:100%;box-sizing:border-box;background:var(--bg);color:var(--text);
-    border:1px solid var(--line2);border-radius:7px;padding:.62rem .75rem;font-size:.92rem;
-    font-family:inherit;margin:0 0 .95rem}
-  .gatebox input:focus{outline:none;border-color:var(--peach)}
-  .gatebox .btn{width:100%;margin:.3rem 0 0}
-  .gerr{color:#F2938D;font-size:.84rem;line-height:1.5;margin:.85rem 0 0;display:none}
+    border:1px solid var(--line2);border-radius:8px;padding:.66rem .8rem;font-size:.92rem;
+    font-family:inherit;margin:0 0 1rem;transition:border-color .13s}
+  .gatebox input:focus{outline:none;border-color:var(--pink)}
+  .gatebox .btn{width:100%;margin:.35rem 0 0}
+  .gerr{color:#F2938D;font-size:.84rem;line-height:1.5;margin:.9rem 0 0;display:none}
   .gerr.on{display:block}
-  .gswap{margin:1.15rem 0 0;font-size:.86rem;color:var(--mute);text-align:center}
+  .gswap{margin:1.2rem 0 0;font-size:.86rem;color:var(--mute);text-align:center}
   .gswap a{color:var(--peach);cursor:pointer;text-decoration:none}
   .gswap a:hover{text-decoration:underline}
   .gname{display:block}
   .gname.hide{display:none}
 
-  /* my accounts + admin */
-  .fin{width:100%;box-sizing:border-box;background:var(--bg);color:var(--text);
-    border:1px solid var(--line2);border-radius:7px;padding:.6rem .72rem;font-size:.92rem;
+  /* ---------- intro wizard ---------- */
+  .wiz{max-width:840px}
+  .wizbar{display:flex;align-items:center;gap:1rem;margin:0 0 1.15rem;flex-wrap:wrap}
+  .wizcount{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.7rem;
+    letter-spacing:.08em;color:var(--mute);white-space:nowrap}
+  .wizrail{flex:1;min-width:120px;height:4px;background:var(--panel2);border-radius:99px;overflow:hidden}
+  .wizfill{height:100%;width:0;background:linear-gradient(90deg,var(--peach),var(--pink));
+    border-radius:99px;transition:width .25s ease}
+  .wizdots{display:flex;gap:.38rem}
+  .wdot{width:27px;height:27px;border-radius:50%;border:1px solid var(--line2);
+    background:var(--panel);color:var(--mute);font-size:.72rem;font-family:inherit;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;
+    transition:border-color .13s,color .13s}
+  .wdot:hover{border-color:var(--peach);color:var(--peach)}
+  .wdot.done{color:var(--peach);border-color:rgba(242,181,157,.45)}
+  .wdot.on{background:linear-gradient(140deg,var(--peach),var(--pink));color:var(--ink);
+    border-color:transparent;font-weight:700}
+  .wpane{display:none;background:var(--panel);border:1px solid var(--line);border-radius:15px;
+    padding:1.75rem 1.9rem 1.9rem;animation:in .18s ease-out}
+  .wpane.on{display:block}
+  .wpane > *:last-child{margin-bottom:0}
+  .wt{font-size:1.3rem;font-weight:650;letter-spacing:-.02em;color:var(--text);
+    margin:0 0 1.1rem;display:flex;align-items:baseline;gap:.7rem;flex-wrap:wrap}
+  .wtcount{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.7rem;
+    letter-spacing:.06em;color:var(--faint);font-weight:400}
+  .wiznav{display:flex;align-items:center;justify-content:space-between;margin-top:1.15rem;gap:.8rem}
+  .wiznav .btn{margin-top:0}
+
+  /* checklist tasks */
+  .task{border:1px solid var(--line);border-radius:11px;background:var(--panel2);
+    margin-bottom:.55rem;overflow:hidden;transition:border-color .14s}
+  .task.open{border-color:var(--line2)}
+  .taskhead{display:flex;align-items:center;gap:.85rem;padding:.82rem 1rem;cursor:pointer;
+    transition:background .12s}
+  .taskhead:hover{background:rgba(255,255,255,.025)}
+  .ck{width:23px;height:23px;border-radius:7px;border:1.5px solid var(--line2);
+    background:var(--bg);flex:0 0 auto;cursor:pointer;display:flex;align-items:center;
+    justify-content:center;color:transparent;padding:0;transition:background .14s,border-color .14s}
+  .ck:hover{border-color:var(--peach)}
+  .ck:focus-visible{outline:1.5px solid var(--peach);outline-offset:2px}
+  .task.done .ck{background:linear-gradient(140deg,var(--peach),var(--pink));
+    border-color:transparent;color:var(--ink)}
+  .tasktitle{flex:1;font-size:.95rem;line-height:1.55;color:var(--body)}
+  .tasktitle b{color:var(--text);font-weight:620}
+  .task.done .tasktitle,.task.done .tasktitle b{color:var(--faint)}
+  .tchev{margin-left:auto;background:none;border:0;color:var(--faint);font-size:1.05rem;
+    line-height:1;flex:0 0 auto;cursor:pointer;padding:.2rem .3rem;font-family:inherit;
+    transition:transform .16s,color .13s}
+  .task.open .tchev{transform:rotate(90deg);color:var(--peach)}
+  .taskbody{display:none;padding:.95rem 1.1rem 1.1rem 3.6rem;border-top:1px solid var(--line)}
+  .task.open .taskbody{display:block}
+  .taskbody p{font-size:.93rem;margin:0 0 .6rem;max-width:60ch}
+  .taskbody p:last-child{margin-bottom:0}
+  .taskbody .cmd{margin:.35rem 0;font-size:.82rem}
+  .taskbody a{font-size:.93rem}
+  .taskbody > *:last-child{margin-bottom:0}
+
+  /* numbered steps (daily loop) */
+  .steps{display:flex;flex-direction:column;gap:.55rem;margin:0}
+  .step{display:flex;gap:1rem;align-items:flex-start;padding:.85rem 1rem;
+    background:var(--panel2);border:1px solid var(--line);border-radius:10px}
+  .step .n{font-family:ui-monospace,Menlo,monospace;font-size:.78rem;color:var(--peach);
+    background:rgba(242,181,157,.11);border-radius:6px;padding:.3rem .5rem;line-height:1;flex:0 0 auto}
+  .step .t{font-size:.96rem;line-height:1.6;color:var(--body)}
+  .step .t b{color:var(--text);font-weight:620}
+
+  .rowlinks{display:flex;flex-wrap:wrap;gap:.45rem;margin:.15rem 0 0}
+  .lnk{display:inline-flex;align-items:center;gap:.4rem;padding:.42rem .75rem;border-radius:8px;
+    background:var(--panel);border:1px solid var(--line2);color:var(--text);font-size:.86rem;
+    text-decoration:none;transition:border-color .13s,color .13s}
+  .lnk:hover{border-color:var(--peach);color:var(--peach)}
+  .lnk.todo{color:var(--faint);border-style:dashed;cursor:default}
+  .lnk.todo:hover{border-color:var(--line2);color:var(--faint)}
+
+  /* ---------- tables ---------- */
+  .scroll{overflow-x:auto;margin:0 0 1.4rem;border:1px solid var(--line);border-radius:11px;
+    background:var(--panel)}
+  table{width:100%;border-collapse:collapse;font-size:.895rem}
+  th{text-align:left;padding:.72rem .95rem;font-family:ui-monospace,Menlo,monospace;
+    font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:var(--faint);
+    font-weight:600;border-bottom:1px solid var(--line);background:rgba(255,255,255,.015)}
+  td{padding:.78rem .95rem;border-bottom:1px solid var(--line);color:var(--body);vertical-align:top}
+  tr:last-child td{border-bottom:0}
+  tbody tr:hover td{background:rgba(255,255,255,.018)}
+  td:first-child{color:var(--text);font-weight:550}
+  .num{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .big{color:var(--peach);font-weight:600}
+
+  /* ---------- courses ---------- */
+  .mod{border:1px solid var(--line);border-radius:12px;background:var(--panel);
+    margin-bottom:.75rem;overflow:hidden}
+  .modhead{display:flex;align-items:center;gap:.85rem;padding:.98rem 1.15rem;
+    background:var(--panel2);border-bottom:1px solid var(--line)}
+  .modnum{font-family:ui-monospace,Menlo,monospace;font-size:.72rem;color:var(--peach);
+    background:rgba(242,181,157,.1);border-radius:6px;padding:.3rem .48rem;letter-spacing:.03em}
+  .modhead b{font-size:.95rem;font-weight:620;letter-spacing:-.01em}
+  .modhead span{margin-left:auto;font-size:.75rem;color:var(--faint);font-variant-numeric:tabular-nums}
+  .les{display:flex;align-items:center;gap:.85rem;padding:.7rem 1.15rem;
+    border-bottom:1px solid var(--line);font-size:.9rem;transition:background .12s}
+  .les:last-child{border-bottom:0}
+  .les:hover{background:rgba(255,255,255,.022)}
+  a.les{color:inherit}
+  a.les:hover .ti,a.les:hover .rt{color:var(--peach)}
+  .les .ix{font-family:ui-monospace,Menlo,monospace;font-size:.72rem;color:var(--faint);min-width:2.5rem}
+  .les .ti{flex:1;color:var(--text);font-weight:480}
+  .les .rt{font-size:.74rem;color:var(--faint);font-variant-numeric:tabular-nums}
+  .pending{font-size:.7rem;color:var(--faint);border:1px solid var(--line2);
+    border-radius:20px;padding:.16rem .55rem;letter-spacing:.02em}
+
+  /* ---------- cards ---------- */
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:1.1rem 1.2rem;margin-bottom:.65rem;transition:border-color .14s}
+  .card:hover{border-color:var(--line2)}
+  .card h3{margin:0 0 .3rem}
+  .card h3 a{border-bottom:0}
+  .card p{margin:0;font-size:.94rem;color:var(--body)}
+
+  /* ---------- accounts + admin ---------- */
+  label{display:block;font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--faint);margin:1.1rem 0 .4rem}
+  input{width:100%;max-width:400px;padding:.6rem .8rem;border:1px solid var(--line2);
+    border-radius:8px;background:#090512;color:var(--text);font-family:inherit;font-size:.92rem}
+  input::placeholder{color:var(--faint)}
+  input:focus{outline:none;border-color:var(--pink)}
+  .fin{width:100%;box-sizing:border-box;background:#090512;color:var(--text);
+    border:1px solid var(--line2);border-radius:8px;padding:.6rem .72rem;font-size:.92rem;
     font-family:inherit;margin:0 0 .95rem}
-  .fin:focus{outline:none;border-color:var(--peach)}
-  .arow{display:flex;align-items:center;gap:.75rem;padding:.7rem .9rem;background:var(--panel);
-    border:1px solid var(--line);border-radius:8px;margin:0 0 .5rem}
+  .fin:focus{outline:none;border-color:var(--pink)}
+  .arow{display:flex;align-items:center;gap:.75rem;padding:.72rem .92rem;background:var(--panel);
+    border:1px solid var(--line);border-radius:9px;margin:0 0 .5rem}
   .arow b{font-weight:600;color:var(--text);font-size:.92rem}
   .apl{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.62rem;
     letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
@@ -141,8 +282,7 @@
   .adel{margin-left:auto;background:none;border:0;color:var(--faint);cursor:pointer;
     font-family:inherit;font-size:.82rem;padding:.2rem .4rem;border-radius:5px}
   .adel:hover{color:#F2938D;background:rgba(242,147,141,.09)}
-  /* approve toggle: same shape as .adel but must not read as a delete */
-  .atog{background:none;border:1px solid var(--line2);border-radius:5px;cursor:pointer;
+  .atog{background:none;border:1px solid var(--line2);border-radius:6px;cursor:pointer;
     font-family:inherit;font-size:.78rem;padding:.2rem .6rem}
   .atog:hover{border-color:var(--peach)}
   .aempty{color:var(--faint);font-size:.9rem;padding:.9rem 0}
@@ -155,123 +295,32 @@
   .nx:hover{color:#F2938D;background:rgba(242,147,141,.09)}
   .nx[disabled]{opacity:.25;cursor:default}
   .nx[disabled]:hover{color:var(--faint);background:none}
-  .addmore{appearance:none;background:none;border:1px dashed var(--line2);border-radius:7px;
+  .addmore{appearance:none;background:none;border:1px dashed var(--line2);border-radius:8px;
     color:var(--mute);cursor:pointer;font-family:inherit;font-size:.85rem;
     padding:.5rem .9rem;width:100%;margin:.2rem 0 1rem;transition:border-color .12s,color .12s}
   .addmore:hover{border-color:var(--peach);color:var(--text)}
   .krow{display:flex;flex-wrap:wrap;gap:.7rem;margin:0 0 1.8rem}
   .kbox{flex:1 1 150px;background:var(--panel);border:1px solid var(--line);
-    border-radius:9px;padding:.95rem 1.1rem}
-  .kbox b{display:block;font-size:1.65rem;font-weight:650;letter-spacing:-.03em;color:var(--text)}
+    border-radius:12px;padding:1rem 1.15rem}
+  .kbox b{display:block;font-size:1.7rem;font-weight:650;letter-spacing:-.03em;
+    background:linear-gradient(120deg,var(--peach),var(--pink));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
   .kbox i{display:block;font-style:normal;font-size:.66rem;letter-spacing:.11em;
-    text-transform:uppercase;color:var(--faint);margin-top:.22rem}
-  .whoami{padding:.9rem 1.25rem 0;font-size:.72rem;color:var(--faint);line-height:1.45;
-    word-break:break-all}
-  .signout{appearance:none;background:none;border:0;color:var(--faint);cursor:pointer;
-    font-family:inherit;font-size:.78rem;padding:.35rem 1.25rem;text-align:left;width:100%}
-  .signout:hover{color:var(--peach)}
+    text-transform:uppercase;color:var(--faint);margin-top:.24rem}
 
-  .scroll{overflow-x:auto;margin:0 0 1.4rem;border:1px solid var(--line);border-radius:9px;background:var(--panel)}
-
-  table{width:100%;border-collapse:collapse;font-size:.895rem}
-  th{text-align:left;padding:.7rem .95rem;font-family:ui-monospace,Menlo,monospace;
-    font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:var(--faint);
-    font-weight:600;border-bottom:1px solid var(--line)}
-  td{padding:.78rem .95rem;border-bottom:1px solid var(--line);color:var(--body);vertical-align:top}
-  tr:last-child td{border-bottom:0}
-  tbody tr:hover td{background:rgba(255,255,255,.018)}
-  td:first-child{color:var(--text);font-weight:550}
-  .num{font-variant-numeric:tabular-nums;white-space:nowrap}
-  .big{color:var(--peach);font-weight:600}
-
-  /* ---------- courses ---------- */
-  .mod{border:1px solid var(--line);border-radius:10px;background:var(--panel);
-    margin-bottom:.7rem;overflow:hidden}
-  .modhead{display:flex;align-items:center;gap:.85rem;padding:.95rem 1.1rem;
-    background:var(--panel2);border-bottom:1px solid var(--line)}
-  .modnum{font-family:ui-monospace,Menlo,monospace;font-size:.72rem;color:var(--peach);
-    background:rgba(242,181,157,.1);border-radius:5px;padding:.28rem .45rem;letter-spacing:.03em}
-  .modhead b{font-size:.95rem;font-weight:620;letter-spacing:-.01em}
-  .modhead span{margin-left:auto;font-size:.75rem;color:var(--faint);font-variant-numeric:tabular-nums}
-  .les{display:flex;align-items:center;gap:.85rem;padding:.68rem 1.1rem;
-    border-bottom:1px solid var(--line);font-size:.9rem;transition:background .12s}
-  .les:last-child{border-bottom:0}
-  .les:hover{background:rgba(255,255,255,.022)}
-  a.les{color:inherit}
-  a.les:hover .ti{color:var(--peach)}
-  a.les:hover .rt{color:var(--peach)}
-  .les .ix{font-family:ui-monospace,Menlo,monospace;font-size:.72rem;color:var(--faint);min-width:2.5rem}
-  .les .ti{flex:1;color:var(--text);font-weight:480}
-  .les .rt{font-size:.74rem;color:var(--faint);font-variant-numeric:tabular-nums}
-  .pending{font-size:.7rem;color:var(--faint);border:1px solid var(--line2);
-    border-radius:20px;padding:.16rem .55rem;letter-spacing:.02em}
-
-  /* ---------- blocks ---------- */
-  .block{margin:0 0 2.6rem;padding:1.6rem 1.75rem 1.75rem;background:var(--panel);
-    border:1px solid var(--line);border-radius:12px}
-  .block > *:last-child{margin-bottom:0}
-
-  .steps{display:flex;flex-direction:column;gap:.55rem;margin:0}
-  .step{display:flex;gap:1rem;align-items:flex-start;padding:.85rem 1rem;
-    background:var(--panel2);border:1px solid var(--line);border-radius:9px}
-  .step .n{font-family:ui-monospace,Menlo,monospace;font-size:.78rem;color:var(--peach);
-    background:rgba(242,181,157,.11);border-radius:6px;padding:.3rem .5rem;line-height:1;flex:0 0 auto}
-  .step .t{font-size:.97rem;line-height:1.6;color:var(--body)}
-  .step .t b{color:var(--text);font-weight:620}
-
-  /* collapsible step */
-  details.step{display:block;padding:0;overflow:hidden;transition:border-color .14s}
-  details.step[open]{border-color:var(--line2)}
-  details.step summary{display:flex;gap:1rem;align-items:flex-start;padding:.85rem 1rem;
-    cursor:pointer;list-style:none;transition:background .12s}
-  details.step summary::-webkit-details-marker{display:none}
-  details.step summary:hover{background:rgba(255,255,255,.025)}
-  details.step summary:focus-visible{outline:1.5px solid var(--peach);outline-offset:-2px}
-  .chev{margin-left:auto;color:var(--faint);font-size:1rem;line-height:1.4;flex:0 0 auto;
-    transition:transform .16s}
-  details.step[open] .chev{transform:rotate(90deg);color:var(--peach)}
-  .stepbody{padding:.2rem 1rem 1.05rem 3.35rem;border-top:1px solid var(--line);
-    margin-top:.1rem;padding-top:.95rem}
-  .stepbody p{font-size:.93rem;margin:0 0 .6rem;max-width:60ch}
-  .stepbody p:last-child{margin-bottom:0}
-  .stepbody .cmd{margin:.35rem 0;font-size:.82rem}
-  .stepbody a{font-size:.93rem}
-  .rowlinks{display:flex;flex-wrap:wrap;gap:.45rem;margin:.15rem 0 0}
-  .lnk{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .7rem;border-radius:7px;
-    background:var(--panel);border:1px solid var(--line2);color:var(--text);font-size:.86rem;
-    text-decoration:none;transition:border-color .13s,color .13s}
-  .lnk:hover{border-color:var(--peach);color:var(--peach)}
-  .lnk.todo{color:var(--faint);border-style:dashed;cursor:default}
-  .lnk.todo:hover{border-color:var(--line2);color:var(--faint)}
-
-  /* ---------- cards ---------- */
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;
-    padding:1.05rem 1.15rem;margin-bottom:.65rem;transition:border-color .14s}
-  .card:hover{border-color:var(--line2)}
-  .card h3{margin:0 0 .3rem}
-  .card h3 a{border-bottom:0}
-  .card p{margin:0;font-size:.94rem;color:var(--body)}
-
-  /* ---------- settings ---------- */
-  label{display:block;font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--faint);margin:1.1rem 0 .4rem}
-  input{width:100%;max-width:400px;padding:.6rem .8rem;border:1px solid var(--line2);
-    border-radius:7px;background:#08070B;color:var(--text);font-family:inherit;font-size:.92rem}
-  input::placeholder{color:var(--faint)}
-  input:focus{outline:none;border-color:var(--peach)}
-  .btn{appearance:none;border:1px solid var(--peach);background:var(--peach);color:#0F0D14;
-    padding:.55rem 1.05rem;border-radius:7px;font-family:inherit;font-size:.875rem;
-    font-weight:640;cursor:pointer;margin-top:1.1rem}
-  .btn:hover{filter:brightness(1.06)}
-  .btn.ghost{background:none;color:var(--mute);border-color:var(--line2);margin-left:.45rem}
-  .btn.ghost:hover{color:var(--text);border-color:var(--faint);filter:none}
+  /* ---------- buttons ---------- */
+  .btn{appearance:none;border:0;background:linear-gradient(135deg,#F6C3A8,#E08BB0);
+    color:var(--ink);padding:.6rem 1.15rem;border-radius:9px;font-family:inherit;
+    font-size:.875rem;font-weight:660;cursor:pointer;margin-top:1.1rem;
+    box-shadow:0 2px 12px rgba(214,123,166,.22);
+    transition:filter .12s,transform .12s,box-shadow .12s}
+  .btn:hover{filter:brightness(1.05);transform:translateY(-1px);
+    box-shadow:0 4px 16px rgba(214,123,166,.3)}
+  .btn:active{transform:none}
+  .btn[disabled]{opacity:.55;cursor:default;transform:none}
+  .btn.ghost{background:none;border:1px solid var(--line2);color:var(--mute);box-shadow:none}
+  .btn.ghost:hover{color:var(--text);border-color:var(--faint);filter:none;transform:none;box-shadow:none}
   .btn:focus-visible{outline:1.5px solid var(--peach);outline-offset:2px}
-  .chip{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;background:#08070B;
-    border:1px solid var(--line2);border-radius:7px;margin-bottom:.35rem;max-width:400px;font-size:.89rem}
-  .chip b{flex:1;font-weight:550;color:var(--text)}
-  .chip button{appearance:none;border:0;background:none;color:var(--faint);cursor:pointer;
-    font-size:1.1rem;line-height:1;padding:0 .15rem}
-  .chip button:hover{color:var(--pink)}
   .ok{color:var(--peach);font-size:.82rem;margin-left:.7rem}
 
   @media (max-width:860px){
@@ -281,8 +330,15 @@
     .brand{width:100%;padding:0 .3rem .8rem}
     .navlbl{display:none}
     .navbtn{width:auto;margin:0}
+    .whoami{margin-top:0;width:auto;padding:.5rem .6rem 0}
+    .signout{width:auto;padding:.5rem .6rem 0}
     main{padding:1.8rem 1.15rem 4rem}
     h1{font-size:1.65rem}
+    .wpane{padding:1.25rem 1.1rem 1.35rem}
+    .taskbody{padding-left:1.1rem}
+  }
+  @media (max-width:560px){
+    .wizdots{display:none}
   }
 </style>
 </head>
@@ -312,15 +368,15 @@
 <div class="app" id="app" style="display:none">
 <nav class="side">
   <div class="brand"><span class="dot"></span><span><b>Klareva</b><i>Creator Hub</i></span></div>
-  <button class="navbtn on" data-go="intro">Introduction</button>
-  <button class="navbtn" data-go="courses">Courses</button>
-  <button class="navbtn" data-go="radar">Viral Radar</button>
+  <button class="navbtn on" data-go="intro"><svg class="ni" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4c4-2 6 2 10 0v8c-4 2-6-2-10 0"/></svg><span>Introduction</span></button>
+  <button class="navbtn" data-go="courses"><svg class="ni" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5 16 12l-6 3.5z"/></svg><span>Courses</span></button>
+  <button class="navbtn" data-go="radar"><svg class="ni" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.6"/><path d="M12 12l5.5-5.5"/></svg><span>Viral Radar</span></button>
   <div class="navlbl">Resources</div>
-  <button class="navbtn" data-go="scripts">Scripts</button>
-  <button class="navbtn" data-go="docs">Documents</button>
+  <button class="navbtn" data-go="scripts"><svg class="ni" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M10 12h5M10 16h5"/></svg><span>Scripts</span></button>
+  <button class="navbtn" data-go="docs"><svg class="ni" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Documents</span></button>
   <div class="navlbl">Account</div>
-  <button class="navbtn" data-go="accounts">My Accounts</button>
-  <button class="navbtn" data-go="admin" id="navadmin" style="display:none">Admin</button>
+  <button class="navbtn" data-go="accounts"><svg class="ni" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.5-3.5 4-5 7-5s5.5 1.5 7 5"/></svg><span>My Accounts</span></button>
+  <button class="navbtn" data-go="admin" id="navadmin" style="display:none"><svg class="ni" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg><span>Admin</span></button>
   <div class="whoami" id="whoami"></div>
   <button class="signout" id="signout" type="button">Sign out</button>
 </nav>
@@ -331,166 +387,195 @@
 <section class="sec on" id="intro">
   <div class="eyebrow">Start here</div>
   <h1>Introduction</h1>
-  <p class="lede">Top to bottom, once. First what you are building, then what you do today, then how you work every day after.</p>
+  <p class="lede">One step at a time. Check things off as you do them, your progress saves on its own.</p>
 
-  <div class="block">
-    <h2>1 &nbsp;&middot;&nbsp; How this works</h2>
-    <p><strong>You run three accounts posting AI-made videos for Klareva</strong>, a skincare product. You never film anything and you are never on camera. AI avatars are.</p>
-    <p><strong>Your affiliate link sits in the bio of every account.</strong> Someone buys through it, you get paid. That is the whole business.</p>
-    <p><strong>There are two kinds of videos and nothing else.</strong> Short lifestyle videos that grow the accounts, and long product reviews that make the money.</p>
+  <div class="wiz">
+    <div class="wizbar">
+      <div class="wizcount" id="wizcount"></div>
+      <div class="wizrail"><div class="wizfill" id="wizfill"></div></div>
+      <div class="wizdots" id="wizdots"></div>
+    </div>
+
+    <div id="wizpanes">
+
+    <div class="wpane" data-title="How this works">
+      <div class="wt">How this works</div>
+      <p><strong>You run three accounts posting AI-made videos for Klareva</strong>, a skincare product. You never film anything and you are never on camera. AI avatars are.</p>
+      <p><strong>Your affiliate link sits in the bio of every account.</strong> Someone buys through it, you get paid. That is the whole business.</p>
+      <p><strong>There are two kinds of videos and nothing else.</strong> Short lifestyle videos that grow the accounts, and long product reviews that make the money.</p>
+    </div>
+
+    <div class="wpane" data-title="Your accounts">
+      <div class="wt">Your accounts and what they post</div>
+      <div class="scroll"><table>
+        <thead><tr><th>Account</th><th>Posts</th><th>Avatar</th><th>Per day</th></tr></thead>
+        <tbody>
+          <tr><td>Lifestyle 1</td><td>Lifestyle videos</td><td>Older woman</td><td>3 videos</td></tr>
+          <tr><td>Lifestyle 2</td><td>Lifestyle videos</td><td>Older woman</td><td>3 videos</td></tr>
+          <tr><td>Review</td><td>Product reviews</td><td>Gay man</td><td>1&ndash;2 videos</td></tr>
+        </tbody></table></div>
+      <p>Every account is an Instagram <strong>and</strong> a Facebook page posting the same videos.</p>
+      <h3 style="margin-top:1.5rem">Lifestyle videos &nbsp;&middot;&nbsp; short &nbsp;&middot;&nbsp; about 5 minutes each</h3>
+      <p>One clip. An older woman who looks far younger than her age, text over the top with her age, and the description lists what she does, with our product sitting quietly in the middle of that list. A comment keyword in the caption triggers the DM automation.</p>
+      <p><strong>The avatar is the whole video.</strong> She plainly reads her age, but her skin looks shocking for it. That mismatch is what stops the scroll.</p>
+      <h3>Product reviews &nbsp;&middot;&nbsp; long &nbsp;&middot;&nbsp; about an hour 20 each</h3>
+      <p>Opens on a problem, neck or hands or under eyes, then reviews products, usually in a store. The last product is ours and it is the one that makes everything else work. <strong>This is where the money comes from.</strong></p>
+      <div class="note"><p><strong>The lanes do not mix.</strong> The Viral Radar is for review videos only. Never copy those for your lifestyle accounts.</p></div>
+    </div>
+
+    <div class="wpane" data-title="Day one">
+      <div class="wt">Day one, in order <span class="wtcount" id="d1count"></span></div>
+      <p style="margin-bottom:1.1rem">Do them in this order. Tap a step for what you actually need, and check it off when it is done.</p>
+<div class="task" data-ck="d1">
+  <div class="taskhead">
+    <button class="ck" type="button" aria-label="Mark done"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg></button>
+    <div class="tasktitle"><b>Message the Google Flow supplier</b> on Telegram. He can take a day, so do this first.</div>
+    <button class="tchev" type="button" aria-label="Open details">&rsaquo;</button>
   </div>
-
-  <div class="block">
-    <h2>2 &nbsp;&middot;&nbsp; Your accounts and what they post</h2>
-    <div class="scroll"><table>
-      <thead><tr><th>Account</th><th>Posts</th><th>Avatar</th><th>Per day</th></tr></thead>
+  <div class="taskbody">
+    <p>Google Flow is where every image and video gets made. Nano Banana Pro makes the images, Veo turns them into video. <strong>$19 a month.</strong> Do not buy it from the website, it costs far more.</p>
+    <p>Message him on Telegram and send exactly this:</p>
+    <div class="cmd">Jayden sent me</div>
+    <div class="cmd">I need a Google Flow family plan invite, ultra plan, 5k credits</div>
+    <p>Give him a backup Gmail, not one you care about. He invites it to a family plan and you are in for the month.</p>
+    <div class="rowlinks"><a class="lnk" href="https://t.me/phuoctain002" target="_blank" rel="noopener">Telegram &nbsp;@phuoctain002</a></div>
+  </div>
+</div>
+<div class="task" data-ck="d2">
+  <div class="taskhead">
+    <button class="ck" type="button" aria-label="Mark done"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg></button>
+    <div class="tasktitle"><b>Get Claude and CapCut.</b></div>
+    <button class="tchev" type="button" aria-label="Open details">&rsaquo;</button>
+  </div>
+  <div class="taskbody">
+    <p>Claude writes your image prompts and converts your scripts. CapCut puts the clips together.</p>
+    <p>Do not pay full price for CapCut Pro. Buy it from G2G for around $2.</p>
+    <div class="rowlinks">
+      <a class="lnk" href="https://claude.ai" target="_blank" rel="noopener">Claude</a>
+      <a class="lnk" href="https://www.g2g.com/categories/capcut-accounts/offer/group?fa=c0107a82%3A89c8e24a&amp;region_id=0f76ac42-3267-4d77-9fba-f9d9d719dac9" target="_blank" rel="noopener">CapCut Pro on G2G</a>
+    </div>
+    <p style="margin-top:.9rem"><strong>Signing into CapCut, do it in this order or it will not work:</strong></p>
+    <ol style="margin:.4rem 0 0;font-size:.93rem">
+      <li>Sign into the CapCut account <strong>on your phone</strong> first</li>
+      <li>On your computer, open CapCut and choose <strong>sign in with QR code</strong></li>
+      <li>Scan the QR code on your computer screen using your phone</li>
+    </ol>
+    <p style="margin-top:.55rem">That is what logs you in on desktop.</p>
+  </div>
+</div>
+<div class="task" data-ck="d3">
+  <div class="taskhead">
+    <button class="ck" type="button" aria-label="Mark done"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg></button>
+    <div class="tasktitle"><b>Set up your proxy, then make your first Instagram account and Facebook page.</b> One per day for three days.</div>
+    <button class="tchev" type="button" aria-label="Open details">&rsaquo;</button>
+  </div>
+  <div class="taskbody">
+    <p><strong>If you live outside the US, set your proxy up first.</strong> Before you make a single account. Watch the proxy course, get it running on your phone, then start making accounts. If you are in the US, skip it.</p>
+    <p>Three Instagram accounts and three Facebook pages, one of each per day. Never two in a day, it looks like a bot. Wait two full days after making an account before you post on it.</p>
+    <div class="scroll" style="margin:.6rem 0 .9rem"><table>
+      <thead><tr><th>Day</th><th>Make</th><th>Can post</th></tr></thead>
       <tbody>
-        <tr><td>Lifestyle 1</td><td>Lifestyle videos</td><td>Older woman</td><td>3 videos</td></tr>
-        <tr><td>Lifestyle 2</td><td>Lifestyle videos</td><td>Older woman</td><td>3 videos</td></tr>
-        <tr><td>Review</td><td>Product reviews</td><td>Gay man</td><td>1&ndash;2 videos</td></tr>
+        <tr><td>Today</td><td>Instagram 1 + Facebook page 1</td><td>In 2 days</td></tr>
+        <tr><td>Tomorrow</td><td>Instagram 2 + Facebook page 2</td><td>In 3 days</td></tr>
+        <tr><td>Day 3</td><td>Instagram 3 + Facebook page 3</td><td>In 4 days</td></tr>
       </tbody></table></div>
-    <p>Every account is an Instagram <strong>and</strong> a Facebook page posting the same videos.</p>
-
-    <h3 style="margin-top:1.5rem">Lifestyle videos &nbsp;&middot;&nbsp; short &nbsp;&middot;&nbsp; about 5 minutes each</h3>
-    <p>One clip. An older woman who looks far younger than her age, text over the top with her age, and the description lists what she does, with our product sitting quietly in the middle of that list. A comment keyword in the caption triggers the DM automation.</p>
-    <p><strong>The avatar is the whole video.</strong> She plainly reads her age, but her skin looks shocking for it. That mismatch is what stops the scroll.</p>
-
-    <h3>Product reviews &nbsp;&middot;&nbsp; long &nbsp;&middot;&nbsp; about an hour 20 each</h3>
-    <p>Opens on a problem, neck or hands or under eyes, then reviews products, usually in a store. The last product is ours and it is the one that makes everything else work. <strong>This is where the money comes from.</strong></p>
-
-    <div class="note"><p><strong>The lanes do not mix.</strong> The Viral Radar is for review videos only. Never copy those for your lifestyle accounts.</p></div>
-  </div>
-
-  <div class="block">
-    <h2>3 &nbsp;&middot;&nbsp; Day one, in order</h2>
-    <p style="margin-bottom:1.2rem">Open each one for what you actually need. Do them in this order.</p>
-    <div class="steps">
-
-<details class="step">
-        <summary><span class="n">01</span><span class="t"><b>Message the Google Flow supplier</b> on Telegram. He can take a day, so do this first.</span><span class="chev">&rsaquo;</span></summary>
-        <div class="stepbody">
-          <p>Google Flow is where every image and video gets made. Nano Banana Pro makes the images, Veo turns them into video. <strong>$19 a month.</strong> Do not buy it from the website, it costs far more.</p>
-          <p>Message him on Telegram and send exactly this:</p>
-          <div class="cmd">Jayden sent me</div>
-          <div class="cmd">I need a Google Flow family plan invite, ultra plan, 5k credits</div>
-          <p>Give him a backup Gmail, not one you care about. He invites it to a family plan and you are in for the month.</p>
-          <div class="rowlinks"><a class="lnk" href="https://t.me/phuoctain002" target="_blank" rel="noopener">Telegram &nbsp;@phuoctain002</a></div>
-        </div>
-      </details>
-
-      <details class="step">
-        <summary><span class="n">02</span><span class="t"><b>Get Claude and CapCut.</b></span><span class="chev">&rsaquo;</span></summary>
-        <div class="stepbody">
-          <p>Claude writes your image prompts and converts your scripts. CapCut puts the clips together.</p>
-          <p>Do not pay full price for CapCut Pro. Buy it from G2G for around $2.</p>
-          <div class="rowlinks">
-            <a class="lnk" href="https://claude.ai" target="_blank" rel="noopener">Claude</a>
-            <a class="lnk" href="https://www.g2g.com/categories/capcut-accounts/offer/group?fa=c0107a82%3A89c8e24a&amp;region_id=0f76ac42-3267-4d77-9fba-f9d9d719dac9" target="_blank" rel="noopener">CapCut Pro on G2G</a>
-          </div>
-          <p style="margin-top:.9rem"><strong>Signing into CapCut, do it in this order or it will not work:</strong></p>
-          <ol style="margin:.4rem 0 0;font-size:.93rem">
-            <li>Sign into the CapCut account <strong>on your phone</strong> first</li>
-            <li>On your computer, open CapCut and choose <strong>sign in with QR code</strong></li>
-            <li>Scan the QR code on your computer screen using your phone</li>
-          </ol>
-          <p style="margin-top:.55rem">That is what logs you in on desktop.</p>
-        </div>
-      </details>
-
-      <details class="step">
-        <summary><span class="n">03</span><span class="t"><b>Set up your proxy, then make your first Instagram account and Facebook page.</b> One per day for three days.</span><span class="chev">&rsaquo;</span></summary>
-        <div class="stepbody">
-          <p><strong>If you live outside the US, set your proxy up first.</strong> Before you make a single account. Watch the proxy course, get it running on your phone, then start making accounts. If you are in the US, skip it.</p>
-          <p>Three Instagram accounts and three Facebook pages, one of each per day. Never two in a day, it looks like a bot. Wait two full days after making an account before you post on it.</p>
-          <div class="scroll" style="margin:.6rem 0 .9rem"><table>
-            <thead><tr><th>Day</th><th>Make</th><th>Can post</th></tr></thead>
-            <tbody>
-              <tr><td>Today</td><td>Instagram 1 + Facebook page 1</td><td>In 2 days</td></tr>
-              <tr><td>Tomorrow</td><td>Instagram 2 + Facebook page 2</td><td>In 3 days</td></tr>
-              <tr><td>Day 3</td><td>Instagram 3 + Facebook page 3</td><td>In 4 days</td></tr>
-            </tbody></table></div>
-          <p>Facebook has to be a <strong>page</strong>, not a profile. You make it under your existing personal profile.</p>
-          <ol style="margin:.3rem 0 .6rem;font-size:.93rem">
-            <li>Open Facebook on desktop</li>
-            <li>Click your profile picture, top right, then <b>See all profiles</b></li>
-            <li>Click <b>Create new Page</b></li>
-            <li>Name it, pick a category, hit Create</li>
-          </ol>
-          <p>Nobody can see the page is connected to you, and you can run up to ten pages off one profile.</p>
-          <div class="rowlinks">
-            <a class="lnk" href="https://www.loom.com/share/cded63656f304186930bb8b592a24f9b" target="_blank" rel="noopener">Course 01.1 &mdash; Proxy setup, outside the US</a>
-            <span class="lnk todo">Course 01.2 &mdash; Instagram + Facebook pages</span>
-          </div>
-        </div>
-      </details>
-
-      <details class="step">
-        <summary><span class="n">04</span><span class="t"><b>Get your affiliate link</b> from the GoAffiliatePro portal.</span><span class="chev">&rsaquo;</span></summary>
-        <div class="stepbody">
-          <p>This is how you get paid, so do it as soon as your accounts exist. The link goes in the bio of every account you run.</p>
-          <p>When the Amazon listing launches your link switches to an Amazon one. Jayden will tell you when.</p>
-          <div class="rowlinks"><a class="lnk" href="https://klareva.goaffpro.com/create-account" target="_blank" rel="noopener">Create your GoAffPro account</a></div>
-        </div>
-      </details>
-
-      <details class="step">
-        <summary><span class="n">05</span><span class="t"><b>Build your three avatars</b> and send them to Jayden before you use them.</span><span class="chev">&rsaquo;</span></summary>
-        <div class="stepbody">
-          <p>Two older women for your lifestyle accounts, one gay man for your review account.</p>
-          <p>Send all three to Jayden before you post anything with them. He will tell you which to lock in and what to change.</p>
-          <p><strong>Open the Avatar Builder document, download it, and give the whole thing to your Claude.</strong> Paste it into a fresh chat. It interviews you about each avatar, then hands you a finished image prompt to generate from.</p>
-          <p>That same chat then becomes your prompt writer for every video after this, so keep it open.</p>
-          <div class="rowlinks">
-            <a class="lnk" href="https://www.loom.com/share/215aa4ec2e9b4f898a477a7cb611e36c" target="_blank" rel="noopener">Course 02.1 &mdash; How to make an avatar</a>
-            <a class="lnk" href="https://docs.google.com/document/d/1d87V7h6h_pa-iWrYhm0X9YU086oEcyvTlcJgPOjQt38/edit?usp=sharing" target="_blank" rel="noopener">Avatar Builder document</a>
-          </div>
-        </div>
-      </details>
-
-      <details class="step">
-        <summary><span class="n">06</span><span class="t"><b>Watch the courses, then start making videos immediately.</b></span><span class="chev">&rsaquo;</span></summary>
-        <div class="stepbody">
-          <p>Watch the courses all the way through first. Then start making videos straight away, before your accounts are even ready to post.</p>
-          <p>You are waiting two days on each account anyway. Use that time to build up a stack of finished videos, so the moment an account is clear you are scheduling a backlog instead of starting from zero.</p>
-          <p>The people who wait around during those two days lose a week getting going. The people who build ahead are posting properly from day one.</p>
-          <div class="rowlinks"><a class="lnk" href="#" data-jump="courses">Go to Courses</a></div>
-        </div>
-      </details>
-
+    <p>Facebook has to be a <strong>page</strong>, not a profile. You make it under your existing personal profile.</p>
+    <ol style="margin:.3rem 0 .6rem;font-size:.93rem">
+      <li>Open Facebook on desktop</li>
+      <li>Click your profile picture, top right, then <b>See all profiles</b></li>
+      <li>Click <b>Create new Page</b></li>
+      <li>Name it, pick a category, hit Create</li>
+    </ol>
+    <p>Nobody can see the page is connected to you, and you can run up to ten pages off one profile.</p>
+    <div class="rowlinks">
+      <a class="lnk" href="https://www.loom.com/share/cded63656f304186930bb8b592a24f9b" target="_blank" rel="noopener">Course 01.1 &mdash; Proxy setup, outside the US</a>
+      <span class="lnk todo">Course 01.2 &mdash; Instagram + Facebook pages</span>
     </div>
   </div>
-
-<div class="block">
-    <h2>Every day after that &mdash; how videos get made</h2>
-    <p>You are never writing a video from scratch. You are taking one that already worked and transplanting it.</p>
-    <div class="steps">
-      <div class="step"><span class="n">01</span><span class="t"><b>Find a viral video</b> in the Viral Radar, or in the video ideas channel in Discord. Look for one that did way better than that account normally does.</span></div>
-      <div class="step"><span class="n">02</span><span class="t"><b>Transcribe it.</b> Work from what is actually spoken, never the caption or on-screen text.</span></div>
-      <div class="step"><span class="n">03</span><span class="t"><b>Open a new Claude chat and paste in the whole METHOD document.</b> METHOD is the file that teaches Claude how we turn other people&rsquo;s videos into ours. You do not read it, you just copy all of it, paste it into Claude and hit send. Once per chat, then keep using that same chat.</span></div>
-      <div class="step"><span class="n">04</span><span class="t"><b>Paste in the transcript and tell Claude what to change.</b> For example: &ldquo;this video is about the face, make it about the neck instead. Film it inside a Costco. The last product should be Klareva.&rdquo; It hands you back the finished script.</span></div>
-    </div>
-    <div class="note" style="margin-top:1.2rem">
-      <p style="margin-bottom:.6rem"><strong>You need the METHOD document to do any of this.</strong></p>
-      <p style="margin-bottom:.6rem">METHOD is a set of instructions written for Claude, not for you. It teaches Claude how we take a video that already went viral and rebuild it as ours. It keeps what made the original work, the structure, the pacing, the way the hook is worded, and swaps out the parts that need to change: the body part being talked about, the four products being reviewed, and the last product, which is always Klareva.</p>
-      <p style="margin-bottom:.7rem">So you do not read it. You copy the whole thing, paste it into Claude once, and then keep using that same chat every day.</p>
-      <div class="rowlinks"><a class="lnk" href="https://app.notion.com/p/3bbf54400d5d811294e8de11ff40a7f5" target="_blank" rel="noopener">Open METHOD &nbsp;&rarr;</a></div>
+</div>
+<div class="task" data-ck="d4">
+  <div class="taskhead">
+    <button class="ck" type="button" aria-label="Mark done"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg></button>
+    <div class="tasktitle"><b>Get your affiliate link</b> from the GoAffiliatePro portal.</div>
+    <button class="tchev" type="button" aria-label="Open details">&rsaquo;</button>
+  </div>
+  <div class="taskbody">
+    <p>This is how you get paid, so do it as soon as your accounts exist. The link goes in the bio of every account you run.</p>
+    <p>When the Amazon listing launches your link switches to an Amazon one. Jayden will tell you when.</p>
+    <div class="rowlinks"><a class="lnk" href="https://klareva.goaffpro.com/create-account" target="_blank" rel="noopener">Create your GoAffPro account</a></div>
+  </div>
+</div>
+<div class="task" data-ck="d5">
+  <div class="taskhead">
+    <button class="ck" type="button" aria-label="Mark done"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg></button>
+    <div class="tasktitle"><b>Build your three avatars</b> and send them to Jayden before you use them.</div>
+    <button class="tchev" type="button" aria-label="Open details">&rsaquo;</button>
+  </div>
+  <div class="taskbody">
+    <p>Two older women for your lifestyle accounts, one gay man for your review account.</p>
+    <p>Send all three to Jayden before you post anything with them. He will tell you which to lock in and what to change.</p>
+    <p><strong>Open the Avatar Builder document, download it, and give the whole thing to your Claude.</strong> Paste it into a fresh chat. It interviews you about each avatar, then hands you a finished image prompt to generate from.</p>
+    <p>That same chat then becomes your prompt writer for every video after this, so keep it open.</p>
+    <div class="rowlinks">
+      <a class="lnk" href="https://www.loom.com/share/215aa4ec2e9b4f898a477a7cb611e36c" target="_blank" rel="noopener">Course 02.1 &mdash; How to make an avatar</a>
+      <a class="lnk" href="https://docs.google.com/document/d/1d87V7h6h_pa-iWrYhm0X9YU086oEcyvTlcJgPOjQt38/edit?usp=sharing" target="_blank" rel="noopener">Avatar Builder document</a>
     </div>
   </div>
-
-<div class="block">
-    <h2>Rules that never change</h2>
-    <ul>
-      <li><strong>Klareva is a hydrocolloid.</strong> On camera it is the small cube. Always the winner, always last.</li>
-      <li><strong>No em dashes in any spoken line.</strong> Commas only. Em dashes break Veo&rsquo;s speech generation.</li>
-      <li><strong>Never invent a product name.</strong> Every product has to be real and spelled exactly as on the packaging, because it gets said out loud.</li>
-    </ul>
+</div>
+<div class="task" data-ck="d6">
+  <div class="taskhead">
+    <button class="ck" type="button" aria-label="Mark done"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg></button>
+    <div class="tasktitle"><b>Watch the courses, then start making videos immediately.</b></div>
+    <button class="tchev" type="button" aria-label="Open details">&rsaquo;</button>
   </div>
+  <div class="taskbody">
+    <p>Watch the courses all the way through first. Then start making videos straight away, before your accounts are even ready to post.</p>
+    <p>You are waiting two days on each account anyway. Use that time to build up a stack of finished videos, so the moment an account is clear you are scheduling a backlog instead of starting from zero.</p>
+    <p>The people who wait around during those two days lose a week getting going. The people who build ahead are posting properly from day one.</p>
+    <div class="rowlinks"><a class="lnk" href="#" data-jump="courses">Go to Courses</a></div>
+  </div>
+</div>
+    </div>
 
-<div class="block">
-    <h2>Last thing</h2>
-    <p>You are going to be overwhelmed on day one. Everyone is. That is not a sign this is not for you, it is just what day one feels like.</p>
-    <p>The people who make money are the ones who ask constantly. Jayden replies in a minute or two and you can hop on a call any time. The people who go quiet stall out.</p>
-    <div class="note"><p><strong>Do not sit on a problem for three days.</strong> That is three days you do not get back.</p></div>
+    <div class="wpane" data-title="Every day after">
+      <div class="wt">Every day after that</div>
+      <p>You are never writing a video from scratch. You are taking one that already worked and transplanting it.</p>
+      <div class="steps">
+        <div class="step"><span class="n">01</span><span class="t"><b>Find a viral video</b> in the Viral Radar, or in the video ideas channel in Discord. Look for one that did way better than that account normally does.</span></div>
+        <div class="step"><span class="n">02</span><span class="t"><b>Transcribe it.</b> Work from what is actually spoken, never the caption or on-screen text.</span></div>
+        <div class="step"><span class="n">03</span><span class="t"><b>Open a new Claude chat and paste in the whole METHOD document.</b> METHOD is the file that teaches Claude how we turn other people&rsquo;s videos into ours. You do not read it, you just copy all of it, paste it into Claude and hit send. Once per chat, then keep using that same chat.</span></div>
+        <div class="step"><span class="n">04</span><span class="t"><b>Paste in the transcript and tell Claude what to change.</b> For example: &ldquo;this video is about the face, make it about the neck instead. Film it inside a Costco. The last product should be Klareva.&rdquo; It hands you back the finished script.</span></div>
+      </div>
+      <div class="note" style="margin-top:1.2rem">
+        <p style="margin-bottom:.6rem"><strong>You need the METHOD document to do any of this.</strong></p>
+        <p style="margin-bottom:.6rem">METHOD is a set of instructions written for Claude, not for you. It teaches Claude how we take a video that already went viral and rebuild it as ours. It keeps what made the original work, the structure, the pacing, the way the hook is worded, and swaps out the parts that need to change: the body part being talked about, the four products being reviewed, and the last product, which is always Klareva.</p>
+        <p style="margin-bottom:.7rem">So you do not read it. You copy the whole thing, paste it into Claude once, and then keep using that same chat every day.</p>
+        <div class="rowlinks"><a class="lnk" href="https://app.notion.com/p/3bbf54400d5d811294e8de11ff40a7f5" target="_blank" rel="noopener">Open METHOD &nbsp;&rarr;</a></div>
+      </div>
+    </div>
+
+    <div class="wpane" data-title="Rules">
+      <div class="wt">Rules that never change</div>
+      <ul>
+        <li><strong>Klareva is a hydrocolloid.</strong> On camera it is the small cube. Always the winner, always last.</li>
+        <li><strong>No em dashes in any spoken line.</strong> Commas only. Em dashes break Veo&rsquo;s speech generation.</li>
+        <li><strong>Never invent a product name.</strong> Every product has to be real and spelled exactly as on the packaging, because it gets said out loud.</li>
+      </ul>
+    </div>
+
+    <div class="wpane" data-title="Last thing">
+      <div class="wt">Last thing</div>
+      <p>You are going to be overwhelmed on day one. Everyone is. That is not a sign this is not for you, it is just what day one feels like.</p>
+      <p>The people who make money are the ones who ask constantly. Jayden replies in a minute or two and you can hop on a call any time. The people who go quiet stall out.</p>
+      <div class="note"><p><strong>Do not sit on a problem for three days.</strong> That is three days you do not get back.</p></div>
+    </div>
+
+    </div>
+
+    <div class="wiznav">
+      <button class="btn ghost" id="wback" type="button">Back</button>
+      <button class="btn" id="wnext" type="button">Next</button>
+    </div>
   </div>
 </section>
 
@@ -1026,6 +1111,106 @@
 
   setMode('signup');
   boot();
+})();
+</script>
+<script>
+(function () {
+  var KEY = 'klv_intro_v1';
+  var panes = [].slice.call(document.querySelectorAll('.wpane'));
+  if (!panes.length) return;
+  var N = panes.length;
+
+  var state = { step: 0, ck: {} };
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY) || '{}');
+    if (saved && typeof saved.step === 'number') state.step = saved.step;
+    if (saved && saved.ck) state.ck = saved.ck;
+  } catch (e) {}
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  var count = document.getElementById('wizcount');
+  var fill = document.getElementById('wizfill');
+  var dotsWrap = document.getElementById('wizdots');
+  var back = document.getElementById('wback');
+  var next = document.getElementById('wnext');
+
+  var dots = panes.map(function (p, i) {
+    var d = document.createElement('button');
+    d.className = 'wdot';
+    d.type = 'button';
+    d.textContent = i + 1;
+    d.setAttribute('aria-label', 'Step ' + (i + 1) + ': ' + (p.getAttribute('data-title') || ''));
+    d.addEventListener('click', function () { state.step = i; save(); render(false); });
+    dotsWrap.appendChild(d);
+    return d;
+  });
+
+  var tasks = [].slice.call(document.querySelectorAll('.task'));
+  function updateCount() {
+    var el = document.getElementById('d1count');
+    if (!el) return;
+    var done = tasks.filter(function (t) { return t.classList.contains('done'); }).length;
+    el.textContent = done + ' of ' + tasks.length + ' done';
+  }
+
+  tasks.forEach(function (t) {
+    var id = t.getAttribute('data-ck');
+    if (state.ck[id]) t.classList.add('done');
+    t.querySelector('.ck').addEventListener('click', function (e) {
+      e.stopPropagation();
+      var d = !t.classList.contains('done');
+      t.classList.toggle('done', d);
+      state.ck[id] = d;
+      save();
+      updateCount();
+    });
+    t.querySelector('.taskhead').addEventListener('click', function () {
+      t.classList.toggle('open');
+    });
+  });
+
+  function render(scroll) {
+    if (state.step < 0) state.step = 0;
+    if (state.step > N - 1) state.step = N - 1;
+    panes.forEach(function (p, i) { p.classList.toggle('on', i === state.step); });
+    dots.forEach(function (d, i) {
+      d.classList.toggle('on', i === state.step);
+      d.classList.toggle('done', i < state.step);
+    });
+    fill.style.width = ((state.step + 1) / N * 100) + '%';
+    count.textContent = 'Step ' + (state.step + 1) + ' of ' + N + ' \u00b7 '
+      + (panes[state.step].getAttribute('data-title') || '');
+    back.style.visibility = state.step === 0 ? 'hidden' : 'visible';
+    next.textContent = state.step === N - 1 ? 'Go to Courses \u2192' : 'Next \u2192';
+    if (scroll !== false) window.scrollTo(0, 0);
+    updateCount();
+  }
+
+  function jumpTo(secId) {
+    var b = document.querySelector('.navbtn[data-go="' + secId + '"]');
+    if (b) b.click();
+  }
+
+  next.addEventListener('click', function () {
+    if (state.step === N - 1) { jumpTo('courses'); return; }
+    state.step++;
+    save();
+    render();
+  });
+  back.addEventListener('click', function () {
+    state.step--;
+    save();
+    render();
+  });
+
+  [].forEach.call(document.querySelectorAll('[data-jump]'), function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      jumpTo(a.getAttribute('data-jump'));
+    });
+  });
+
+  render(false);
 })();
 </script>
 </body>
