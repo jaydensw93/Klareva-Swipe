@@ -10,6 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3"></script>
 <script src="config.js"></script>
 <script src="radar.js" defer></script>
+<script src="radar-admin.js" defer></script>
 <script>
   /* Personal creator links (/?c=<token>) belong to the library at /library/. */
   (function () {
@@ -85,6 +86,14 @@
   /* text sections stay readable; the radar gets the full width */
   .sec{max-width:1000px}
   #radar.sec{max-width:1280px;margin:0 auto}
+  #admin.sec{max-width:1280px;margin:0 auto}
+
+  /* rotating quote, top right, out of the way */
+  .mquote{position:fixed;top:.95rem;right:1.35rem;z-index:5;max-width:330px;
+    text-align:right;color:var(--faint);font-size:.76rem;line-height:1.55;
+    font-style:italic;pointer-events:none;opacity:.85;transition:opacity .6s ease}
+  .mquote.fade{opacity:0}
+  @media (max-width:1100px){.mquote{display:none}}
   .sec{display:none;animation:in .18s ease-out}
   .sec.on{display:block}
   @keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
@@ -874,13 +883,47 @@
   <h1>All Creators</h1>
   <p class="lede">Everyone who has signed up, the accounts they added, and what they actually posted.</p>
 
+  <div class="rbar">
+    <select id="awin" class="fin rsel">
+      <option value="today">Today</option>
+      <option value="1">Last 24 hours</option>
+      <option value="7" selected>Last 7 days</option>
+      <option value="30">Last 30 days</option>
+      <option value="180">Last 6 months</option>
+      <option value="365">Last year</option>
+    </select>
+  </div>
+
   <div class="krow" id="kpis"></div>
 
   <h2>Accounts by creator</h2>
   <div class="scroll"><table>
-    <thead><tr><th>Creator</th><th>Email</th><th>Platform</th><th>Handle</th><th class="num">Posts 7d</th><th>Tracking</th></tr></thead>
+    <thead><tr><th>Creator</th><th>Email</th><th>Platform</th><th>Handle</th><th class="num">Posts</th><th class="num">Views</th><th>Tracking</th></tr></thead>
     <tbody id="adminrows"></tbody>
   </table></div>
+
+  <h2 style="margin-top:2.6rem">Student Radar</h2>
+  <p style="margin-bottom:1rem">Every post from every student account, only visible to you. Rebuilds twice a day with the scraper.</p>
+
+  <div class="rbar">
+    <select id="stwin" class="fin rsel">
+      <option value="0">All time</option>
+      <option value="1">Last 24 hours</option>
+      <option value="3">Last 3 days</option>
+      <option value="7">Last 7 days</option>
+      <option value="30">Last 30 days</option>
+    </select>
+    <select id="stsort" class="fin rsel">
+      <option value="t">Newest</option>
+      <option value="v">Most views</option>
+      <option value="g">Fastest growing</option>
+    </select>
+  </div>
+  <div class="rchips" id="stchips"></div>
+  <div class="krow" id="stkpis"></div>
+  <div class="rpack" id="stgrid"></div>
+  <div class="aempty" id="stempty" style="display:none"></div>
+  <button class="addmore" id="stmore" type="button" style="display:none">Show more</button>
 </section>
 
 </main>
@@ -1177,83 +1220,111 @@
   addRow();
 
   /* -------------------------------------------------------- admin ---- */
-  var adminLoaded = false;
-  function loadAdmin() {
-    if (adminLoaded) return;
-    adminLoaded = true;
-    var rowsEl = document.getElementById('adminrows');
-    var since = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
+  var adminData = null;
 
+  function loadAdmin() {
+    if (adminData) { renderAdmin(); return; }
+    var since = new Date(Date.now() - 366 * 864e5).toISOString().slice(0, 10);
     Promise.all([
       SB.from('profiles').select('id,email,name,created_at'),
       SB.from('creator_accounts').select('id,user_id,platform,handle,created_at,approved'),
-      SB.from('account_stats').select('account_id,posts,day').gte('day', since)
+      SB.from('account_stats').select('account_id,posts,views,day').gte('day', since)
     ]).then(function (res) {
-      var people = res[0].data || [], accts = res[1].data || [], stats = res[2].data || [];
-      var byUser = {};
-      people.forEach(function (p) { byUser[p.id] = p; });
-      var postsByAcct = {};
-      stats.forEach(function (st) {
-        postsByAcct[st.account_id] = (postsByAcct[st.account_id] || 0) + (st.posts || 0);
-      });
-      var totalPosts = 0;
-      Object.keys(postsByAcct).forEach(function (k) { totalPosts += postsByAcct[k]; });
-
-      var kpis = [
-        [people.length, 'Creators'],
-        [accts.length, 'Accounts'],
-        [totalPosts, 'Posts last 7d'],
-        [(totalPosts / 7).toFixed(1), 'Posts per day']
-      ];
-      document.getElementById('kpis').innerHTML = kpis.map(function (k) {
-        return '<div class="kbox"><b>' + k[0] + '</b><i>' + k[1] + '</i></div>';
-      }).join('');
-
-      if (!accts.length) {
-        rowsEl.innerHTML = '<tr><td colspan="6" class="aempty">Nobody has added an account yet.</td></tr>';
-        return;
-      }
-      accts.sort(function (a, b) { return (a.user_id + a.handle) < (b.user_id + b.handle) ? -1 : 1; });
-      rowsEl.innerHTML = '';
-      accts.forEach(function (a) {
-        var p = byUser[a.user_id] || {};
-        var tr = document.createElement('tr');
-        [p.name || '-', p.email || '-', a.platform, '@' + a.handle].forEach(function (t) {
-          var td = document.createElement('td'); td.textContent = t; tr.appendChild(td);
-        });
-        var posts = document.createElement('td');
-        posts.className = 'num';
-        posts.textContent = postsByAcct[a.id] || 0;
-        tr.appendChild(posts);
-
-        // Starts on. Only flipped off if someone is abusing the free signup.
-        var cell = document.createElement('td');
-        var btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'atog';
-        function paint() {
-          btn.textContent = a.approved ? 'On' : 'Off';
-          btn.style.color = a.approved ? 'var(--peach)' : 'var(--faint)';
-        }
-        paint();
-        btn.addEventListener('click', function () {
-          var next = !a.approved;
-          btn.disabled = true;
-          SB.from('creator_accounts').update({ approved: next }).eq('id', a.id)
-            .then(function (r) {
-              btn.disabled = false;
-              if (r.error) { btn.textContent = 'failed'; return; }
-              a.approved = next;
-              paint();
-            });
-        });
-        cell.appendChild(btn);
-        tr.appendChild(cell);
-        rowsEl.appendChild(tr);
-      });
+      adminData = {
+        people: res[0].data || [],
+        accts: res[1].data || [],
+        stats: res[2].data || []
+      };
+      document.getElementById('awin').addEventListener('change', renderAdmin);
+      renderAdmin();
     }).catch(function () {
-      rowsEl.innerHTML = '<tr><td colspan="6" class="aempty">Could not load. Are you set as admin?</td></tr>';
+      document.getElementById('adminrows').innerHTML =
+        '<tr><td colspan="7" class="aempty">Could not load. Are you set as admin?</td></tr>';
     });
+  }
+
+  function renderAdmin() {
+    var rowsEl = document.getElementById('adminrows');
+    var winVal = document.getElementById('awin').value;
+    var todayStr = new Date().toISOString().slice(0, 10);
+    var cutoff = winVal === 'today'
+      ? todayStr
+      : new Date(Date.now() - parseInt(winVal, 10) * 864e5).toISOString().slice(0, 10);
+    var days = winVal === 'today' ? 1 : parseInt(winVal, 10);
+
+    var byUser = {};
+    adminData.people.forEach(function (p) { byUser[p.id] = p; });
+
+    var posts = {}, views = {}, total = 0;
+    adminData.stats.forEach(function (st) {
+      if (st.day < cutoff) return;
+      posts[st.account_id] = (posts[st.account_id] || 0) + (st.posts || 0);
+      views[st.account_id] = (views[st.account_id] || 0) + (st.views || 0);
+      total += (st.posts || 0);
+    });
+
+    document.getElementById('kpis').innerHTML = [
+      [adminData.people.length, 'Creators'],
+      [adminData.accts.length, 'Accounts'],
+      [total, 'Posts in window'],
+      [(total / days).toFixed(1), 'Posts per day']
+    ].map(function (k) {
+      return '<div class="kbox"><b>' + k[0] + '</b><i>' + k[1] + '</i></div>';
+    }).join('');
+
+    if (!adminData.accts.length) {
+      rowsEl.innerHTML = '<tr><td colspan="7" class="aempty">Nobody has added an account yet.</td></tr>';
+      return;
+    }
+
+    var accts = adminData.accts.slice();
+    accts.sort(function (a, b) {
+      return (posts[b.id] || 0) - (posts[a.id] || 0)
+        || (views[b.id] || 0) - (views[a.id] || 0);
+    });
+
+    rowsEl.innerHTML = '';
+    accts.forEach(function (a) {
+      var p = byUser[a.user_id] || {};
+      var tr = document.createElement('tr');
+      [p.name || '-', p.email || '-', a.platform, '@' + a.handle].forEach(function (t) {
+        var td = document.createElement('td'); td.textContent = t; tr.appendChild(td);
+      });
+      [posts[a.id] || 0, fmtNum(views[a.id] || 0)].forEach(function (t) {
+        var td = document.createElement('td'); td.className = 'num'; td.textContent = t; tr.appendChild(td);
+      });
+
+      // Starts on. Only flipped off if someone is abusing the free signup.
+      var cell = document.createElement('td');
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'atog';
+      function paint() {
+        btn.textContent = a.approved ? 'On' : 'Off';
+        btn.style.color = a.approved ? 'var(--peach)' : 'var(--faint)';
+      }
+      paint();
+      btn.addEventListener('click', function () {
+        var next = !a.approved;
+        btn.disabled = true;
+        SB.from('creator_accounts').update({ approved: next }).eq('id', a.id)
+          .then(function (r) {
+            btn.disabled = false;
+            if (r.error) { btn.textContent = 'failed'; return; }
+            a.approved = next;
+            paint();
+          });
+      });
+      cell.appendChild(btn);
+      tr.appendChild(cell);
+      rowsEl.appendChild(tr);
+    });
+  }
+
+  function fmtNum(n) {
+    if (n >= 1e6) return (n / 1e6).toFixed(1).replace('.0', '') + 'M';
+    if (n >= 1e3) return (n / 1e3).toFixed(1).replace('.0', '') + 'K';
+    return '' + n;
   }
 
   setMode('signup');
@@ -1565,6 +1636,200 @@
   [].forEach.call(document.querySelectorAll('.navbtn[data-go="radar"]'), function (b) {
     b.addEventListener('click', boot);
   });
+})();
+
+/* Student radar: every student post, rendered from radar-admin.js. Lives
+   inside the Admin section, so only the admin ever sees it. */
+(function () {
+  var grid = document.getElementById('stgrid');
+  if (!grid) return;
+  var PAGE = 24;
+  var win = 0, sortKey = 't', who = -1, shown = PAGE, booted = false;
+  var nowSec = Math.floor(Date.now() / 1000);
+  var chipsEl = document.getElementById('stchips');
+  var kpisEl = document.getElementById('stkpis');
+  var emptyEl = document.getElementById('stempty');
+  var moreBtn = document.getElementById('stmore');
+
+  var I = function (paths) {
+    return '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+      + 'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+      + paths + '</svg>';
+  };
+  var IC_EYE = I('<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.6"/>');
+  var IC_HEART = I('<path d="M12 20s-7-4.5-9-9c-1.2-2.8.6-6 3.8-6 2 0 3.4 1.2 5.2 3.2C13.8 6.2 15.2 5 17.2 5c3.2 0 5 3.2 3.8 6-2 4.5-9 9-9 9z"/>');
+  var IC_CHAT = I('<path d="M21 12a8 8 0 0 1-8 8H4l2.4-2.6A8 8 0 1 1 21 12z"/>');
+  var IC_IG = I('<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.2 6.8h.01"/>');
+  var IC_FB = I('<path d="M14 8h3V5h-3a4 4 0 0 0-4 4v2H7v3h3v6h3v-6h3l.5-3H13V9a1 1 0 0 1 1-1z"/>');
+
+  function fmt(n) {
+    n = n || 0;
+    if (n >= 1e6) return (n / 1e6).toFixed(1).replace('.0', '') + 'M';
+    if (n >= 1e4) return Math.round(n / 1e3) + 'K';
+    if (n >= 1e3) return (n / 1e3).toFixed(1).replace('.0', '') + 'K';
+    return '' + Math.round(n);
+  }
+  function esc(t) {
+    return ('' + (t || '')).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function ageDays(v) { return v.p ? (nowSec - v.p) / 86400 : 9e9; }
+  function vph(v) { return v.p ? v.v / Math.max(1, (nowSec - v.p) / 3600) : 0; }
+  function ageLabel(v) {
+    if (!v.p) return '';
+    var h = Math.max(1, Math.round((nowSec - v.p) / 3600));
+    if (h < 24) return h + (h === 1 ? ' hour ago' : ' hours ago');
+    var d = Math.round(h / 24);
+    return d + (d === 1 ? ' day ago' : ' days ago');
+  }
+
+  function data() { return window.RADAR_STUDENTS || { accounts: [], videos: [] }; }
+  function filtered() {
+    return data().videos.filter(function (v) {
+      if (who >= 0 && v.a !== who) return false;
+      if (win > 0 && ageDays(v) > win) return false;
+      return true;
+    });
+  }
+
+  function chips() {
+    var d = data();
+    chipsEl.innerHTML = '';
+    var mk = function (label, idx) {
+      var b = document.createElement('button');
+      b.className = 'rchip' + (idx === who ? ' on' : '');
+      b.type = 'button';
+      b.textContent = label;
+      b.addEventListener('click', function () { who = idx; shown = PAGE; chips(); render(); });
+      chipsEl.appendChild(b);
+    };
+    mk('All accounts (' + d.videos.length + ')', -1);
+    d.accounts.forEach(function (a, i) {
+      if (!a.n) return;
+      mk((a.who ? a.who + ' \u00b7 ' : '') + a.h + ' (' + a.n + ')', i);
+    });
+  }
+
+  function render() {
+    var list = filtered();
+    var p24 = 0, p7 = 0, tv = 0;
+    data().videos.forEach(function (v) {
+      if (ageDays(v) <= 1) p24++;
+      if (ageDays(v) <= 7) p7++;
+    });
+    list.forEach(function (v) { tv += v.v; });
+    kpisEl.innerHTML = [
+      [p24, 'Posts \u00b7 last 24h'],
+      [p7, 'Posts \u00b7 last 7d'],
+      [fmt(tv), 'Views in window']
+    ].map(function (k) {
+      return '<div class="kbox"><b>' + k[0] + '</b><i>' + k[1] + '</i></div>';
+    }).join('');
+
+    if (!list.length) {
+      grid.innerHTML = '';
+      moreBtn.style.display = 'none';
+      emptyEl.style.display = '';
+      emptyEl.textContent = 'Nothing here yet. Student posts show up after the next scrape.';
+      return;
+    }
+    emptyEl.style.display = 'none';
+
+    list.sort(function (p, n) {
+      if (sortKey === 'v') return n.v - p.v;
+      if (sortKey === 'g') return vph(n) - vph(p);
+      return (n.p || 0) - (p.p || 0);
+    });
+
+    grid.innerHTML = list.slice(0, shown).map(function (v) {
+      var a = data().accounts[v.a] || {};
+      var img = v.th ? '<img src="' + v.th + '" alt="" loading="lazy">' : '';
+      var whoLine = a.who ? esc(a.who) + (v.s ? ' \u00b7 ' + esc(v.s) : '') : esc(v.s || '');
+      var rate = vph(v);
+      var thumb = v.u
+        ? '<a class="rct" href="' + esc(v.u) + '" target="_blank" rel="noopener">' + img
+          + (v.d ? '<span class="rcdur">' + v.d + 's</span>' : '') + '</a>'
+        : '<span class="rct">' + img
+          + (v.d ? '<span class="rcdur">' + v.d + 's</span>' : '') + '</span>';
+      return '<div class="rcard">' + thumb
+        + '<div class="rcf">'
+        + '<div class="racct">' + (a.pl === 'facebook' ? IC_FB : IC_IG) + '<b>' + esc(a.h) + '</b></div>'
+        + '<div class="rstats">'
+        + '<span>' + IC_EYE + fmt(v.v) + '</span>'
+        + '<span>' + IC_HEART + fmt(v.l) + '</span>'
+        + '<span>' + IC_CHAT + fmt(v.c) + '</span>'
+        + '</div>'
+        + (whoLine ? '<div class="rcap">' + whoLine + '</div>' : '')
+        + '<div class="rbot"><span class="rage">' + esc(ageLabel(v)) + '</span>'
+        + (rate ? '<span class="rrate">&#8599; ' + fmt(rate) + '<i>views/hr</i></span>' : '<span></span>')
+        + '</div></div></div>';
+    }).join('');
+    moreBtn.style.display = list.length > shown ? '' : 'none';
+  }
+
+  function boot() {
+    if (booted) return;
+    booted = true;
+    nowSec = Math.floor(Date.now() / 1000);
+    chips();
+    render();
+  }
+
+  document.getElementById('stwin').addEventListener('change', function () {
+    win = parseInt(this.value, 10); shown = PAGE; render();
+  });
+  document.getElementById('stsort').addEventListener('change', function () {
+    sortKey = this.value; shown = PAGE; render();
+  });
+  moreBtn.addEventListener('click', function () { shown += PAGE; render(); });
+  [].forEach.call(document.querySelectorAll('.navbtn[data-go="admin"]'), function (b) {
+    b.addEventListener('click', boot);
+  });
+})();
+
+/* Rotating quote, top right. A different one on every load, and it quietly
+   swaps every 45 seconds. Input over output, always. */
+(function () {
+  var Q = [
+    'Focus on the input. The output follows the people who stopped watching for it.',
+    'The ones who make it are the ones still posting when nothing is working yet.',
+    'You do not need a viral video today. You need a posted video today.',
+    'Consistency looks boring right up until it looks like money.',
+    'A flop is a rep. Reps are the whole game.',
+    'Your job is volume and iteration. Timing is not your job.',
+    'Nobody made 50 good videos first. Post the next one.',
+    'Detach from the numbers. Attach to the routine.',
+    'The video you did not post is the only one guaranteed to do zero.',
+    'Show up on the boring days. Anyone can show up on the good ones.',
+    'You are one video away, but only if you keep making videos.',
+    'Do not judge the day by its views. Judge it by whether the work got done.',
+    'Slow weeks build the skill that fast weeks pay for.',
+    'The account that wins is the one that did not stop.',
+    'Ask the question. Three days stuck is three days gone.',
+    'Copy what works. Iterate what does not. Never sit still.',
+    'Every big account was ignored for months first. They posted anyway.',
+    'Motivation starts it. The checklist finishes it.',
+    'You cannot control what goes viral. You control what goes up today.',
+    'Results lag effort. Keep going through the lag.',
+    'One habit beats ten intentions.',
+    'The work counts even while the views are not showing it yet.',
+    'Posted and imperfect beats perfect and still in your head.',
+    'Boredom is what the middle of winning feels like.'
+  ];
+  var el = document.createElement('div');
+  el.className = 'mquote';
+  document.body.appendChild(el);
+  var i = Math.floor(Math.random() * Q.length);
+  function show() { el.textContent = '\u201c' + Q[i] + '\u201d'; }
+  show();
+  setInterval(function () {
+    el.classList.add('fade');
+    setTimeout(function () {
+      i = (i + 1 + Math.floor(Math.random() * (Q.length - 1))) % Q.length;
+      show();
+      el.classList.remove('fade');
+    }, 650);
+  }, 45000);
 })();
 
 /* Call recordings: load the Loom players only when the tab is first opened,
