@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <meta name="description" content="Klareva Creator Hub — everything you need to make videos.">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3"></script>
+<script src="config.js"></script>
 <script>
   /* Personal creator links (/?c=<token>) belong to the library at /library/. */
   (function () {
@@ -90,7 +92,69 @@
     padding:.7rem .9rem;margin:.45rem 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
     font-size:.86rem;color:var(--peach);max-width:68ch}
 
-  /* ---------- tables ---------- */
+  /* ---------- auth gate ---------- */
+  /* the gate lives outside .app, so it has to set its own font */
+  .gate{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;
+    align-items:center;justify-content:center;padding:1.5rem;overflow-y:auto;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;color:var(--text)}
+  .gate.hide{display:none}
+  .gatebox{width:100%;max-width:380px;background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;padding:1.9rem 1.75rem 1.75rem}
+  .gatebrand{display:flex;align-items:center;gap:.6rem;margin-bottom:1.5rem}
+  .gatebrand b{font-size:.95rem;font-weight:650;letter-spacing:-.01em;color:var(--text)}
+  .gatebrand i{display:block;font-style:normal;font-size:.66rem;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--faint);margin-top:1px}
+  /* undo the global h2 (uppercase, peach, rule underneath) inside the gate */
+  .gatebox h2{font-size:1.32rem;font-weight:640;letter-spacing:-.02em;margin:0 0 .4rem;
+    color:var(--text);text-transform:none;border-bottom:0;padding-bottom:0}
+  .gatebox .gsub{color:var(--mute);font-size:.9rem;line-height:1.55;margin:0 0 1.4rem}
+  .gatebox label{display:block;font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--faint);margin:0 0 .35rem;font-weight:600}
+  .gatebox input{width:100%;box-sizing:border-box;background:var(--bg);color:var(--text);
+    border:1px solid var(--line2);border-radius:7px;padding:.62rem .75rem;font-size:.92rem;
+    font-family:inherit;margin:0 0 .95rem}
+  .gatebox input:focus{outline:none;border-color:var(--peach)}
+  .gatebox .btn{width:100%;margin:.3rem 0 0}
+  .gerr{color:#F2938D;font-size:.84rem;line-height:1.5;margin:.85rem 0 0;display:none}
+  .gerr.on{display:block}
+  .gswap{margin:1.15rem 0 0;font-size:.86rem;color:var(--mute);text-align:center}
+  .gswap a{color:var(--peach);cursor:pointer;text-decoration:none}
+  .gswap a:hover{text-decoration:underline}
+  .gname{display:block}
+  .gname.hide{display:none}
+
+  /* my accounts + admin */
+  .fin{width:100%;box-sizing:border-box;background:var(--bg);color:var(--text);
+    border:1px solid var(--line2);border-radius:7px;padding:.6rem .72rem;font-size:.92rem;
+    font-family:inherit;margin:0 0 .95rem}
+  .fin:focus{outline:none;border-color:var(--peach)}
+  .arow{display:flex;align-items:center;gap:.75rem;padding:.7rem .9rem;background:var(--panel);
+    border:1px solid var(--line);border-radius:8px;margin:0 0 .5rem}
+  .arow b{font-weight:600;color:var(--text);font-size:.92rem}
+  .apl{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.62rem;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
+    border:1px solid var(--line2);border-radius:4px;padding:.16rem .4rem}
+  .adel{margin-left:auto;background:none;border:0;color:var(--faint);cursor:pointer;
+    font-family:inherit;font-size:.82rem;padding:.2rem .4rem;border-radius:5px}
+  .adel:hover{color:#F2938D;background:rgba(242,147,141,.09)}
+  /* approve toggle: same shape as .adel but must not read as a delete */
+  .atog{background:none;border:1px solid var(--line2);border-radius:5px;cursor:pointer;
+    font-family:inherit;font-size:.78rem;padding:.2rem .6rem}
+  .atog:hover{border-color:var(--peach)}
+  .aempty{color:var(--faint);font-size:.9rem;padding:.9rem 0}
+  .krow{display:flex;flex-wrap:wrap;gap:.7rem;margin:0 0 1.8rem}
+  .kbox{flex:1 1 150px;background:var(--panel);border:1px solid var(--line);
+    border-radius:9px;padding:.95rem 1.1rem}
+  .kbox b{display:block;font-size:1.65rem;font-weight:650;letter-spacing:-.03em;color:var(--text)}
+  .kbox i{display:block;font-style:normal;font-size:.66rem;letter-spacing:.11em;
+    text-transform:uppercase;color:var(--faint);margin-top:.22rem}
+  .whoami{padding:.9rem 1.25rem 0;font-size:.72rem;color:var(--faint);line-height:1.45;
+    word-break:break-all}
+  .signout{appearance:none;background:none;border:0;color:var(--faint);cursor:pointer;
+    font-family:inherit;font-size:.78rem;padding:.35rem 1.25rem;text-align:left;width:100%}
+  .signout:hover{color:var(--peach)}
+
   .scroll{overflow-x:auto;margin:0 0 1.4rem;border:1px solid var(--line);border-radius:9px;background:var(--panel)}
 
   table{width:100%;border-collapse:collapse;font-size:.895rem}
@@ -207,7 +271,29 @@
 </style>
 </head>
 <body>
-<div class="app">
+<div class="gate" id="gate">
+  <div class="gatebox">
+    <div class="gatebrand"><span class="dot"></span><span><b>Klareva</b><i>Creator Hub</i></span></div>
+    <h2 id="gtitle">Create your account</h2>
+    <p class="gsub" id="gsub">You need an account to get your dashboard.</p>
+    <div class="gname" id="gnamewrap">
+      <label for="gname">Name</label>
+      <input id="gname" type="text" autocomplete="name" placeholder="What should we call you">
+    </div>
+    <label for="gemail">Email</label>
+    <input id="gemail" type="email" autocomplete="email" placeholder="you@email.com">
+    <label for="gpass">Password</label>
+    <input id="gpass" type="password" autocomplete="new-password" placeholder="At least 6 characters">
+    <button class="btn" id="gsubmit" type="button">Create account</button>
+    <div class="gerr" id="gerr"></div>
+    <div class="gswap">
+      <span id="gswaptxt">Already have an account?</span>
+      <a id="gtoggle">Log in</a>
+    </div>
+  </div>
+</div>
+
+<div class="app" id="app" style="display:none">
 <nav class="side">
   <div class="brand"><span class="dot"></span><span><b>Klareva</b><i>Creator Hub</i></span></div>
   <button class="navbtn on" data-go="intro">Introduction</button>
@@ -217,7 +303,10 @@
   <button class="navbtn" data-go="scripts">Scripts</button>
   <button class="navbtn" data-go="docs">Documents</button>
   <div class="navlbl">Account</div>
-  <button class="navbtn" data-go="settings">Settings</button>
+  <button class="navbtn" data-go="accounts">My Accounts</button>
+  <button class="navbtn" data-go="admin" id="navadmin" style="display:none">Admin</button>
+  <div class="whoami" id="whoami"></div>
+  <button class="signout" id="signout" type="button">Sign out</button>
 </nav>
 
 <main>
@@ -512,25 +601,43 @@
 </section>
 
 <!-- SETTINGS -->
-<section class="sec" id="settings">
+<section class="sec" id="accounts">
   <div class="eyebrow">Your account</div>
-  <h1>Settings</h1>
-  <p class="lede">Add the accounts you're running so Jayden can find them and check your videos.</p>
+  <h1>My Accounts</h1>
+  <p class="lede">Add every account you are running. This is how your posts get counted, and how Jayden finds your videos to check them.</p>
 
   <div class="card" style="max-width:520px;padding:1.4rem 1.5rem 1.6rem">
-    <label for="em">Email</label>
-    <input id="em" type="email" placeholder="you@email.com">
-    <label for="dn">Display name</label>
-    <input id="dn" type="text" placeholder="What Jayden calls you">
-    <label for="ac">Add a social account</label>
-    <input id="ac" type="text" placeholder="@username, press Enter">
-    <div id="list" style="margin-top:.75rem"></div>
-    <button class="btn" id="save">Save</button>
-    <button class="btn ghost" id="copy">Copy for Discord</button>
-    <span class="ok" id="msg"></span>
+    <label for="aplat">Platform</label>
+    <select id="aplat" class="fin">
+      <option value="instagram">Instagram</option>
+      <option value="facebook">Facebook</option>
+      <option value="tiktok">TikTok</option>
+    </select>
+    <label for="ahandle">Handle</label>
+    <input id="ahandle" class="fin" type="text" placeholder="@username" autocomplete="off">
+    <button class="btn" id="aadd" type="button">Add account</button>
+    <span class="ok" id="amsg"></span>
   </div>
 
-  <div class="note"><p><strong>This saves in your browser only.</strong> Hit <strong>Copy for Discord</strong> and paste it into your 1 on 1 chat so Jayden actually gets it.</p></div>
+  <h2>Your accounts</h2>
+  <div id="alist"><div class="aempty">Loading...</div></div>
+
+  <div class="note"><p><strong>Add the handle exactly as it appears on the app.</strong> If it is wrong, nothing you post gets counted, and it will look like you did no work that week.</p></div>
+</section>
+
+<!-- ADMIN -->
+<section class="sec" id="admin">
+  <div class="eyebrow">Admin only</div>
+  <h1>All Creators</h1>
+  <p class="lede">Everyone who has signed up, the accounts they added, and what they actually posted.</p>
+
+  <div class="krow" id="kpis"></div>
+
+  <h2>Accounts by creator</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Creator</th><th>Email</th><th>Platform</th><th>Handle</th><th class="num">Posts 7d</th><th>Scraping</th></tr></thead>
+    <tbody id="adminrows"></tbody>
+  </table></div>
 </section>
 
 </main>
@@ -538,8 +645,28 @@
 
 <script>
 (function () {
-  var navs = document.querySelectorAll('.navbtn');
-  var secs = document.querySelectorAll('.sec');
+  var CFG = window.KLAREVA_CFG || {};
+  var gate = document.getElementById('gate');
+  var app = document.getElementById('app');
+  var errBox = document.getElementById('gerr');
+  var mode = 'signup';
+  var SB = null, ME = null;
+
+  function err(msg) {
+    errBox.textContent = msg;
+    errBox.classList.add('on');
+  }
+  function clearErr() { errBox.classList.remove('on'); errBox.textContent = ''; }
+
+  if (!window.supabase || !CFG.url || CFG.url.indexOf('PASTE_') === 0) {
+    err('This site is not connected to its database yet. Tell Jayden.');
+    return;
+  }
+  SB = window.supabase.createClient(CFG.url, CFG.anonKey);
+
+  /* ---------------------------------------------------------- nav ---- */
+  var navs = [].slice.call(document.querySelectorAll('.navbtn'));
+  var secs = [].slice.call(document.querySelectorAll('section.sec'));
   navs.forEach(function (b) {
     b.addEventListener('click', function () {
       navs.forEach(function (x) { x.classList.remove('on'); });
@@ -547,88 +674,266 @@
       b.classList.add('on');
       document.getElementById(b.dataset.go).classList.add('on');
       window.scrollTo(0, 0);
+      if (b.dataset.go === 'admin') loadAdmin();
     });
   });
 
-  document.querySelectorAll('[data-jump]').forEach(function (a) {
-    a.addEventListener('click', function (e) {
-      e.preventDefault();
-      var t = a.dataset.jump;
-      navs.forEach(function (x) { x.classList.remove('on'); });
-      secs.forEach(function (x) { x.classList.remove('on'); });
-      document.querySelector('.navbtn[data-go="' + t + '"]').classList.add('on');
-      document.getElementById(t).classList.add('on');
-      window.scrollTo(0, 0);
-    });
-  });
+  /* --------------------------------------------------------- auth ---- */
+  var gtitle = document.getElementById('gtitle');
+  var gsub = document.getElementById('gsub');
+  var gsubmit = document.getElementById('gsubmit');
+  var gtoggle = document.getElementById('gtoggle');
+  var gswaptxt = document.getElementById('gswaptxt');
+  var gnamewrap = document.getElementById('gnamewrap');
+  var gname = document.getElementById('gname');
+  var gemail = document.getElementById('gemail');
+  var gpass = document.getElementById('gpass');
 
-  var KEY = 'klareva_creator';
-  var accounts = [];
-  var em = document.getElementById('em');
-  var dn = document.getElementById('dn');
-  var ac = document.getElementById('ac');
-  var list = document.getElementById('list');
-  var msg = document.getElementById('msg');
-
-  function draw() {
-    list.innerHTML = '';
-    accounts.forEach(function (h, i) {
-      var row = document.createElement('div');
-      row.className = 'chip';
-      var b = document.createElement('b');
-      b.textContent = h;
-      var x = document.createElement('button');
-      x.textContent = '×';
-      x.setAttribute('aria-label', 'Remove ' + h);
-      x.addEventListener('click', function () { accounts.splice(i, 1); draw(); });
-      row.appendChild(b); row.appendChild(x); list.appendChild(row);
-    });
+  function setMode(m) {
+    mode = m;
+    clearErr();
+    if (m === 'signup') {
+      gtitle.textContent = 'Create your account';
+      gsub.textContent = 'You need an account to get your dashboard.';
+      gsubmit.textContent = 'Create account';
+      gswaptxt.textContent = 'Already have an account?';
+      gtoggle.textContent = 'Log in';
+      gnamewrap.classList.remove('hide');
+      gpass.setAttribute('autocomplete', 'new-password');
+    } else {
+      gtitle.textContent = 'Welcome back';
+      gsub.textContent = 'Log in to get to your dashboard.';
+      gsubmit.textContent = 'Log in';
+      gswaptxt.textContent = 'Need an account?';
+      gtoggle.textContent = 'Sign up';
+      gnamewrap.classList.add('hide');
+      gpass.setAttribute('autocomplete', 'current-password');
+    }
   }
+  gtoggle.addEventListener('click', function () {
+    setMode(mode === 'signup' ? 'login' : 'signup');
+  });
+
+  function friendly(message) {
+    var m = (message || '').toLowerCase();
+    if (m.indexOf('invalid login') > -1) return 'That email and password do not match. Try again, or sign up if you have not yet.';
+    if (m.indexOf('already registered') > -1) return 'That email already has an account. Switch to Log in.';
+    if (m.indexOf('password') > -1 && m.indexOf('6') > -1) return 'Password needs to be at least 6 characters.';
+    if (m.indexOf('email') > -1 && m.indexOf('valid') > -1) return 'That email does not look right.';
+    if (m.indexOf('confirm') > -1) return 'Check your email for a confirmation link, then log in.';
+    return message || 'Something went wrong. Try again.';
+  }
+
+  gsubmit.addEventListener('click', function () {
+    clearErr();
+    var email = gemail.value.trim();
+    var pass = gpass.value;
+    if (!email || !pass) { err('Fill in your email and password.'); return; }
+    gsubmit.disabled = true;
+    gsubmit.textContent = 'One second...';
+
+    var run = mode === 'signup'
+      ? SB.auth.signUp({
+          email: email, password: pass,
+          options: { data: { name: gname.value.trim() } }
+        })
+      : SB.auth.signInWithPassword({ email: email, password: pass });
+
+    run.then(function (res) {
+      gsubmit.disabled = false;
+      setMode(mode);
+      if (res.error) { err(friendly(res.error.message)); return; }
+      if (!res.data.session) {
+        err('Account made. Check your email for the confirmation link, then log in.');
+        setMode('login');
+        return;
+      }
+      boot();
+    }).catch(function (e) {
+      gsubmit.disabled = false;
+      setMode(mode);
+      err(friendly(e.message));
+    });
+  });
+
+  [gemail, gpass, gname].forEach(function (el) {
+    el.addEventListener('keydown', function (e) { if (e.key === 'Enter') gsubmit.click(); });
+  });
+
+  document.getElementById('signout').addEventListener('click', function () {
+    SB.auth.signOut().then(function () { window.location.reload(); });
+  });
+
+  /* --------------------------------------------------------- boot ---- */
+  function boot() {
+    SB.auth.getSession().then(function (r) {
+      var session = r.data.session;
+      if (!session) { gate.classList.remove('hide'); app.style.display = 'none'; return; }
+      return SB.from('profiles').select('id,email,name,is_admin').eq('id', session.user.id).single()
+        .then(function (p) {
+          ME = p.data || { id: session.user.id, email: session.user.email, name: '', is_admin: false };
+          gate.classList.add('hide');
+          app.style.display = '';
+          document.getElementById('whoami').textContent = ME.name || ME.email;
+          if (ME.is_admin) document.getElementById('navadmin').style.display = '';
+          loadAccounts();
+        });
+    }).catch(function (e) { err(friendly(e.message)); });
+  }
+
+  /* ----------------------------------------------------- accounts ---- */
+  var alist = document.getElementById('alist');
+  var amsg = document.getElementById('amsg');
 
   function flash(t) {
-    msg.textContent = t;
-    setTimeout(function () { msg.textContent = ''; }, 2200);
+    amsg.textContent = t;
+    setTimeout(function () { amsg.textContent = ''; }, 2200);
   }
 
-  try {
-    var raw = localStorage.getItem(KEY);
-    if (raw) {
-      var d = JSON.parse(raw);
-      em.value = d.email || '';
-      dn.value = d.name || '';
-      accounts = d.accounts || [];
-      draw();
-    }
-  } catch (e) { }
+  function loadAccounts() {
+    SB.from('creator_accounts').select('id,platform,handle')
+      .order('created_at', { ascending: true })
+      .then(function (r) {
+        if (r.error) { alist.innerHTML = '<div class="aempty">Could not load your accounts.</div>'; return; }
+        var rows = r.data || [];
+        if (!rows.length) {
+          alist.innerHTML = '<div class="aempty">Nothing yet. Add your first account above.</div>';
+          return;
+        }
+        alist.innerHTML = '';
+        rows.forEach(function (a) {
+          var d = document.createElement('div');
+          d.className = 'arow';
+          var pl = document.createElement('span');
+          pl.className = 'apl';
+          pl.textContent = a.platform;
+          var h = document.createElement('b');
+          h.textContent = '@' + a.handle;
+          var x = document.createElement('button');
+          x.className = 'adel';
+          x.type = 'button';
+          x.textContent = 'Remove';
+          x.addEventListener('click', function () { removeAccount(a.id, a.handle); });
+          d.appendChild(pl); d.appendChild(h); d.appendChild(x);
+          alist.appendChild(d);
+        });
+      });
+  }
 
-  ac.addEventListener('keydown', function (e) {
-    if (e.key !== 'Enter') return;
-    var v = ac.value.trim();
-    if (!v) return;
-    if (v.charAt(0) !== '@') v = '@' + v;
-    accounts.push(v);
-    ac.value = '';
-    draw();
+  function removeAccount(id, handle) {
+    if (!window.confirm('Remove @' + handle + '? Its posts stop being counted.')) return;
+    SB.from('creator_accounts').delete().eq('id', id).then(function (r) {
+      if (r.error) { flash('Could not remove it'); return; }
+      flash('Removed');
+      loadAccounts();
+    });
+  }
+
+  document.getElementById('aadd').addEventListener('click', function () {
+    var handleEl = document.getElementById('ahandle');
+    var handle = handleEl.value.trim().replace(/^@+/, '').replace(/\s+/g, '');
+    if (!handle) { flash('Type a handle first'); return; }
+    SB.auth.getSession().then(function (r) {
+      var uid = r.data.session && r.data.session.user.id;
+      if (!uid) { flash('Log in again'); return; }
+      return SB.from('creator_accounts').insert({
+        user_id: uid,
+        platform: document.getElementById('aplat').value,
+        handle: handle
+      }).then(function (res) {
+        if (res.error) {
+          flash(res.error.code === '23505' ? 'That handle is already added' : 'Could not add it');
+          return;
+        }
+        handleEl.value = '';
+        flash('Added');
+        loadAccounts();
+      });
+    });
   });
 
-  document.getElementById('save').addEventListener('click', function () {
-    localStorage.setItem(KEY, JSON.stringify({
-      email: em.value.trim(), name: dn.value.trim(), accounts: accounts
-    }));
-    flash('Saved');
-  });
+  /* -------------------------------------------------------- admin ---- */
+  var adminLoaded = false;
+  function loadAdmin() {
+    if (adminLoaded) return;
+    adminLoaded = true;
+    var rowsEl = document.getElementById('adminrows');
+    var since = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
 
-  document.getElementById('copy').addEventListener('click', function () {
-    var lines = 'Name: ' + (dn.value.trim() || '-') + '\n'
-      + 'Email: ' + (em.value.trim() || '-') + '\n'
-      + 'Accounts: ' + (accounts.length ? accounts.join(', ') : '-');
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(lines).then(
-        function () { flash('Copied'); },
-        function () { flash('Copy failed'); }
-      );
-    } else { flash('Copy not supported'); }
-  });
+    Promise.all([
+      SB.from('profiles').select('id,email,name,created_at'),
+      SB.from('creator_accounts').select('id,user_id,platform,handle,created_at,approved'),
+      SB.from('account_stats').select('account_id,posts,day').gte('day', since)
+    ]).then(function (res) {
+      var people = res[0].data || [], accts = res[1].data || [], stats = res[2].data || [];
+      var byUser = {};
+      people.forEach(function (p) { byUser[p.id] = p; });
+      var postsByAcct = {};
+      stats.forEach(function (st) {
+        postsByAcct[st.account_id] = (postsByAcct[st.account_id] || 0) + (st.posts || 0);
+      });
+      var totalPosts = 0;
+      Object.keys(postsByAcct).forEach(function (k) { totalPosts += postsByAcct[k]; });
+
+      var kpis = [
+        [people.length, 'Creators'],
+        [accts.length, 'Accounts'],
+        [totalPosts, 'Posts last 7d'],
+        [(totalPosts / 7).toFixed(1), 'Posts per day']
+      ];
+      document.getElementById('kpis').innerHTML = kpis.map(function (k) {
+        return '<div class="kbox"><b>' + k[0] + '</b><i>' + k[1] + '</i></div>';
+      }).join('');
+
+      if (!accts.length) {
+        rowsEl.innerHTML = '<tr><td colspan="6" class="aempty">Nobody has added an account yet.</td></tr>';
+        return;
+      }
+      accts.sort(function (a, b) { return (a.user_id + a.handle) < (b.user_id + b.handle) ? -1 : 1; });
+      rowsEl.innerHTML = '';
+      accts.forEach(function (a) {
+        var p = byUser[a.user_id] || {};
+        var tr = document.createElement('tr');
+        [p.name || '-', p.email || '-', a.platform, '@' + a.handle].forEach(function (t) {
+          var td = document.createElement('td'); td.textContent = t; tr.appendChild(td);
+        });
+        var posts = document.createElement('td');
+        posts.className = 'num';
+        posts.textContent = postsByAcct[a.id] || 0;
+        tr.appendChild(posts);
+
+        // Approving is what puts a handle on the scraper, which costs credits.
+        var cell = document.createElement('td');
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'atog';
+        function paint() {
+          btn.textContent = a.approved ? 'On' : 'Off';
+          btn.style.color = a.approved ? 'var(--peach)' : 'var(--faint)';
+        }
+        paint();
+        btn.addEventListener('click', function () {
+          var next = !a.approved;
+          btn.disabled = true;
+          SB.from('creator_accounts').update({ approved: next }).eq('id', a.id)
+            .then(function (r) {
+              btn.disabled = false;
+              if (r.error) { btn.textContent = 'failed'; return; }
+              a.approved = next;
+              paint();
+            });
+        });
+        cell.appendChild(btn);
+        tr.appendChild(cell);
+        rowsEl.appendChild(tr);
+      });
+    }).catch(function () {
+      rowsEl.innerHTML = '<tr><td colspan="6" class="aempty">Could not load. Are you set as admin?</td></tr>';
+    });
+  }
+
+  setMode('signup');
+  boot();
 })();
 </script>
 </body>
