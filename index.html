@@ -319,6 +319,10 @@
     border:1px solid var(--line2);border-radius:8px;padding:.6rem .72rem;font-size:.92rem;
     font-family:inherit;margin:0 0 .95rem}
   .fin:focus{outline:none;border-color:var(--pink)}
+  /* native select arrow sits jammed against the edge; draw our own with room */
+  select.fin{appearance:none;-webkit-appearance:none;padding-right:2.2rem;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239C93B0' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right .8rem center}
   .arow{display:flex;align-items:center;gap:.75rem;padding:.72rem .92rem;background:var(--panel);
     border:1px solid var(--line);border-radius:9px;margin:0 0 .5rem}
   .arow b{font-weight:600;color:var(--text);font-size:.92rem}
