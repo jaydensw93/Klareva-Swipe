@@ -89,9 +89,11 @@
   #admin.sec{max-width:1280px;margin:0 auto}
 
   /* rotating quote, top right, out of the way */
-  .mquote{position:fixed;top:.95rem;right:1.35rem;z-index:5;max-width:330px;
-    text-align:right;color:var(--faint);font-size:.76rem;line-height:1.55;
-    font-style:italic;pointer-events:none;opacity:.85;transition:opacity .6s ease}
+  .mquote{position:fixed;top:1.05rem;right:1.5rem;z-index:5;max-width:420px;
+    text-align:right;color:var(--body);font-size:.95rem;font-weight:500;
+    line-height:1.55;letter-spacing:-.005em;pointer-events:none;
+    transition:opacity .6s ease}
+  .mquote::before{content:'\2726';color:var(--peach);margin-right:.45rem;font-size:.8rem}
   .mquote.fade{opacity:0}
   @media (max-width:1100px){.mquote{display:none}}
   .sec{display:none;animation:in .18s ease-out}
@@ -1827,7 +1829,7 @@
   el.className = 'mquote';
   document.body.appendChild(el);
   var i = Math.floor(Math.random() * Q.length);
-  function show() { el.textContent = '\u201c' + Q[i] + '\u201d'; }
+  function show() { el.textContent = Q[i]; }
   show();
   setInterval(function () {
     el.classList.add('fade');
