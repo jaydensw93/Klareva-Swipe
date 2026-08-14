@@ -9,6 +9,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23F2B59D'/%3E%3Cstop offset='.55' stop-color='%23D67BA6'/%3E%3Cstop offset='1' stop-color='%238B6BA8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='44' font-family='Arial' font-size='34' font-weight='700' text-anchor='middle' fill='%23231226'%3EK%3C/text%3E%3C/svg%3E">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3"></script>
 <script src="config.js"></script>
+<script src="radar.js" defer></script>
 <script>
   /* Personal creator links (/?c=<token>) belong to the library at /library/. */
   (function () {
@@ -261,6 +262,50 @@
   .card h3{margin:0 0 .3rem}
   .card h3 a{border-bottom:0}
   .card p{margin:0;font-size:.94rem;color:var(--body)}
+
+  /* ---------- viral radar grid ---------- */
+  .lanetabs{display:inline-flex;background:var(--panel);border:1px solid var(--line);
+    border-radius:11px;padding:.28rem;gap:.28rem;margin:0 0 1.05rem}
+  .ltab{appearance:none;border:0;background:none;color:var(--mute);font-family:inherit;
+    font-size:.85rem;font-weight:600;padding:.45rem 1.1rem;border-radius:8px;cursor:pointer;
+    transition:background .13s,color .13s}
+  .ltab:hover{color:var(--text)}
+  .ltab.on{background:linear-gradient(135deg,#F6C3A8,#E08BB0);color:var(--ink)}
+  .rbar{display:flex;gap:.6rem;align-items:flex-start;margin:0 0 1.05rem;flex-wrap:wrap}
+  .rchips{display:flex;gap:.4rem;flex-wrap:wrap;flex:1;min-width:0}
+  .rchip{appearance:none;font-family:inherit;background:var(--panel);border:1px solid var(--line2);
+    color:var(--mute);font-size:.78rem;padding:.34rem .72rem;border-radius:99px;cursor:pointer;
+    transition:border-color .13s,color .13s,background .13s;white-space:nowrap}
+  .rchip:hover{border-color:var(--peach);color:var(--text)}
+  .rchip.on{background:rgba(242,181,157,.14);border-color:rgba(242,181,157,.5);
+    color:var(--peach);font-weight:600}
+  .rsel{width:auto;margin:0;flex:0 0 auto}
+  .rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:.7rem;
+    margin:0 0 1.1rem}
+  .rvc{position:relative;border-radius:12px;overflow:hidden;background:var(--panel2);
+    border:1px solid var(--line);display:block;text-decoration:none;
+    transition:transform .14s,border-color .14s,box-shadow .14s}
+  a.rvc{border-bottom:1px solid var(--line)}
+  .rvc:hover{transform:translateY(-2px);border-color:rgba(242,181,157,.5);
+    box-shadow:0 8px 22px rgba(0,0,0,.4)}
+  .rvthumb{position:relative;aspect-ratio:9/16;background:#0A0518}
+  .rvthumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .rvthumb::after{content:'';position:absolute;inset:auto 0 0 0;height:72px;
+    background:linear-gradient(180deg,transparent,rgba(0,0,0,.82));pointer-events:none}
+  .rvx{position:absolute;top:.45rem;left:.45rem;z-index:2;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.66rem;font-weight:700;
+    padding:.22rem .44rem;border-radius:6px;background:rgba(10,5,20,.74);color:var(--mute)}
+  .rvx.hot{background:linear-gradient(135deg,var(--peach),var(--pink));color:var(--ink)}
+  .rvviews{position:absolute;left:.55rem;bottom:.5rem;z-index:2;color:#fff;
+    font-size:.82rem;font-weight:660;letter-spacing:-.01em}
+  .rvdur{position:absolute;right:.55rem;bottom:.55rem;z-index:2;color:rgba(255,255,255,.72);
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.62rem}
+  .rvmeta{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;
+    padding:.5rem .62rem;font-size:.7rem;color:var(--faint)}
+  .rvmeta b{color:var(--mute);font-weight:550;overflow:hidden;text-overflow:ellipsis;
+    white-space:nowrap;min-width:0}
+  .rvmeta i{font-style:normal;white-space:nowrap;font-variant-numeric:tabular-nums}
+  @media (max-width:640px){.rgrid{grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:.5rem}}
 
   /* ---------- call recordings ---------- */
   .rec{background:var(--panel);border:1px solid var(--line);border-radius:14px;
@@ -668,31 +713,34 @@
 
 <!-- RADAR -->
 <section class="sec" id="radar">
-  <div class="eyebrow">Refreshed twice a day &nbsp;·&nbsp; 8am and 8pm</div>
+  <div class="eyebrow" id="radarmeta">From the scraper</div>
   <h1>Viral Radar</h1>
-  <p class="lede">Every video worth copying, in one place. This is where your day starts. You do not go hunting on Instagram for ideas, you open the library and take one.</p>
+  <p class="lede">Every video from the accounts in our lane, refreshed twice a day. Find the one that beat its own account, run it through METHOD, film it.</p>
 
+  <div class="lanetabs" id="lanetabs">
+    <button class="ltab on" data-lane="skincare" type="button">Skincare</button>
+    <button class="ltab" data-lane="lifestyle" type="button">Lifestyle</button>
+  </div>
+
+  <div class="rbar">
+    <div class="rchips" id="rchips"></div>
+    <select id="rsort" class="fin rsel">
+      <option value="x">Biggest outlier</option>
+      <option value="v">Most views</option>
+      <option value="t">Newest</option>
+    </select>
+  </div>
+
+  <div class="rgrid" id="rgrid"></div>
+  <div class="aempty" id="rlanempty" style="display:none"></div>
+  <button class="addmore" id="rmore" type="button" style="display:none">Show more</button>
+
+  <div class="note"><p><strong>The outlier number is the whole game.</strong> It is how many times better a video did than that account&rsquo;s normal video. A 400,000 view video on an account that always does 400,000 teaches you nothing. A video doing 12&times; its account&rsquo;s normal has something in it that does not normally work, and that is the thing you rebuild.</p></div>
+
+  <h2 style="margin-top:2.4rem">The full library</h2>
   <a class="dcard" href="library/" target="_blank" rel="noopener"><span class="dico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><path d="M15.5 14.5v5l4-2.5z"/></svg></span><span class="dbody"><b>Winning Content Library</b><span>Thousands of videos from the accounts in our lane, with thumbnails, view counts and a link to the original. Rebuilds twice a day. <strong>It asks for the passcode</strong>, same one you got when you joined, ask in your chat if you do not have it.</span></span><span class="dmeta"><span class="dtags"><i class="dtag">Passcode</i></span><i class="ddate">Refreshed 8am + 8pm</i></span><svg class="darr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></a>
 
   <div class="note"><p><strong>Your own link is different from this one.</strong> If videos have been assigned to you personally, you were sent a link with a code on the end of it. Open that one instead and your assigned videos and scripts show up alongside the library. Keep it, it is yours and it does not change.</p></div>
-
-  <h2>How to pick one</h2>
-  <p>Do not just take the video with the biggest number. A video doing 400,000 views on an account where every video does 400,000 views teaches you nothing, that account is just big. What you want is the video that beat its own account.</p>
-  <p>So before you commit to one, tap through to the original and scroll that account's recent posts. If the video you picked looks like everything else they post, keep looking. If it is clearly outperforming the stuff around it, something in that video worked that does not normally work, and that is the thing worth rebuilding.</p>
-  <p>Then run it through METHOD and film it. One video, start to finish, before you go looking for the next one.</p>
-
-  <h2>Accounts we track</h2>
-  <div class="scroll"><table>
-    <thead><tr><th>Account</th><th class="num">Followers</th><th>Angle</th></tr></thead>
-    <tbody>
-      <tr><td><a href="https://www.instagram.com/justin.gwang/reels/" target="_blank" rel="noopener">justin.gwang</a></td><td class="num">113,052</td><td>Store walkthroughs. The blueprint.</td></tr>
-      <tr><td><a href="https://www.instagram.com/choi.koreanskin/reels/" target="_blank" rel="noopener">choi.koreanskin</a></td><td class="num">64,606</td><td>Reaction and check-this-advice openers.</td></tr>
-      <tr><td><a href="https://www.instagram.com/alexmakeup2025/reels/" target="_blank" rel="noopener">alexmakeup2025</a></td><td class="num">38,479</td><td>Exposing / mature skin framing.</td></tr>
-      <tr><td><a href="https://www.instagram.com/makeupby.kyle/reels/" target="_blank" rel="noopener">makeupby.kyle</a></td><td class="num">23,775</td><td>Look young after 50 age callouts.</td></tr>
-      <tr><td><a href="https://www.instagram.com/sujin.kremedies/reels/" target="_blank" rel="noopener">sujin.kremedies</a></td><td class="num">22,101</td><td>Tight 30 second remedies.</td></tr>
-      <tr><td><a href="https://www.instagram.com/ryan.ellis.beauty/reels/" target="_blank" rel="noopener">ryan.ellis.beauty</a></td><td class="num">18,165</td><td>High volume, one angle repeated.</td></tr>
-      <tr><td><a href="https://www.instagram.com/kyles.beauty/reels/" target="_blank" rel="noopener">kyles.beauty</a></td><td class="num">5,922</td><td>Same lane as choi. Hook variations.</td></tr>
-    </tbody></table></div>
 </section>
 
 <!-- SCRIPTS -->
@@ -741,6 +789,11 @@
   <div class="rec">
     <div class="recvid"><iframe data-src="https://www.youtube.com/embed/IYEm75hPtP4?rel=0" title="Alfonso Case Study Group Call" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
     <div class="rechead"><b>$132,324 in 45 days &nbsp;&middot;&nbsp; Alfonso Case Study Group Call</b><i class="ddate">Aug 7, 2026</i></div>
+  </div>
+
+  <div class="rec">
+    <div class="recvid"><iframe data-src="https://www.loom.com/embed/49fe577182734125ab9be7693590f3ee" title="Jul 25 Group Call" allowfullscreen loading="lazy"></iframe></div>
+    <div class="rechead"><b>Group Call</b><i class="ddate">Jul 25, 2026</i></div>
   </div>
 </section>
 
@@ -1254,6 +1307,119 @@
   });
 
   render(false);
+})();
+
+/* Viral radar: rendered from radar.js (window.RADAR_DATA), regenerated twice a
+   day by radar_export.py on the Mac. Renders on first open of the tab. */
+(function () {
+  var grid = document.getElementById('rgrid');
+  if (!grid) return;
+  var PAGE = 24;
+  var lane = 'skincare', who = -1, sortKey = 'x', shown = PAGE, booted = false;
+  var meta = document.getElementById('radarmeta');
+  var chipsEl = document.getElementById('rchips');
+  var emptyEl = document.getElementById('rlanempty');
+  var moreBtn = document.getElementById('rmore');
+  var sortEl = document.getElementById('rsort');
+
+  function fmt(n) {
+    if (n >= 1e6) return (n / 1e6).toFixed(1).replace('.0', '') + 'M';
+    if (n >= 1e4) return Math.round(n / 1e3) + 'K';
+    if (n >= 1e3) return (n / 1e3).toFixed(1).replace('.0', '') + 'K';
+    return '' + n;
+  }
+
+  function laneData() {
+    var D = window.RADAR_DATA;
+    return (D && D.lanes && D.lanes[lane]) || { accounts: [], videos: [] };
+  }
+
+  function chips() {
+    var d = laneData();
+    chipsEl.innerHTML = '';
+    if (!d.videos.length) return;
+    var mk = function (label, idx) {
+      var b = document.createElement('button');
+      b.className = 'rchip' + (idx === who ? ' on' : '');
+      b.type = 'button';
+      b.textContent = label;
+      b.addEventListener('click', function () { who = idx; shown = PAGE; chips(); render(); });
+      chipsEl.appendChild(b);
+    };
+    mk('All (' + d.videos.length + ')', -1);
+    d.accounts
+      .map(function (a, i) { return { a: a, i: i }; })
+      .sort(function (p, n) { return n.a.n - p.a.n; })
+      .forEach(function (o) { if (o.a.n) mk(o.a.h + ' (' + o.a.n + ')', o.i); });
+  }
+
+  function render() {
+    var d = laneData();
+    var list = d.videos.filter(function (v) { return who < 0 || v.a === who; });
+    list.sort(function (p, n) {
+      if (sortKey === 'v') return n.v - p.v;
+      if (sortKey === 't') {
+        if (p.t < 0) return 1;
+        if (n.t < 0) return -1;
+        return p.t - n.t;
+      }
+      return (n.x - p.x) || (n.v - p.v);
+    });
+
+    if (!list.length) {
+      grid.innerHTML = '';
+      moreBtn.style.display = 'none';
+      emptyEl.style.display = '';
+      emptyEl.textContent = lane === 'lifestyle'
+        ? 'No lifestyle accounts on the tracker yet. As soon as they are added, their videos show up here.'
+        : 'Nothing here yet. The scraper fills this twice a day.';
+      return;
+    }
+    emptyEl.style.display = 'none';
+
+    grid.innerHTML = list.slice(0, shown).map(function (v) {
+      var a = d.accounts[v.a] || {};
+      var badge = v.x
+        ? '<span class="rvx' + (v.x >= 2 ? ' hot' : '') + '">' + v.x + '&times;</span>'
+        : '<span class="rvx">&mdash;</span>';
+      var img = v.th
+        ? '<img src="' + v.th + '" alt="" loading="lazy">'
+        : '';
+      var age = v.t < 0 ? '' : (v.t === 0 ? 'today' : v.t + 'd');
+      return '<a class="rvc" href="' + v.u + '" target="_blank" rel="noopener">'
+        + '<span class="rvthumb">' + img + badge
+        + '<span class="rvviews">' + fmt(v.v) + '</span>'
+        + (v.d ? '<span class="rvdur">' + v.d + 's</span>' : '')
+        + '</span>'
+        + '<span class="rvmeta"><b>' + a.h + '</b><i>' + age + '</i></span>'
+        + '</a>';
+    }).join('');
+    moreBtn.style.display = list.length > shown ? '' : 'none';
+  }
+
+  function boot() {
+    if (booted) return;
+    booted = true;
+    var D = window.RADAR_DATA;
+    if (D && D.built) meta.textContent = 'Refreshed twice a day \u00b7 rebuilt ' + D.built;
+    chips();
+    render();
+  }
+
+  [].forEach.call(document.querySelectorAll('.ltab'), function (b) {
+    b.addEventListener('click', function () {
+      [].forEach.call(document.querySelectorAll('.ltab'), function (x) { x.classList.remove('on'); });
+      b.classList.add('on');
+      lane = b.getAttribute('data-lane');
+      who = -1; shown = PAGE;
+      chips(); render();
+    });
+  });
+  sortEl.addEventListener('change', function () { sortKey = sortEl.value; shown = PAGE; render(); });
+  moreBtn.addEventListener('click', function () { shown += PAGE; render(); });
+  [].forEach.call(document.querySelectorAll('.navbtn[data-go="radar"]'), function (b) {
+    b.addEventListener('click', boot);
+  });
 })();
 
 /* Call recordings: load the Loom players only when the tab is first opened,
