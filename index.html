@@ -885,13 +885,17 @@
 
   <div class="rbar">
     <select id="awin" class="fin rsel">
+      <option value="h12">Last 12 hours</option>
       <option value="today">Today</option>
       <option value="1">Last 24 hours</option>
       <option value="7" selected>Last 7 days</option>
       <option value="30">Last 30 days</option>
+      <option value="90">Last 3 months</option>
       <option value="180">Last 6 months</option>
       <option value="365">Last year</option>
+      <option value="all">All time</option>
     </select>
+    <span class="ok" style="margin-left:0">One window. The table, the numbers and the radar below all follow it.</span>
   </div>
 
   <div class="krow" id="kpis"></div>
@@ -906,13 +910,6 @@
   <p style="margin-bottom:1rem">Every post from every student account, only visible to you. Rebuilds twice a day with the scraper.</p>
 
   <div class="rbar">
-    <select id="stwin" class="fin rsel">
-      <option value="0">All time</option>
-      <option value="1">Last 24 hours</option>
-      <option value="3">Last 3 days</option>
-      <option value="7">Last 7 days</option>
-      <option value="30">Last 30 days</option>
-    </select>
     <select id="stsort" class="fin rsel">
       <option value="t">Newest</option>
       <option value="v">Most views</option>
@@ -1247,10 +1244,13 @@
     var rowsEl = document.getElementById('adminrows');
     var winVal = document.getElementById('awin').value;
     var todayStr = new Date().toISOString().slice(0, 10);
-    var cutoff = winVal === 'today'
-      ? todayStr
-      : new Date(Date.now() - parseInt(winVal, 10) * 864e5).toISOString().slice(0, 10);
-    var days = winVal === 'today' ? 1 : parseInt(winVal, 10);
+    var cutoff, days;
+    if (winVal === 'all') { cutoff = '0000-00-00'; days = 366; }
+    else if (winVal === 'h12' || winVal === 'today') { cutoff = todayStr; days = 1; }
+    else {
+      days = parseInt(winVal, 10);
+      cutoff = new Date(Date.now() - days * 864e5).toISOString().slice(0, 10);
+    }
 
     var byUser = {};
     adminData.people.forEach(function (p) { byUser[p.id] = p; });
@@ -1644,7 +1644,7 @@
   var grid = document.getElementById('stgrid');
   if (!grid) return;
   var PAGE = 24;
-  var win = 0, sortKey = 't', who = -1, shown = PAGE, booted = false;
+  var sortKey = 't', who = -1, shown = PAGE, booted = false;
   var nowSec = Math.floor(Date.now() / 1000);
   var chipsEl = document.getElementById('stchips');
   var kpisEl = document.getElementById('stkpis');
@@ -1684,10 +1684,22 @@
   }
 
   function data() { return window.RADAR_STUDENTS || { accounts: [], videos: [] }; }
+  function sinceSec() {
+    var el = document.getElementById('awin');
+    var val = el ? el.value : '7';
+    if (val === 'all') return 0;
+    if (val === 'h12') return nowSec - 12 * 3600;
+    if (val === 'today') {
+      var d = new Date(); d.setHours(0, 0, 0, 0);
+      return Math.floor(d.getTime() / 1000);
+    }
+    return nowSec - parseInt(val, 10) * 86400;
+  }
   function filtered() {
+    var since = sinceSec();
     return data().videos.filter(function (v) {
       if (who >= 0 && v.a !== who) return false;
-      if (win > 0 && ageDays(v) > win) return false;
+      if (since > 0 && (!v.p || v.p < since)) return false;
       return true;
     });
   }
@@ -1706,22 +1718,18 @@
     mk('All accounts (' + d.videos.length + ')', -1);
     d.accounts.forEach(function (a, i) {
       if (!a.n) return;
-      mk((a.who ? a.who + ' \u00b7 ' : '') + a.h + ' (' + a.n + ')', i);
+      mk((a.who ? a.who + ' \u00b7 ' : '') + (a.dn || a.h) + ' (' + a.n + ')', i);
     });
   }
 
   function render() {
     var list = filtered();
-    var p24 = 0, p7 = 0, tv = 0;
-    data().videos.forEach(function (v) {
-      if (ageDays(v) <= 1) p24++;
-      if (ageDays(v) <= 7) p7++;
-    });
-    list.forEach(function (v) { tv += v.v; });
+    var tv = 0, posting = {};
+    list.forEach(function (v) { tv += v.v; posting[v.a] = 1; });
     kpisEl.innerHTML = [
-      [p24, 'Posts \u00b7 last 24h'],
-      [p7, 'Posts \u00b7 last 7d'],
-      [fmt(tv), 'Views in window']
+      [list.length, 'Posts in window'],
+      [fmt(tv), 'Views in window'],
+      [Object.keys(posting).length, 'Accounts posting']
     ].map(function (k) {
       return '<div class="kbox"><b>' + k[0] + '</b><i>' + k[1] + '</i></div>';
     }).join('');
@@ -1730,7 +1738,7 @@
       grid.innerHTML = '';
       moreBtn.style.display = 'none';
       emptyEl.style.display = '';
-      emptyEl.textContent = 'Nothing here yet. Student posts show up after the next scrape.';
+      emptyEl.textContent = 'No posts in this window. Widen it, or wait for the next scrape.';
       return;
     }
     emptyEl.style.display = 'none';
@@ -1753,7 +1761,7 @@
           + (v.d ? '<span class="rcdur">' + v.d + 's</span>' : '') + '</span>';
       return '<div class="rcard">' + thumb
         + '<div class="rcf">'
-        + '<div class="racct">' + (a.pl === 'facebook' ? IC_FB : IC_IG) + '<b>' + esc(a.h) + '</b></div>'
+        + '<div class="racct">' + (a.pl === 'facebook' ? IC_FB : IC_IG) + '<b>' + esc(a.dn || a.h) + '</b></div>'
         + '<div class="rstats">'
         + '<span>' + IC_EYE + fmt(v.v) + '</span>'
         + '<span>' + IC_HEART + fmt(v.l) + '</span>'
@@ -1775,9 +1783,8 @@
     render();
   }
 
-  document.getElementById('stwin').addEventListener('change', function () {
-    win = parseInt(this.value, 10); shown = PAGE; render();
-  });
+  var awinEl = document.getElementById('awin');
+  if (awinEl) awinEl.addEventListener('change', function () { shown = PAGE; if (booted) render(); });
   document.getElementById('stsort').addEventListener('change', function () {
     sortKey = this.value; shown = PAGE; render();
   });
