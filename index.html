@@ -73,6 +73,13 @@
   .navbtn.on{background:linear-gradient(90deg,rgba(242,181,157,.15),rgba(214,123,166,.06));
     color:var(--peach);font-weight:600}
   .navbtn:focus-visible{outline:1.5px solid var(--peach);outline-offset:-1px}
+  /* Book a Call carries the button gradient, fading out halfway across */
+  .navbtn[data-go="book"]{color:var(--text);
+    background:linear-gradient(90deg,rgba(246,195,168,.32) 0%,rgba(224,139,176,.18) 32%,transparent 60%)}
+  .navbtn[data-go="book"]:hover{color:var(--text);
+    background:linear-gradient(90deg,rgba(246,195,168,.42) 0%,rgba(224,139,176,.26) 32%,transparent 64%)}
+  .navbtn[data-go="book"] .ni{opacity:1;color:var(--peach)}
+  .navbtn[data-go="book"].on{color:var(--peach)}
   .ni{flex:0 0 auto;opacity:.7}
   .navbtn.on .ni{opacity:1}
   .whoami{margin-top:auto;padding:1rem 1.3rem 0;font-size:.72rem;color:var(--faint);
