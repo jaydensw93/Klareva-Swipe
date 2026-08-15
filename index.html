@@ -88,6 +88,10 @@
   #radar.sec{max-width:1280px;margin:0 auto}
   #admin.sec{max-width:1280px;margin:0 auto}
   #intro.sec{max-width:1340px;margin:0 auto}
+  #book.sec{max-width:1160px;margin:0 auto}
+  .bookwrap{border:1px solid var(--line);border-radius:15px;overflow:hidden;
+    background:var(--panel)}
+  .bookwrap iframe{width:100%;height:960px;border:0;display:block}
 
   /* rotating quote, top right, out of the way */
   /* sits in the page flow above the content, scrolls away with it */
@@ -536,6 +540,7 @@
   <button class="navbtn" data-go="scripts"><svg class="ni" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M10 12h5M10 16h5"/></svg><span>Scripts</span></button>
   <button class="navbtn" data-go="docs"><svg class="ni" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Documents</span></button>
   <button class="navbtn" data-go="calls"><svg class="ni" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10.5 21 8v8l-5-2.5z"/></svg><span>Call Recordings</span></button>
+  <button class="navbtn" data-go="book"><svg class="ni" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><span>Book a Call</span></button>
   <div class="navlbl">Account</div>
   <button class="navbtn" data-go="accounts"><svg class="ni" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.5-3.5 4-5 7-5s5.5 1.5 7 5"/></svg><span>My Accounts</span></button>
   <button class="navbtn" data-go="admin" id="navadmin" style="display:none"><svg class="ni" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg><span>Admin</span></button>
@@ -890,6 +895,14 @@
     <div class="recvid"><iframe data-src="https://www.loom.com/embed/49fe577182734125ab9be7693590f3ee" title="Jul 25 Group Call" allowfullscreen loading="lazy"></iframe></div>
     <div class="rechead"><b>Group Call</b><i class="ddate">Jul 25, 2026</i></div>
   </div>
+</section>
+
+<!-- BOOK -->
+<section class="sec" id="book">
+  <div class="eyebrow">One on one</div>
+  <h1>Book a Call</h1>
+  <p class="lede">Stuck on something, or want eyes on your videos? Grab a time. It goes straight on Jayden's calendar and you get the meeting link by email.</p>
+  <div class="bookwrap"><iframe data-cal="https://calendly.com/jaydensw93/1-on-1-klareva?embed_domain=swipe.klareva.co&amp;embed_type=Inline&amp;background_color=151024&amp;text_color=f7f5fc&amp;primary_color=d67ba6&amp;hide_gdpr_banner=1" title="Book a call with Jayden" loading="lazy"></iframe></div>
 </section>
 
 <!-- SETTINGS -->
@@ -1887,6 +1900,20 @@
       el.classList.remove('fade');
     }, 650);
   }, 22000);
+})();
+
+/* Book a call: the Calendly widget only loads when the tab is opened. */
+(function () {
+  var loaded = false;
+  [].forEach.call(document.querySelectorAll('.navbtn[data-go="book"]'), function (b) {
+    b.addEventListener('click', function () {
+      if (loaded) return;
+      loaded = true;
+      [].forEach.call(document.querySelectorAll('#book iframe[data-cal]'), function (f) {
+        f.src = f.getAttribute('data-cal');
+      });
+    });
+  });
 })();
 
 /* Call recordings: load the Loom players only when the tab is first opened,
