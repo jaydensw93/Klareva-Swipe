@@ -193,6 +193,15 @@
   .gswap a:hover{text-decoration:underline}
   .gname{display:block}
   .gname.hide{display:none}
+  /* attention dot: you have not added an account yet */
+  .navdot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;margin-left:auto;
+    background:#F2938D;animation:ndot 1.6s ease-in-out infinite}
+  @keyframes ndot{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(242,147,141,.45)}
+    50%{opacity:.75;box-shadow:0 0 0 5px rgba(242,147,141,0)}}
+  @media (prefers-reduced-motion:reduce){.navdot{animation:none}}
+  .alertbanner{background:rgba(242,147,141,.08);border:1px solid rgba(242,147,141,.4);
+    border-radius:10px;padding:.85rem 1rem;margin:0 0 1.3rem;color:var(--text);
+    font-size:.93rem;line-height:1.6;max-width:560px}
 
   /* ---------- intro video ---------- */
   .introrow{display:flex;gap:1.8rem;align-items:flex-start}
@@ -545,6 +554,8 @@
     <div class="gname" id="gnamewrap">
       <label for="gname">Name</label>
       <input id="gname" type="text" autocomplete="name" placeholder="What should we call you">
+      <label for="gdiscord">Discord username</label>
+      <input id="gdiscord" type="text" autocomplete="off" placeholder="So we know who you are in the server">
     </div>
     <label for="gemail">Email</label>
     <input id="gemail" type="email" autocomplete="email" placeholder="you@email.com">
@@ -942,7 +953,16 @@
   <h1>My Accounts</h1>
   <p class="lede">Add every Instagram and Facebook account you are running. They start getting tracked straight away, there is nothing to wait on.</p>
 
+  <div class="alertbanner" id="noacct" style="display:none">
+    <strong>You have not added any accounts yet.</strong> Add every Instagram and Facebook you run below, or nothing you post gets counted.
+  </div>
+
   <div class="card" style="max-width:560px;padding:1.4rem 1.5rem 1.6rem">
+    <label for="mydiscord">Your Discord username</label>
+    <div class="nrow" style="margin-bottom:1rem">
+      <input id="mydiscord" class="fin" type="text" placeholder="Your Discord username" autocomplete="off">
+      <button class="btn" id="dsave" type="button" style="margin-top:0;flex:0 0 auto">Save</button>
+    </div>
     <label>Accounts you run</label>
     <div id="newrows"></div>
     <button class="addmore" id="amore" type="button">+ Add another</button>
@@ -978,6 +998,13 @@
   </div>
 
   <div class="krow" id="kpis"></div>
+
+  <h2>Unclaimed accounts</h2>
+  <p style="margin-bottom:1rem">Added with <b>!add</b> in Discord but not matched to a sign-up. Pick who owns each one.</p>
+  <div class="scroll" style="margin-bottom:2rem"><table>
+    <thead><tr><th>Platform</th><th>Handle</th><th>Discord name</th><th>Added</th><th>Assign to</th><th></th></tr></thead>
+    <tbody id="unclaimedrows"></tbody>
+  </table></div>
 
   <h2>Sign-ups</h2>
   <div class="scroll" style="margin-bottom:2rem"><table>
@@ -1054,6 +1081,7 @@
   var gswaptxt = document.getElementById('gswaptxt');
   var gnamewrap = document.getElementById('gnamewrap');
   var gname = document.getElementById('gname');
+  var gdiscord = document.getElementById('gdiscord');
   var gemail = document.getElementById('gemail');
   var gpass = document.getElementById('gpass');
 
@@ -1097,13 +1125,17 @@
     var email = gemail.value.trim();
     var pass = gpass.value;
     if (!email || !pass) { err('Fill in your email and password.'); return; }
+    if (mode === 'signup' && !gdiscord.value.trim()) {
+      err('Add your Discord username, it is how your accounts get linked to you.');
+      return;
+    }
     gsubmit.disabled = true;
     gsubmit.textContent = 'One second...';
 
     var run = mode === 'signup'
       ? SB.auth.signUp({
           email: email, password: pass,
-          options: { data: { name: gname.value.trim() } }
+          options: { data: { name: gname.value.trim(), discord: gdiscord.value.trim() } }
         })
       : SB.auth.signInWithPassword({ email: email, password: pass });
 
@@ -1137,7 +1169,7 @@
     SB.auth.getSession().then(function (r) {
       var session = r.data.session;
       if (!session) { gate.classList.remove('hide'); app.style.display = 'none'; return; }
-      return SB.from('profiles').select('id,email,name,is_admin').eq('id', session.user.id).single()
+      return SB.from('profiles').select('*').eq('id', session.user.id).single()
         .then(function (p) {
           ME = p.data || { id: session.user.id, email: session.user.email, name: '', is_admin: false };
           gate.classList.add('hide');
@@ -1145,6 +1177,8 @@
           document.getElementById('whoami').textContent = ME.name || ME.email;
           if (ME.is_admin) document.getElementById('navadmin').style.display = '';
           callNudge();
+          var md = document.getElementById('mydiscord');
+          if (md && ME.discord) md.value = ME.discord;
           loadAccounts();
         });
     }).catch(function (e) { err(friendly(e.message)); });
@@ -1202,12 +1236,26 @@
     flashTimer = setTimeout(function () { amsg.textContent = ''; }, 4000);
   }
 
+  function acctAlert(on) {
+    var btn = document.querySelector('.navbtn[data-go="accounts"]');
+    var dot = btn.querySelector('.navdot');
+    if (on && !dot) {
+      dot = document.createElement('span');
+      dot.className = 'navdot';
+      btn.appendChild(dot);
+    }
+    if (!on && dot) dot.remove();
+    var banner = document.getElementById('noacct');
+    if (banner) banner.style.display = on ? '' : 'none';
+  }
+
   function loadAccounts() {
     SB.from('creator_accounts').select('id,platform,handle')
       .order('created_at', { ascending: true })
       .then(function (r) {
         if (r.error) { alist.innerHTML = '<div class="aempty">Could not load your accounts.</div>'; return; }
         var rows = r.data || [];
+        acctAlert(!rows.length && !(ME && ME.is_admin));
         if (!rows.length) {
           alist.innerHTML = '<div class="aempty">Nothing yet. Add your first account above.</div>';
           return;
@@ -1297,6 +1345,14 @@
     inputs[inputs.length - 1].focus();
   }
 
+  document.getElementById('dsave').addEventListener('click', function () {
+    var v = document.getElementById('mydiscord').value.trim();
+    if (!v) { flash('Type your Discord username first'); return; }
+    SB.from('profiles').update({ discord: v }).eq('id', ME.id).then(function (r) {
+      flash(r.error ? 'Could not save it' : 'Saved');
+    });
+  });
+
   document.getElementById('amore').addEventListener('click', addRow);
 
   document.getElementById('asave').addEventListener('click', function () {
@@ -1349,14 +1405,16 @@
     if (adminData) { renderAdmin(); return; }
     var since = new Date(Date.now() - 366 * 864e5).toISOString().slice(0, 10);
     Promise.all([
-      SB.from('profiles').select('id,email,name,created_at'),
+      SB.from('profiles').select('*'),
       SB.from('creator_accounts').select('id,user_id,platform,handle,created_at,approved'),
-      SB.from('account_stats').select('account_id,posts,views,day').gte('day', since)
+      SB.from('account_stats').select('account_id,posts,views,day').gte('day', since),
+      SB.from('unclaimed_accounts').select('*')
     ]).then(function (res) {
       adminData = {
         people: res[0].data || [],
         accts: res[1].data || [],
-        stats: res[2].data || []
+        stats: res[2].data || [],
+        unclaimed: res[3].data || []
       };
       document.getElementById('awin').addEventListener('change', renderAdmin);
       renderAdmin();
@@ -1397,6 +1455,54 @@
     ].map(function (k) {
       return '<div class="kbox"><b>' + k[0] + '</b><i>' + k[1] + '</i></div>';
     }).join('');
+
+    var unEl = document.getElementById('unclaimedrows');
+    unEl.innerHTML = '';
+    if (!adminData.unclaimed.length) {
+      unEl.innerHTML = '<tr><td colspan="6" class="aempty">Nothing waiting. Accounts added with !add that match a sign-up attach themselves.</td></tr>';
+    }
+    adminData.unclaimed.forEach(function (u) {
+      var tr = document.createElement('tr');
+      [u.platform, '@' + u.handle, u.discord_name || '-', (u.created_at || '').slice(0, 10)].forEach(function (t) {
+        var td = document.createElement('td'); td.textContent = t; tr.appendChild(td);
+      });
+      var selTd = document.createElement('td');
+      var sel = document.createElement('select');
+      sel.className = 'fin';
+      sel.style.margin = '0';
+      var opt0 = document.createElement('option');
+      opt0.value = ''; opt0.textContent = 'Pick a creator';
+      sel.appendChild(opt0);
+      adminData.people.forEach(function (p) {
+        var o = document.createElement('option');
+        o.value = p.id;
+        o.textContent = (p.name || p.email || '?') + (p.discord ? ' \u00b7 ' + p.discord : '');
+        sel.appendChild(o);
+      });
+      selTd.appendChild(sel);
+      tr.appendChild(selTd);
+      var btnTd = document.createElement('td');
+      var go = document.createElement('button');
+      go.className = 'atog';
+      go.type = 'button';
+      go.textContent = 'Assign';
+      go.addEventListener('click', function () {
+        if (!sel.value) return;
+        go.disabled = true;
+        SB.from('creator_accounts')
+          .insert({ user_id: sel.value, platform: u.platform, handle: u.handle })
+          .then(function (r) {
+            if (r.error && r.error.code !== '23505') { go.disabled = false; go.textContent = 'failed'; return; }
+            SB.from('unclaimed_accounts').delete().eq('id', u.id).then(function () {
+              adminData = null;
+              loadAdmin();
+            });
+          });
+      });
+      btnTd.appendChild(go);
+      tr.appendChild(btnTd);
+      unEl.appendChild(tr);
+    });
 
     var suEl = document.getElementById('signuprows');
     var acctCount = {};
