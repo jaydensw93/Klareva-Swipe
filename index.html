@@ -89,6 +89,20 @@
   #admin.sec{max-width:1280px;margin:0 auto}
   #intro.sec{max-width:1340px;margin:0 auto}
   #book.sec{max-width:1160px;margin:0 auto}
+  .nudge{position:fixed;right:1.3rem;bottom:1.3rem;z-index:60;max-width:335px;
+    background:var(--panel);border:1px solid var(--line2);border-radius:14px;
+    padding:1.05rem 1.15rem 1.1rem;box-shadow:0 18px 55px rgba(0,0,0,.55);
+    animation:nin .32s ease-out}
+  @keyframes nin{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .nudge b{display:block;font-size:.94rem;font-weight:640;color:var(--text);
+    margin:0 1.4rem .3rem 0}
+  .nudge p{font-size:.84rem;color:var(--mute);margin:0 0 .8rem;line-height:1.55;max-width:none}
+  .nudge .btn{margin-top:0;font-size:.83rem;padding:.5rem .95rem}
+  .nudgex{position:absolute;top:.55rem;right:.6rem;appearance:none;background:none;
+    border:0;color:var(--faint);cursor:pointer;font-size:1.05rem;line-height:1;
+    padding:.25rem .35rem;border-radius:5px;font-family:inherit}
+  .nudgex:hover{color:var(--text)}
+  @media (max-width:640px){.nudge{right:.8rem;left:.8rem;bottom:.8rem;max-width:none}}
   .bookwrap{border:1px solid var(--line);border-radius:15px;overflow:hidden;
     background:var(--panel)}
   .bookwrap iframe{width:100%;height:960px;border:0;display:block}
@@ -1107,9 +1121,55 @@
           app.style.display = '';
           document.getElementById('whoami').textContent = ME.name || ME.email;
           if (ME.is_admin) document.getElementById('navadmin').style.display = '';
+          if (!ME.is_admin) callNudge();
           loadAccounts();
         });
     }).catch(function (e) { err(friendly(e.message)); });
+  }
+
+  /* Booking nudge: every visit, dismissible, gone for the rest of the session. */
+  var nudgeShown = false;
+  function callNudge() {
+    var KEY = 'klv_nudge';
+    if (nudgeShown) return;
+    nudgeShown = true;
+    try { if (sessionStorage.getItem(KEY)) return; } catch (e) {}
+    setTimeout(function () {
+      if (document.querySelector('.nudge')) return;
+      var n = document.createElement('div');
+      n.className = 'nudge';
+      n.setAttribute('role', 'dialog');
+      n.setAttribute('aria-label', 'Book a call reminder');
+
+      var x = document.createElement('button');
+      x.className = 'nudgex';
+      x.type = 'button';
+      x.setAttribute('aria-label', 'Dismiss');
+      x.textContent = '\u00d7';
+
+      var title = document.createElement('b');
+      title.textContent = 'Booked your call yet?';
+      var msg = document.createElement('p');
+      msg.textContent = 'A quick 1 on 1 with Jayden gets you unstuck faster than three days of guessing. It takes 20 seconds to grab a time.';
+      var go = document.createElement('button');
+      go.className = 'btn';
+      go.type = 'button';
+      go.textContent = 'Book a call';
+
+      function dismiss() {
+        try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
+        n.remove();
+      }
+      x.addEventListener('click', dismiss);
+      go.addEventListener('click', function () {
+        dismiss();
+        var b = document.querySelector('.navbtn[data-go="book"]');
+        if (b) b.click();
+      });
+
+      n.appendChild(x); n.appendChild(title); n.appendChild(msg); n.appendChild(go);
+      document.body.appendChild(n);
+    }, 1400);
   }
 
   /* ----------------------------------------------------- accounts ---- */
