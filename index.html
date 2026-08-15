@@ -979,6 +979,12 @@
 
   <div class="krow" id="kpis"></div>
 
+  <h2>Sign-ups</h2>
+  <div class="scroll" style="margin-bottom:2rem"><table>
+    <thead><tr><th>Name</th><th>Email</th><th>Signed up</th><th class="num">Accounts added</th></tr></thead>
+    <tbody id="signuprows"></tbody>
+  </table></div>
+
   <h2>Accounts by creator</h2>
   <div class="scroll"><table>
     <thead><tr><th>Creator</th><th>Email</th><th>Platform</th><th>Handle</th><th class="num">Posts</th><th class="num">Views</th><th>Tracking</th></tr></thead>
@@ -1391,6 +1397,31 @@
     ].map(function (k) {
       return '<div class="kbox"><b>' + k[0] + '</b><i>' + k[1] + '</i></div>';
     }).join('');
+
+    var suEl = document.getElementById('signuprows');
+    var acctCount = {};
+    adminData.accts.forEach(function (a) {
+      acctCount[a.user_id] = (acctCount[a.user_id] || 0) + 1;
+    });
+    var people = adminData.people.slice().sort(function (p, n) {
+      return (n.created_at || '').localeCompare(p.created_at || '');
+    });
+    suEl.innerHTML = '';
+    people.forEach(function (p) {
+      var tr = document.createElement('tr');
+      [p.name || '-', p.email || '-', (p.created_at || '').slice(0, 10)].forEach(function (t) {
+        var td = document.createElement('td'); td.textContent = t; tr.appendChild(td);
+      });
+      var n = document.createElement('td');
+      n.className = 'num';
+      n.textContent = acctCount[p.id] || 0;
+      if (!acctCount[p.id]) n.style.color = 'var(--pink)';
+      tr.appendChild(n);
+      suEl.appendChild(tr);
+    });
+    if (!people.length) {
+      suEl.innerHTML = '<tr><td colspan="4" class="aempty">Nobody has signed up yet.</td></tr>';
+    }
 
     if (!adminData.accts.length) {
       rowsEl.innerHTML = '<tr><td colspan="7" class="aempty">Nobody has added an account yet.</td></tr>';
