@@ -1121,7 +1121,7 @@
           app.style.display = '';
           document.getElementById('whoami').textContent = ME.name || ME.email;
           if (ME.is_admin) document.getElementById('navadmin').style.display = '';
-          if (!ME.is_admin) callNudge();
+          callNudge();
           loadAccounts();
         });
     }).catch(function (e) { err(friendly(e.message)); });
