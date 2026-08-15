@@ -1130,10 +1130,8 @@
   /* Booking nudge: every visit, dismissible, gone for the rest of the session. */
   var nudgeShown = false;
   function callNudge() {
-    var KEY = 'klv_nudge';
     if (nudgeShown) return;
     nudgeShown = true;
-    try { if (sessionStorage.getItem(KEY)) return; } catch (e) {}
     setTimeout(function () {
       if (document.querySelector('.nudge')) return;
       var n = document.createElement('div');
@@ -1156,10 +1154,7 @@
       go.type = 'button';
       go.textContent = 'Book a call';
 
-      function dismiss() {
-        try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
-        n.remove();
-      }
+      function dismiss() { n.remove(); }
       x.addEventListener('click', dismiss);
       go.addEventListener('click', function () {
         dismiss();
