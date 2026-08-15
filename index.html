@@ -1255,7 +1255,8 @@
       .then(function (r) {
         if (r.error) { alist.innerHTML = '<div class="aempty">Could not load your accounts.</div>'; return; }
         var rows = r.data || [];
-        acctAlert(!rows.length && !(ME && ME.is_admin));
+        // admin always sees the alert so Jayden can review how it looks
+        acctAlert(!rows.length || (ME && ME.is_admin));
         if (!rows.length) {
           alist.innerHTML = '<div class="aempty">Nothing yet. Add your first account above.</div>';
           return;
