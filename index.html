@@ -161,7 +161,15 @@
   .gname.hide{display:none}
 
   /* ---------- intro video ---------- */
-  .vintro{max-width:840px;margin:0 0 2rem}
+  .introrow{display:flex;gap:1.8rem;align-items:flex-start}
+  .introrow .wiz{flex:1;min-width:0}
+  .vintro{flex:0 0 300px;max-width:300px;margin:0;position:sticky;top:1.3rem}
+  .vintro .rlbl{margin:0 0 .6rem}
+  .vintro .vplay{width:50px;height:50px}
+  @media (max-width:1100px){
+    .introrow{flex-direction:column}
+    .vintro{position:static;flex:none;width:100%;max-width:440px;order:-1}
+  }
   .vframe{position:relative;aspect-ratio:16/9;border-radius:15px;overflow:hidden;
     background:#000;border:1px solid var(--line);cursor:pointer;
     transition:border-color .14s,box-shadow .14s}
@@ -543,14 +551,7 @@
   <h1>Introduction</h1>
   <p class="lede">One step at a time. Check things off as you do them, your progress saves on its own.</p>
 
-  <div class="vintro">
-    <div class="rlbl" style="margin-top:0">Watch this first</div>
-    <div class="vframe" id="introvid" data-yt="do591baSvME" role="button" aria-label="Play the introduction video">
-      <img src="https://i.ytimg.com/vi/do591baSvME/maxresdefault.jpg" alt="" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/do591baSvME/hqdefault.jpg'">
-      <button class="vplay" type="button" aria-label="Play"><svg width="24" height="24" viewBox="0 0 24 24" fill="#231226" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></button>
-    </div>
-  </div>
-
+  <div class="introrow">
   <div class="wiz">
     <div class="wizbar">
       <div class="wizcount" id="wizcount"></div>
@@ -738,6 +739,15 @@
       <button class="btn ghost" id="wback" type="button">Back</button>
       <button class="btn" id="wnext" type="button">Next</button>
     </div>
+  </div>
+
+  <div class="vintro">
+    <div class="rlbl">Watch this first</div>
+    <div class="vframe" id="introvid" data-yt="do591baSvME" role="button" aria-label="Play the introduction video">
+      <img src="https://i.ytimg.com/vi/do591baSvME/maxresdefault.jpg" alt="" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/do591baSvME/hqdefault.jpg'">
+      <button class="vplay" type="button" aria-label="Play"><svg width="22" height="22" viewBox="0 0 24 24" fill="#231226" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></button>
+    </div>
+  </div>
   </div>
 </section>
 
