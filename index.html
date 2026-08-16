@@ -94,6 +94,7 @@
   .sec{max-width:1000px}
   #radar.sec{max-width:1280px;margin:0 auto}
   #admin.sec{max-width:1280px;margin:0 auto}
+  #accounts.sec{max-width:1280px;margin:0 auto}
   #intro.sec{max-width:1340px;margin:0 auto}
   #book.sec{max-width:1160px;margin:0 auto}
   /* fixed to body, outside .app, so it must carry its own font */
@@ -976,6 +977,21 @@
   <h2>Your accounts</h2>
   <div id="alist"><div class="aempty">Loading...</div></div>
 
+  <div id="myvidwrap" style="display:none">
+    <h2 style="margin-top:2.4rem">Your videos</h2>
+    <div class="rbar">
+      <select id="mvsort" class="fin rsel">
+        <option value="t">Newest</option>
+        <option value="v">Most views</option>
+        <option value="g">Fastest growing</option>
+      </select>
+    </div>
+    <div class="krow" id="mvkpis"></div>
+    <div class="rpack" id="mvgrid"></div>
+    <div class="aempty" id="mvempty" style="display:none"></div>
+    <button class="addmore" id="mvmore" type="button" style="display:none">Show more</button>
+  </div>
+
   <div class="note"><p><strong>Add the handle exactly as it appears on the app.</strong> If it is wrong, nothing you post gets counted, and it will look like you did no work that week.</p></div>
 </section>
 
@@ -1258,6 +1274,8 @@
       .then(function (r) {
         if (r.error) { alist.innerHTML = '<div class="aempty">Could not load your accounts.</div>'; return; }
         var rows = r.data || [];
+        myHandles = rows.map(function (a) { return a.platform + ':' + (a.handle || '').toLowerCase(); });
+        renderMyVideos();
         // admin always sees the alert so Jayden can review how it looks
         acctAlert(!rows.length || (ME && ME.is_admin));
         if (!rows.length) {
@@ -1401,6 +1419,113 @@
   });
 
   addRow();
+
+  /* ------------------------------------------- your own videos ---- */
+  var mvShown = 18;
+  var myHandles = [];
+
+  function mvFmt(n) {
+    n = n || 0;
+    if (n >= 1e6) return (n / 1e6).toFixed(1).replace('.0', '') + 'M';
+    if (n >= 1e4) return Math.round(n / 1e3) + 'K';
+    if (n >= 1e3) return (n / 1e3).toFixed(1).replace('.0', '') + 'K';
+    return '' + Math.round(n);
+  }
+  function mvEsc(t) {
+    return ('' + (t || '')).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function renderMyVideos() {
+    var wrap = document.getElementById('myvidwrap');
+    var D = window.RADAR_STUDENTS;
+    if (!wrap) return;
+    if (!myHandles.length || !D || !D.accounts) { wrap.style.display = 'none'; return; }
+
+    var mine = {};
+    D.accounts.forEach(function (a, i) {
+      var k = a.pl + ':' + (a.h || '').toLowerCase();
+      if (myHandles.indexOf(k) > -1) mine[i] = a;
+    });
+    var vids = D.videos.filter(function (v) { return mine[v.a]; });
+    wrap.style.display = '';
+
+    var nowSec = Math.floor(Date.now() / 1000);
+    function vph(v) { return v.p ? v.v / Math.max(1, (nowSec - v.p) / 3600) : 0; }
+    function ageLabel(v) {
+      if (!v.p) return '';
+      var h = Math.max(1, Math.round((nowSec - v.p) / 3600));
+      if (h < 24) return h + (h === 1 ? ' hour ago' : ' hours ago');
+      var d = Math.round(h / 24);
+      return d + (d === 1 ? ' day ago' : ' days ago');
+    }
+
+    var tv = 0, p7 = 0, best = 0;
+    vids.forEach(function (v) {
+      tv += v.v;
+      if (v.p && (nowSec - v.p) <= 7 * 86400) p7++;
+      if (v.v > best) best = v.v;
+    });
+    document.getElementById('mvkpis').innerHTML = [
+      [vids.length, 'Videos tracked'],
+      [p7, 'Posted · last 7d'],
+      [mvFmt(tv), 'Total views'],
+      [mvFmt(best), 'Best video']
+    ].map(function (k) {
+      return '<div class="kbox"><b>' + mvEsc(k[0]) + '</b><i>' + k[1] + '</i></div>';
+    }).join('');
+
+    var emptyEl = document.getElementById('mvempty');
+    var grid = document.getElementById('mvgrid');
+    var moreBtn = document.getElementById('mvmore');
+    if (!vids.length) {
+      grid.innerHTML = '';
+      moreBtn.style.display = 'none';
+      emptyEl.style.display = '';
+      emptyEl.textContent = 'Your videos show up here after the next scrape. It runs twice a day, so check back tonight or tomorrow morning.';
+      return;
+    }
+    emptyEl.style.display = 'none';
+
+    var sortKey = document.getElementById('mvsort').value;
+    vids.sort(function (p, n) {
+      if (sortKey === 'v') return n.v - p.v;
+      if (sortKey === 'g') return vph(n) - vph(p);
+      return (n.p || 0) - (p.p || 0);
+    });
+
+    grid.innerHTML = vids.slice(0, mvShown).map(function (v) {
+      var a = mine[v.a] || {};
+      var img = v.th ? '<img src="' + v.th + '" alt="" loading="lazy">' : '';
+      var rate = vph(v);
+      var thumb = v.u
+        ? '<a class="rct" href="' + mvEsc(v.u) + '" target="_blank" rel="noopener">' + img
+          + (v.d ? '<span class="rcdur">' + v.d + 's</span>' : '') + '</a>'
+        : '<span class="rct">' + img
+          + (v.d ? '<span class="rcdur">' + v.d + 's</span>' : '') + '</span>';
+      return '<div class="rcard">' + thumb
+        + '<div class="rcf">'
+        + '<div class="racct"><b>' + mvEsc(a.dn || a.h) + '</b></div>'
+        + '<div class="rstats">'
+        + '<span>' + mvFmt(v.v) + ' views</span>'
+        + '<span>' + mvFmt(v.l) + ' likes</span>'
+        + '</div>'
+        + '<div class="rbot"><span class="rage">' + mvEsc(ageLabel(v)) + '</span>'
+        + (rate ? '<span class="rrate">&#8599; ' + mvFmt(rate) + '<i>views/hr</i></span>' : '<span></span>')
+        + '</div></div></div>';
+    }).join('');
+    moreBtn.style.display = vids.length > mvShown ? '' : 'none';
+  }
+
+  document.getElementById('mvsort').addEventListener('change', function () {
+    mvShown = 18; renderMyVideos();
+  });
+  document.getElementById('mvmore').addEventListener('click', function () {
+    mvShown += 18; renderMyVideos();
+  });
+  [].forEach.call(document.querySelectorAll('.navbtn[data-go="accounts"]'), function (b) {
+    b.addEventListener('click', renderMyVideos);
+  });
 
   /* -------------------------------------------------------- admin ---- */
   var adminData = null;
