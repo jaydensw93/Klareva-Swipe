@@ -1088,7 +1088,7 @@
 
   <h2>Sign-ups</h2>
   <div class="scroll" style="margin-bottom:2rem"><table>
-    <thead><tr><th>Name</th><th>Email</th><th>Signed up</th><th class="num">Accounts added</th></tr></thead>
+    <thead><tr><th>Name</th><th>Email</th><th>Discord</th><th>Signed up</th><th class="num">Accounts added</th></tr></thead>
     <tbody id="signuprows"></tbody>
   </table></div>
 
@@ -1705,8 +1705,12 @@
     suEl.innerHTML = '';
     people.forEach(function (p) {
       var tr = document.createElement('tr');
-      [p.name || '-', p.email || '-', (p.created_at || '').slice(0, 10)].forEach(function (t) {
-        var td = document.createElement('td'); td.textContent = t; tr.appendChild(td);
+      var dsc = p.discord || '';
+      [p.name || '-', p.email || '-', dsc || '-', (p.created_at || '').slice(0, 10)].forEach(function (t, ix) {
+        var td = document.createElement('td');
+        td.textContent = t;
+        if (ix === 2 && !dsc) { td.style.color = 'var(--pink)'; td.textContent = 'missing'; }
+        tr.appendChild(td);
       });
       var n = document.createElement('td');
       n.className = 'num';
@@ -1716,7 +1720,7 @@
       suEl.appendChild(tr);
     });
     if (!people.length) {
-      suEl.innerHTML = '<tr><td colspan="4" class="aempty">Nobody has signed up yet.</td></tr>';
+      suEl.innerHTML = '<tr><td colspan="5" class="aempty">Nobody has signed up yet.</td></tr>';
     }
 
     if (!adminData.accts.length) {
