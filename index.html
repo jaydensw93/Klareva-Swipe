@@ -1221,7 +1221,13 @@
   var navs = [].slice.call(document.querySelectorAll('.navbtn'));
   var secs = [].slice.call(document.querySelectorAll('section.sec'));
   var GATED = { scripts: 1, docs: 1, calls: 1, book: 1, accounts: 1 };
-  function isPaid() { return !!(ME && (ME.is_paid || ME.is_admin)); }
+  function isPaid() {
+    if (!ME) return false;
+    // until supabase-paid.sql has been run the column does not exist;
+    // treat that as paid so existing students never get locked out
+    if (ME.is_paid === undefined) return true;
+    return !!(ME.is_paid || ME.is_admin);
+  }
   navs.forEach(function (b) {
     b.addEventListener('click', function () {
       var go = b.dataset.go;
