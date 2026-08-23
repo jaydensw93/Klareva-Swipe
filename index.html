@@ -555,6 +555,39 @@
   @media (max-width:560px){
     .wizdots{display:none}
   }
+
+  /* ---- membership gating ---- */
+  .nlk{width:11px;height:11px;flex:0 0 auto;margin-left:auto;opacity:.55}
+  .navbtn.navlocked span{opacity:.72}
+  .navbtn[data-go="join"]{background:linear-gradient(90deg,rgba(246,195,168,.32) 0%,rgba(224,139,176,.18) 32%,transparent 60%)}
+  .navbtn[data-go="join"] .ni{opacity:1;color:var(--peach)}
+  .navbtn[data-go="join"].on{color:var(--peach)}
+  .lockchip{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem .95rem;border-radius:999px;
+    border:1px dashed rgba(246,195,168,.45);color:var(--peach);font-size:.85rem;font-weight:600;
+    cursor:pointer;background:rgba(246,195,168,.07);font-family:inherit}
+  .lockchip:hover{background:rgba(246,195,168,.15)}
+  .gatecard{border:1px solid var(--line);border-radius:15px;padding:2.4rem 1.6rem;text-align:center;
+    background:linear-gradient(180deg,rgba(246,195,168,.07),rgba(214,123,166,.05));margin-top:1.5rem}
+  .gatecard b{display:block;font-size:1.12rem;margin:.75rem 0 .4rem}
+  .gatecard p{color:var(--muted);max-width:520px;margin:0 auto 1.05rem;font-size:.93rem}
+  .gatelock{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;
+    justify-content:center;background:rgba(246,195,168,.13);color:var(--peach)}
+  .selhero{border:1px solid var(--line);border-radius:16px;padding:2.2rem 1.6rem;text-align:center;
+    background:linear-gradient(180deg,rgba(246,195,168,.08),rgba(214,123,166,.05));margin-bottom:2rem}
+  .selpr b{font-size:2.6rem;letter-spacing:-.02em}
+  .selpr span{color:var(--muted);font-size:.95rem;margin-left:.35rem}
+  .bigcta{display:inline-block;margin-top:1.1rem;padding:.95rem 2.4rem;border-radius:999px;border:0;
+    background:linear-gradient(90deg,#F2B59D,#D67BA6);color:#231226;font-weight:700;font-size:1.02rem;
+    cursor:pointer;text-decoration:none;font-family:inherit}
+  .bigcta:hover{filter:brightness(1.07)}
+  .selnote{color:var(--muted);font-size:.86rem;margin-top:.95rem}
+  .selgrid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-top:1.1rem}
+  .selrow{display:flex;gap:.7rem;padding:.9rem .95rem;border:1px solid var(--line);border-radius:12px;
+    background:var(--panel);align-items:flex-start}
+  .selrow svg{color:var(--peach);flex:0 0 auto;margin-top:.2rem}
+  .selrow b{display:block;font-size:.95rem;margin-bottom:.15rem}
+  .selrow span{color:var(--muted);font-size:.86rem;line-height:1.45}
+  @media (max-width:700px){.selgrid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -586,6 +619,7 @@
 <nav class="side">
   <div class="brand"><span class="dot"></span><span><b>Klareva</b><i>Creator Hub</i></span></div>
   <button class="navbtn on" data-go="intro"><svg class="ni" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4c4-2 6 2 10 0v8c-4 2-6-2-10 0"/></svg><span>Introduction</span></button>
+  <button class="navbtn" data-go="join" id="navjoin" style="display:none"><svg class="ni" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.4 5.6L20 9.5l-4.3 4 1.1 6L12 16.7 7.2 19.5l1.1-6L4 9.5l5.6-.9z"/></svg><span>Work with Jayden</span></button>
   <button class="navbtn" data-go="courses"><svg class="ni" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5 16 12l-6 3.5z"/></svg><span>Courses</span></button>
   <button class="navbtn" data-go="radar"><svg class="ni" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.6"/><path d="M12 12l5.5-5.5"/></svg><span>Viral Radar</span></button>
   <div class="navlbl">Resources</div>
@@ -659,7 +693,7 @@
     <div class="cmd">Jayden sent me</div>
     <div class="cmd">I need a Google Flow family plan invite, ultra plan, 5k credits</div>
     <p>Give him a backup Gmail, not one you care about. He invites it to a family plan and you are in for the month.</p>
-    <div class="rowlinks"><a class="lnk" href="https://t.me/phuoctain002" target="_blank" rel="noopener">Telegram &nbsp;@phuoctain002</a></div>
+    <div class="rowlinks" data-gate="Supplier unlocks with membership"><a class="lnk" href="https://t.me/phuoctain002" target="_blank" rel="noopener">Telegram &nbsp;@phuoctain002</a></div>
   </div>
 </div>
 <div class="task" data-ck="d2">
@@ -673,7 +707,7 @@
     <p>Do not pay full price for CapCut Pro. Buy it from G2G for around $2.</p>
     <div class="rowlinks">
       <a class="lnk" href="https://claude.ai" target="_blank" rel="noopener">Claude</a>
-      <a class="lnk" href="https://www.g2g.com/categories/capcut-accounts/offer/group?fa=c0107a82%3A89c8e24a&amp;region_id=0f76ac42-3267-4d77-9fba-f9d9d719dac9" target="_blank" rel="noopener">CapCut Pro on G2G</a>
+      <a class="lnk" data-gate="CapCut supplier unlocks with membership" href="https://www.g2g.com/categories/capcut-accounts/offer/group?fa=c0107a82%3A89c8e24a&amp;region_id=0f76ac42-3267-4d77-9fba-f9d9d719dac9" target="_blank" rel="noopener">CapCut Pro on G2G</a>
     </div>
     <p style="margin-top:.9rem"><strong>Signing into CapCut, do it in this order or it will not work:</strong></p>
     <ol style="margin:.4rem 0 0;font-size:.93rem">
@@ -739,8 +773,8 @@
     <p>That same chat then becomes your prompt writer for every video after this, so keep it open.</p>
     <div class="rowlinks">
       <a class="lnk" href="https://www.loom.com/share/215aa4ec2e9b4f898a477a7cb611e36c" target="_blank" rel="noopener">Course 02.1 &mdash; How to make an avatar</a>
-      <a class="lnk" href="https://docs.google.com/document/d/1d87V7h6h_pa-iWrYhm0X9YU086oEcyvTlcJgPOjQt38/edit?usp=sharing" target="_blank" rel="noopener">Avatar Builder document</a>
-      <a class="lnk" href="https://docs.google.com/document/d/1tOq_9c-RTJG3LDsA3_-pHZ39dUOievlpxd8v2wlcTg4/edit?usp=sharing" target="_blank" rel="noopener">Lifestyle Avatar Builder</a>
+      <a class="lnk" data-gate="Avatar Builder unlocks with membership" href="https://docs.google.com/document/d/1d87V7h6h_pa-iWrYhm0X9YU086oEcyvTlcJgPOjQt38/edit?usp=sharing" target="_blank" rel="noopener">Avatar Builder document</a>
+      <a class="lnk" data-gate="Lifestyle Avatar Builder unlocks with membership" href="https://docs.google.com/document/d/1tOq_9c-RTJG3LDsA3_-pHZ39dUOievlpxd8v2wlcTg4/edit?usp=sharing" target="_blank" rel="noopener">Lifestyle Avatar Builder</a>
     </div>
   </div>
 </div>
@@ -772,7 +806,7 @@
         <p style="margin-bottom:.6rem"><strong>You need the METHOD document to do any of this.</strong></p>
         <p style="margin-bottom:.6rem">METHOD is a set of instructions written for Claude, not for you. It teaches Claude how we take a video that already went viral and rebuild it as ours. It keeps what made the original work, the structure, the pacing, the way the hook is worded, and swaps out the parts that need to change: the body part being talked about, the four products being reviewed, and the last product, which is always Klareva.</p>
         <p style="margin-bottom:.7rem">So you do not read it. You copy the whole thing, paste it into Claude once, and then keep using that same chat every day.</p>
-        <div class="rowlinks"><a class="lnk" href="https://docs.google.com/document/d/1678HNkhu8sZRNRkg22kW4p0owE0JxBOrwz3JCNCRX2k/edit?usp=sharing" target="_blank" rel="noopener">Open METHOD &nbsp;&rarr;</a><a class="lnk" href="https://www.loom.com/share/139e4cf4591a4270a8b0c19c3681a014" target="_blank" rel="noopener">Course 05.1 &mdash; watch it done</a></div>
+        <div class="rowlinks"><a class="lnk" data-gate="METHOD unlocks with membership" href="https://docs.google.com/document/d/1678HNkhu8sZRNRkg22kW4p0owE0JxBOrwz3JCNCRX2k/edit?usp=sharing" target="_blank" rel="noopener">Open METHOD &nbsp;&rarr;</a><a class="lnk" href="https://www.loom.com/share/139e4cf4591a4270a8b0c19c3681a014" target="_blank" rel="noopener">Course 05.1 &mdash; watch it done</a></div>
       </div>
     </div>
 
@@ -790,6 +824,8 @@
       <p>You are going to be overwhelmed on day one. Everyone is. That is not a sign this is not for you, it is just what day one feels like.</p>
       <p>The people who make money are the ones who ask constantly. Jayden replies in a minute or two and you can hop on a call any time. The people who go quiet stall out.</p>
       <div class="note"><p><strong>Do not sit on a problem for three days.</strong> That is three days you do not get back.</p></div>
+      <p style="margin-top:1.3rem"><strong>Join the Discord.</strong> That is where everything happens, questions, wins, and the daily video ideas channel. Takes ten seconds.</p>
+      <div class="rowlinks"><a class="lnk" href="https://discord.gg/yYnPrTvZUx" target="_blank" rel="noopener">Join the Klareva Discord</a></div>
       <p style="margin-top:1.3rem"><strong>Finished setting up and staring at a blank screen?</strong> That gap between making your accounts and starting your first video is exactly what this tutorial walks you through.</p>
       <div class="rowlinks"><a class="lnk" href="https://www.loom.com/share/0e24183eb4f14982b0b7e7400a7b0b9f" target="_blank" rel="noopener">Course 03.1 &mdash; Transitioning into making videos</a></div>
       <p style="margin-top:1.3rem"><strong>Now book your call with Jayden.</strong> This is the last step. You will go over everything you just set up, make sure you actually understood it, and leave knowing exactly what to do first, so you start on the right path instead of guessing.</p>
@@ -901,9 +937,9 @@
   <div class="note"><p><strong>The outlier number is the whole game.</strong> It is how many times better a video did than that account&rsquo;s normal video. A 400,000 view video on an account that always does 400,000 teaches you nothing. A video doing 12&times; its account&rsquo;s normal has something in it that does not normally work, and that is the thing you rebuild.</p></div>
 
   <h2 style="margin-top:2.4rem">The full library</h2>
-  <a class="dcard" href="library/" target="_blank" rel="noopener"><span class="dico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><path d="M15.5 14.5v5l4-2.5z"/></svg></span><span class="dbody"><b>Winning Content Library</b><span>Thousands of videos from the accounts in our lane, with thumbnails, view counts and a link to the original. Rebuilds twice a day. <strong>It asks for the passcode</strong>, same one you got when you joined, ask in your chat if you do not have it.</span></span><span class="dmeta"><span class="dtags"><i class="dtag">Passcode</i></span><i class="ddate">Refreshed 8am + 8pm</i></span><svg class="darr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></a>
+  <a class="dcard" data-gate="The full library unlocks with membership" href="library/" target="_blank" rel="noopener"><span class="dico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><path d="M15.5 14.5v5l4-2.5z"/></svg></span><span class="dbody"><b>Winning Content Library</b><span>Thousands of videos from the accounts in our lane, with thumbnails, view counts and a link to the original. Rebuilds twice a day. <strong>It asks for the passcode</strong>, same one you got when you joined, ask in your chat if you do not have it.</span></span><span class="dmeta"><span class="dtags"><i class="dtag">Passcode</i></span><i class="ddate">Refreshed 8am + 8pm</i></span><svg class="darr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg></a>
 
-  <div class="note"><p><strong>Your own link is different from this one.</strong> If videos have been assigned to you personally, you were sent a link with a code on the end of it. Open that one instead and your assigned videos and scripts show up alongside the library. Keep it, it is yours and it does not change.</p></div>
+  <div class="note" data-gatehide><p><strong>Your own link is different from this one.</strong> If videos have been assigned to you personally, you were sent a link with a code on the end of it. Open that one instead and your assigned videos and scripts show up alongside the library. Keep it, it is yours and it does not change.</p></div>
 </section>
 
 <!-- SCRIPTS -->
@@ -960,6 +996,33 @@
     <div class="recvid"><iframe data-src="https://www.loom.com/embed/49fe577182734125ab9be7693590f3ee" title="Jul 25 Group Call" allowfullscreen loading="lazy"></iframe></div>
     <div class="rechead"><b>Group Call</b><i class="ddate">Jul 25, 2026</i></div>
   </div>
+</section>
+
+<!-- JOIN -->
+<section class="sec" id="join">
+  <div class="eyebrow">Membership</div>
+  <h1>Work with Jayden</h1>
+  <p class="lede">The courses gave you every step for free. Membership is where it turns into money, with Jayden working on your accounts with you.</p>
+
+  <div class="selhero">
+    <div class="selpr"><b>$39.99</b><span>/ month &nbsp;&middot;&nbsp; cancel anytime</span></div>
+    <div><a class="bigcta" id="joincta" href="#" target="_blank" rel="noopener">Join the mentorship</a></div>
+    <p class="selnote">Paying unlocks everything on this site instantly, and you get a Discord invite that attaches your tier automatically when you join.</p>
+  </div>
+
+  <h2>What you unlock</h2>
+  <div class="selgrid">
+    <div class="selrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>One on one with Jayden</b><span>Direct access. Calls whenever you are stuck, your videos reviewed, your account looked at by the person who has done it.</span></div></div>
+    <div class="selrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>The private Discord</b><span>Your tier attaches automatically the moment you join through the invite you get after paying. Daily video ideas, wins, and Jayden answering in minutes.</span></div></div>
+    <div class="selrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>The suppliers</b><span>The plug for Google Flow with Veo at $19 a month instead of $250, and CapCut Pro for around $2. These alone cover the membership.</span></div></div>
+    <div class="selrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>METHOD + the avatar builders</b><span>The exact documents that turn Claude into your script converter and avatar designer.</span></div></div>
+    <div class="selrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>Ready-to-film script sheets</b><span>Word for word scripts, each mapped to the viral video it was built from.</span></div></div>
+    <div class="selrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>The full Viral Radar</b><span>Every viral video in both lanes, refreshed twice a day, ranked by outlier score, plus the full winning content library. Free accounts see the top 3.</span></div></div>
+    <div class="selrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>Your accounts, tracked</b><span>Add your accounts and every post and view shows up on your dashboard automatically. Jayden sees your numbers and coaches off them.</span></div></div>
+    <div class="selrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>Group call recordings</b><span>Every group call, recorded and posted, so you never miss the adjustments that are working right now.</span></div></div>
+  </div>
+
+  <div class="note" style="margin-top:1.6rem"><p><strong>You already have all the information.</strong> The courses on this site are free and they hold every step of the system. What they cannot do is watch your account, tell you which of your videos to double down on, or hand you the suppliers and scripts that make it cheap and fast. Knowing and doing are different incomes. This is the doing side.</p></div>
 </section>
 
 <!-- BOOK -->
@@ -1103,7 +1166,7 @@
 
   <h2>Sign-ups</h2>
   <div class="scroll" style="margin-bottom:2rem"><table>
-    <thead><tr><th>Name</th><th>Email</th><th>Discord</th><th>Signed up</th><th class="num">Accounts added</th></tr></thead>
+    <thead><tr><th>Name</th><th>Email</th><th>Discord</th><th>Signed up</th><th class="num">Accounts added</th><th>Membership</th></tr></thead>
     <tbody id="signuprows"></tbody>
   </table></div>
 
@@ -1157,16 +1220,59 @@
   /* ---------------------------------------------------------- nav ---- */
   var navs = [].slice.call(document.querySelectorAll('.navbtn'));
   var secs = [].slice.call(document.querySelectorAll('section.sec'));
+  var GATED = { scripts: 1, docs: 1, calls: 1, book: 1, accounts: 1 };
+  function isPaid() { return !!(ME && (ME.is_paid || ME.is_admin)); }
   navs.forEach(function (b) {
     b.addEventListener('click', function () {
+      var go = b.dataset.go;
+      if (GATED[go] && !isPaid()) go = 'join';
       navs.forEach(function (x) { x.classList.remove('on'); });
       secs.forEach(function (x) { x.classList.remove('on'); });
-      b.classList.add('on');
-      document.getElementById(b.dataset.go).classList.add('on');
+      var lit = go === b.dataset.go ? b : document.querySelector('.navbtn[data-go="join"]');
+      (lit || b).classList.add('on');
+      document.getElementById(go).classList.add('on');
       window.scrollTo(0, 0);
-      if (b.dataset.go === 'admin') loadAdmin();
+      if (go === 'admin') loadAdmin();
     });
   });
+
+  /* lock down the UI for free accounts; everything opens the membership page */
+  function gateUI() {
+    window.KLV_PAID = isPaid();
+    var nj = document.getElementById('navjoin');
+    if (nj) nj.style.display = (!isPaid() || (ME && ME.is_admin)) ? '' : 'none';
+    var cta = document.getElementById('joincta');
+    if (cta) {
+      var pay = (window.KLAREVA_CFG || {}).payUrl || '';
+      if (pay) { cta.href = pay; }
+      else {
+        cta.addEventListener('click', function (e) {
+          e.preventDefault();
+          cta.textContent = 'Checkout opens shortly, DM Jayden on Discord to join today';
+        });
+      }
+    }
+    if (isPaid()) return;
+    var LOCK = '<svg class="nlk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+    navs.forEach(function (b) {
+      if (GATED[b.dataset.go]) { b.classList.add('navlocked'); b.insertAdjacentHTML('beforeend', LOCK); }
+    });
+    [].forEach.call(document.querySelectorAll('[data-gatehide]'), function (el) {
+      el.style.display = 'none';
+    });
+    [].forEach.call(document.querySelectorAll('[data-gate]'), function (el) {
+      var chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'lockchip';
+      chip.innerHTML = LOCK.replace('class="nlk"', 'width="12" height="12" style="margin:0"') + ' '
+        + el.getAttribute('data-gate') + ' \u2192 Unlock';
+      chip.addEventListener('click', function () {
+        var j = document.querySelector('.navbtn[data-go="join"]');
+        if (j) j.click();
+      });
+      el.parentNode.replaceChild(chip, el);
+    });
+  }
 
   /* --------------------------------------------------------- auth ---- */
   var gtitle = document.getElementById('gtitle');
@@ -1266,11 +1372,12 @@
       if (!session) { gate.classList.remove('hide'); app.style.display = 'none'; return; }
       return SB.from('profiles').select('*').eq('id', session.user.id).single()
         .then(function (p) {
-          ME = p.data || { id: session.user.id, email: session.user.email, name: '', is_admin: false };
+          ME = p.data || { id: session.user.id, email: session.user.email, name: '', is_admin: false, is_paid: false };
           gate.classList.add('hide');
           app.style.display = '';
           document.getElementById('whoami').textContent = ME.name || ME.email;
           if (ME.is_admin) document.getElementById('navadmin').style.display = '';
+          gateUI();
           callNudge();
           var md = document.getElementById('mydiscord');
           if (md && ME.discord) md.value = ME.discord;
@@ -1297,20 +1404,21 @@
       x.setAttribute('aria-label', 'Dismiss');
       x.textContent = '\u00d7';
 
+      var free = !(ME && (ME.is_paid || ME.is_admin));
       var title = document.createElement('b');
-      title.textContent = 'Booked your call yet?';
+      title.textContent = free ? 'The courses are free. The results are not.' : 'Booked your call yet?';
       var msg = document.createElement('p');
-      msg.textContent = 'A quick 1 on 1 with Jayden gets you unstuck faster than three days of guessing. It takes 20 seconds to grab a time.';
+      msg.textContent = free ? 'See what working with Jayden one on one actually gets you, suppliers, scripts, the full radar, and your account coached directly.' : 'A quick 1 on 1 with Jayden gets you unstuck faster than three days of guessing. It takes 20 seconds to grab a time.';
       var go = document.createElement('button');
       go.className = 'btn';
       go.type = 'button';
-      go.textContent = 'Book a call';
+      go.textContent = free ? 'See what you get' : 'Book a call';
 
       function dismiss() { n.remove(); }
       x.addEventListener('click', dismiss);
       go.addEventListener('click', function () {
         dismiss();
-        var b = document.querySelector('.navbtn[data-go="book"]');
+        var b = document.querySelector('.navbtn[data-go="' + (free ? 'join' : 'book') + '"]');
         if (b) b.click();
       });
 
@@ -1332,6 +1440,7 @@
   }
 
   function acctAlert(on) {
+    if (ME && !ME.is_paid && !ME.is_admin) on = false;
     var btn = document.querySelector('.navbtn[data-go="accounts"]');
     var dot = btn.querySelector('.navdot');
     if (on && !dot) {
@@ -1732,10 +1841,30 @@
       n.textContent = acctCount[p.id] || 0;
       if (!acctCount[p.id]) n.style.color = 'var(--pink)';
       tr.appendChild(n);
+      var pd = document.createElement('td');
+      var tg = document.createElement('button');
+      tg.className = 'atog';
+      tg.type = 'button';
+      function paintPaid() {
+        tg.textContent = p.is_paid ? 'paid' : 'free';
+        tg.style.color = p.is_paid ? 'var(--peach)' : 'var(--muted)';
+      }
+      paintPaid();
+      tg.addEventListener('click', function () {
+        tg.disabled = true;
+        SB.rpc('admin_set_paid', { target: p.id, val: !p.is_paid }).then(function (r) {
+          tg.disabled = false;
+          if (r.error) { tg.textContent = 'run supabase-paid.sql'; return; }
+          p.is_paid = !p.is_paid;
+          paintPaid();
+        });
+      });
+      pd.appendChild(tg);
+      tr.appendChild(pd);
       suEl.appendChild(tr);
     });
     if (!people.length) {
-      suEl.innerHTML = '<tr><td colspan="5" class="aempty">Nobody has signed up yet.</td></tr>';
+      suEl.innerHTML = '<tr><td colspan="6" class="aempty">Nobody has signed up yet.</td></tr>';
     }
 
     if (!adminData.accts.length) {
@@ -2055,6 +2184,19 @@
     heroLbl.style.display = '';
     heroEl.innerHTML = hero.map(function (v, i) { return card(v, i + 1, true); }).join('');
 
+    if (!window.KLV_PAID) {
+      restLbl.style.display = 'none';
+      moreBtn.style.display = 'none';
+      var bar = document.querySelector('.rbar');
+      if (bar) bar.style.display = 'none';
+      chipsEl.style.display = 'none';
+      var hidden = Math.max(0, Math.min(list.length, MAXSHOW) - hero.length);
+      grid.innerHTML = '<div class="gatecard"><span class="gatelock"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>'
+        + '<b>' + hidden + ' more videos on the radar</b>'
+        + '<p>Members see every video in both lanes, refreshed twice a day, with outlier scores, filters and the full winning library. You are looking at the top 3.</p>'
+        + '<button class="bigcta" style="margin-top:0" type="button" onclick="document.querySelector(\'.navbtn[data-go=&quot;join&quot;]\').click()">Unlock the full radar</button></div>';
+      return;
+    }
     var rest = list.filter(function (v) { return !heroIds[v.u]; });
     rest.sort(function (p, n) {
       if (sortKey === 'x') return (n.x - p.x) || (n.v - p.v);

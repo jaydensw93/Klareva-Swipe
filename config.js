@@ -14,3 +14,6 @@ window.KLAREVA_CFG = {
   url:     "https://khwankrrezpmcagzytaj.supabase.co",
   anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtod2Fua3JyZXpwbWNhZ3p5dGFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3MzIwODYsImV4cCI6MjEwMjMwODA4Nn0.QYgotLylJmRbleQvNaB_69caTCWCARmLph3zJNEqbo4"
 };
+// Checkout link for the $39.99/mo membership (Whop/Stripe). Empty = button
+// shows a "DM Jayden" note instead. Paste the live checkout URL here.
+window.KLAREVA_CFG.payUrl = "";
