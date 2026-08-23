@@ -566,7 +566,7 @@
     border:1px dashed rgba(246,195,168,.45);color:var(--peach);font-size:.85rem;font-weight:600;
     cursor:pointer;background:rgba(246,195,168,.07);font-family:inherit}
   .lockchip:hover{background:rgba(246,195,168,.15)}
-  .gatecard{border:1px solid var(--line);border-radius:15px;padding:2.4rem 1.6rem;text-align:center;
+  .gatecard{grid-column:1/-1;border:1px solid var(--line);border-radius:15px;padding:2.4rem 1.6rem;text-align:center;
     background:linear-gradient(180deg,rgba(246,195,168,.07),rgba(214,123,166,.05));margin-top:1.5rem}
   .gatecard b{display:block;font-size:1.12rem;margin:.75rem 0 .4rem}
   .gatecard p{color:var(--muted);max-width:520px;margin:0 auto 1.05rem;font-size:.93rem}
@@ -1410,7 +1410,7 @@
       x.setAttribute('aria-label', 'Dismiss');
       x.textContent = '\u00d7';
 
-      var free = !(ME && (ME.is_paid || ME.is_admin));
+      var free = !isPaid();
       var title = document.createElement('b');
       title.textContent = free ? 'The courses are free. The results are not.' : 'Booked your call yet?';
       var msg = document.createElement('p');
@@ -1446,7 +1446,7 @@
   }
 
   function acctAlert(on) {
-    if (ME && !ME.is_paid && !ME.is_admin) on = false;
+    if (!isPaid()) on = false;
     var btn = document.querySelector('.navbtn[data-go="accounts"]');
     var dot = btn.querySelector('.navdot');
     if (on && !dot) {
