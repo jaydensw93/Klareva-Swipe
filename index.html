@@ -1250,7 +1250,12 @@
     var cta = document.getElementById('joincta');
     if (cta) {
       var pay = (window.KLAREVA_CFG || {}).payUrl || '';
-      if (pay) { cta.href = pay; }
+      if (pay) {
+        // lock the checkout to the email their dashboard account uses, so the
+        // payment always matches and the unlock is instant
+        cta.href = pay + (pay.indexOf('?') < 0 ? '?' : '&')
+          + 'prefilled_email=' + encodeURIComponent((ME && ME.email) || '');
+      }
       else {
         cta.addEventListener('click', function (e) {
           e.preventDefault();
