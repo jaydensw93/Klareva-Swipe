@@ -574,13 +574,13 @@
     justify-content:center;background:rgba(246,195,168,.13);color:var(--peach)}
   #join{max-width:880px;margin:0 auto;text-align:center}
   #join .eyebrow{text-align:center}
-  .selh1{font-family:'Fraunces',Georgia,'Times New Roman',serif;font-weight:500;
-    font-size:clamp(1.9rem,4.2vw,2.9rem);line-height:1.16;letter-spacing:-.01em;
+  .selh1{font-weight:700;
+    font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.14;letter-spacing:-.03em;
     max-width:720px;margin:0 auto .9rem}
   #join .lede{margin:.2rem auto 1.9rem;max-width:540px}
   .seleyebrow{font-family:ui-monospace,Menlo,monospace;font-size:.7rem;letter-spacing:.22em;
     text-transform:uppercase;color:var(--peach);margin:3.4rem 0 .8rem}
-  .selh2{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:1.7rem;margin:0 0 .6rem}
+  .selh2{font-weight:700;font-size:1.6rem;letter-spacing:-.02em;margin:0 0 .6rem}
   .selsub{color:var(--muted);max-width:560px;margin:0 auto 1.5rem;font-size:.95rem;line-height:1.65}
   .selhero{border:1px solid rgba(246,195,168,.28);border-radius:18px;padding:2.5rem 1.8rem 2.3rem;
     text-align:center;background:linear-gradient(180deg,rgba(246,195,168,.09),rgba(214,123,166,.05));
@@ -611,10 +611,17 @@
   .selstep p{color:var(--muted);font-size:.92rem;line-height:1.6;margin:0}
   .brandcard{border:1px solid var(--line);border-radius:18px;padding:2.2rem 1.8rem;max-width:620px;
     margin:0 auto;background:var(--panel)}
-  .brandstat{font-family:'Fraunces',Georgia,serif;font-size:2.6rem;
+  .brandstat{font-weight:700;font-size:2.6rem;letter-spacing:-.02em;
     background:linear-gradient(90deg,#F2B59D,#D67BA6);-webkit-background-clip:text;
     background-clip:text;color:transparent;margin-bottom:.3rem}
   .selgrid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-top:1.2rem;text-align:left}
+  .csvid{position:relative;display:block;max-width:640px;margin:1.4rem auto 0;border-radius:16px;
+    overflow:hidden;border:1px solid var(--line)}
+  .csvid img{width:100%;display:block}
+  .csplay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:58px;height:58px;
+    border-radius:50%;background:linear-gradient(90deg,#F2B59D,#D67BA6);display:flex;
+    align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+  .csvid:hover .csplay{filter:brightness(1.08)}
   .finalcta{margin:3.2rem 0 1rem}
   .finalcta .selh2{margin-bottom:1rem}
   @media (max-width:700px){.mkrow{grid-template-columns:1fr 1fr}}
@@ -1065,8 +1072,6 @@
 </section>
 
 <!-- JOIN -->
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&amp;display=swap" rel="stylesheet">
 <section class="sec" id="join">
   <div class="eyebrow" style="margin-top:1.2rem">For creators ready to run the system</div>
   <h1 class="selh1">Work With Jayden 1&nbsp;On&nbsp;1, Create For A Real Brand, And Get Paid On Every Sale.</h1>
@@ -1085,6 +1090,7 @@
     </ul>
     <div><a class="bigcta paycta" id="joincta" href="#" target="_blank" rel="noopener">Join the mentorship &rarr;</a></div>
     <p class="selnote">&#128274; Secure checkout through Stripe &nbsp;&middot;&nbsp; billed monthly &nbsp;&middot;&nbsp; cancel anytime. Your Discord invite attaches your tier automatically when you join.</p>
+    <p class="selnote" style="margin-top:.55rem">The tools themselves are separate, around <strong>$42 a month</strong> paid straight to the suppliers (Flow, CapCut, Claude). The membership gets you the plug prices, it does not pay for your tools.</p>
   </div>
 
   <div class="seleyebrow">What you&rsquo;ll be making</div>
@@ -1108,9 +1114,17 @@
   <h2 class="selh2">Klareva is a real skincare brand.</h2>
   <p class="selsub">This is not a course that teaches you and leaves you to find someone who will pay you. Behind the mentorship is a real brand with real products people buy every day, and that is the brand your content earns from.</p>
   <div class="brandcard">
-    <div class="brandstat">$30K+</div>
+    <div class="brandstat">$20K+</div>
     <p style="color:var(--muted);font-size:.93rem;margin:0">already paid out to creators making content for the brand.</p>
   </div>
+
+  <div class="seleyebrow">See it done</div>
+  <h2 class="selh2">Watch the case study.</h2>
+  <p class="selsub">A student and Jayden, start to finish. What got posted, what it did, and what it paid.</p>
+  <a class="csvid" href="https://www.youtube.com/watch?v=do591baSvME" target="_blank" rel="noopener" aria-label="Watch the case study on YouTube">
+    <img src="https://i.ytimg.com/vi/do591baSvME/maxresdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/do591baSvME/hqdefault.jpg'">
+    <span class="csplay"><svg width="22" height="22" viewBox="0 0 24 24" fill="#231226" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span>
+  </a>
 
   <div class="seleyebrow">Everything included</div>
   <h2 class="selh2">Here&rsquo;s everything you get.</h2>
