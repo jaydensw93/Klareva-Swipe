@@ -572,16 +572,25 @@
   .gatecard p{color:var(--muted);max-width:520px;margin:0 auto 1.05rem;font-size:.93rem}
   .gatelock{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;
     justify-content:center;background:rgba(246,195,168,.13);color:var(--peach)}
-  .selhero{border:1px solid var(--line);border-radius:16px;padding:2.2rem 1.6rem;text-align:center;
-    background:linear-gradient(180deg,rgba(246,195,168,.08),rgba(214,123,166,.05));margin-bottom:2rem}
-  .selpr b{font-size:2.6rem;letter-spacing:-.02em}
-  .selpr span{color:var(--muted);font-size:.95rem;margin-left:.35rem}
-  .bigcta{display:inline-block;margin-top:1.1rem;padding:.95rem 2.4rem;border-radius:999px;border:0;
-    background:linear-gradient(90deg,#F2B59D,#D67BA6);color:#231226;font-weight:700;font-size:1.02rem;
-    cursor:pointer;text-decoration:none;font-family:inherit}
-  .bigcta:hover{filter:brightness(1.07)}
-  .selnote{color:var(--muted);font-size:.86rem;margin-top:.95rem}
-  .selgrid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-top:1.1rem}
+  #join{max-width:840px;margin:0 auto;text-align:center}
+  #join .eyebrow{text-align:center}
+  #join .lede{margin-left:auto;margin-right:auto;max-width:560px}
+  #join h2{margin-top:2.6rem}
+  #join .note{max-width:640px;margin-left:auto;margin-right:auto;text-align:left}
+  .selhero{border:1px solid rgba(246,195,168,.28);border-radius:18px;padding:2.7rem 1.8rem 2.5rem;
+    text-align:center;background:linear-gradient(180deg,rgba(246,195,168,.09),rgba(214,123,166,.05));
+    margin-bottom:.4rem}
+  .selpr b{font-size:3.1rem;letter-spacing:-.02em;background:linear-gradient(90deg,#F2B59D,#D67BA6);
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .selpr span{color:var(--muted);font-size:.95rem;margin-left:.4rem}
+  .bigcta{display:inline-block;margin-top:1.3rem;padding:1.02rem 3rem;border-radius:999px;border:0;
+    background:linear-gradient(90deg,#F2B59D,#D67BA6);color:#231226;font-weight:700;font-size:1.06rem;
+    cursor:pointer;text-decoration:none;font-family:inherit;
+    box-shadow:0 12px 34px rgba(214,123,166,.30)}
+  .bigcta:hover{filter:brightness(1.07);transform:translateY(-1px)}
+  .selnote{color:var(--muted);font-size:.87rem;margin-top:1.05rem;max-width:430px;
+    margin-left:auto;margin-right:auto}
+  .selgrid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-top:1.2rem;text-align:left}
   .selrow{display:flex;gap:.7rem;padding:.9rem .95rem;border:1px solid var(--line);border-radius:12px;
     background:var(--panel);align-items:flex-start}
   .selrow svg{color:var(--peach);flex:0 0 auto;margin-top:.2rem}
@@ -642,6 +651,7 @@
   <div class="eyebrow">Start here</div>
   <h1>Introduction</h1>
   <p class="lede">One step at a time. Check things off as you do them, your progress saves on its own.</p>
+  <div class="rowlinks" style="margin:-.4rem 0 1.5rem"><a class="lnk" href="https://discord.gg/yYnPrTvZUx" target="_blank" rel="noopener">Join the free Discord community</a></div>
 
   <div class="introrow">
   <div class="wiz">
@@ -688,12 +698,16 @@
     <button class="tchev" type="button" aria-label="Open details">&rsaquo;</button>
   </div>
   <div class="taskbody">
-    <p>Google Flow is where every image and video gets made. Nano Banana Pro makes the images, Veo turns them into video. <strong>$19 a month.</strong> Do not buy it from the website, it costs far more.</p>
+    <p>Google Flow is where every image and video gets made. Nano Banana Pro makes the images, Veo turns them into video.</p>
+    <div data-gate="Through our supplier it is $19 a month">
+    <p><strong>Through our supplier it is $19 a month.</strong> Do not buy it from the website, it costs far more.</p>
     <p>Message him on Telegram and send exactly this:</p>
     <div class="cmd">Jayden sent me</div>
     <div class="cmd">I need a Google Flow family plan invite, ultra plan, 5k credits</div>
     <p>Give him a backup Gmail, not one you care about. He invites it to a family plan and you are in for the month.</p>
-    <div class="rowlinks" data-gate="Supplier unlocks with membership"><a class="lnk" href="https://t.me/phuoctain002" target="_blank" rel="noopener">Telegram &nbsp;@phuoctain002</a></div>
+    <div class="rowlinks"><a class="lnk" href="https://t.me/phuoctain002" target="_blank" rel="noopener">Telegram &nbsp;@phuoctain002</a></div>
+    </div>
+    <div class="rowlinks"><a class="lnk" href="https://labs.google/fx/tools/flow" target="_blank" rel="noopener">Google Flow, the official site</a></div>
   </div>
 </div>
 <div class="task" data-ck="d2">
@@ -704,10 +718,13 @@
   </div>
   <div class="taskbody">
     <p>Claude writes your image prompts and converts your scripts. CapCut puts the clips together.</p>
+    <div data-gate="Through our plug, CapCut Pro is about $2">
     <p>Do not pay full price for CapCut Pro. Buy it from G2G for around $2.</p>
+    <div class="rowlinks"><a class="lnk" href="https://www.g2g.com/categories/capcut-accounts/offer/group?fa=c0107a82%3A89c8e24a&amp;region_id=0f76ac42-3267-4d77-9fba-f9d9d719dac9" target="_blank" rel="noopener">CapCut Pro on G2G</a></div>
+    </div>
     <div class="rowlinks">
       <a class="lnk" href="https://claude.ai" target="_blank" rel="noopener">Claude</a>
-      <a class="lnk" data-gate="CapCut supplier unlocks with membership" href="https://www.g2g.com/categories/capcut-accounts/offer/group?fa=c0107a82%3A89c8e24a&amp;region_id=0f76ac42-3267-4d77-9fba-f9d9d719dac9" target="_blank" rel="noopener">CapCut Pro on G2G</a>
+      <a class="lnk" href="https://www.capcut.com" target="_blank" rel="noopener">CapCut, the official site</a>
     </div>
     <p style="margin-top:.9rem"><strong>Signing into CapCut, do it in this order or it will not work:</strong></p>
     <ol style="margin:.4rem 0 0;font-size:.93rem">
@@ -1417,13 +1434,13 @@
 
       var free = !isPaid();
       var title = document.createElement('b');
-      title.textContent = free ? 'The courses are free. The results are not.' : 'Booked your call yet?';
+      title.textContent = free ? 'Whenever you are ready.' : 'Booked your call yet?';
       var msg = document.createElement('p');
-      msg.textContent = free ? 'See what working with Jayden one on one actually gets you, suppliers, scripts, the full radar, and your account coached directly.' : 'A quick 1 on 1 with Jayden gets you unstuck faster than three days of guessing. It takes 20 seconds to grab a time.';
+      msg.textContent = free ? 'The membership adds the suppliers, the scripts, the full radar, and Jayden working with you one on one. It is there when you want it.' : 'A quick 1 on 1 with Jayden gets you unstuck faster than three days of guessing. It takes 20 seconds to grab a time.';
       var go = document.createElement('button');
       go.className = 'btn';
       go.type = 'button';
-      go.textContent = free ? 'See what you get' : 'Book a call';
+      go.textContent = free ? 'See what is inside' : 'Book a call';
 
       function dismiss() { n.remove(); }
       x.addEventListener('click', dismiss);
