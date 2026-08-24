@@ -553,12 +553,13 @@
     .brand b{font-size:.9rem}
     .dot{width:24px;height:24px;flex:0 0 24px}
     .navlbl{display:none}
-    .navbtn{width:auto;margin:0;flex:0 0 auto;white-space:nowrap;padding:.5rem .8rem;
-      border-radius:999px;font-size:.85rem}
-    .navbtn .ni{width:14px;height:14px}
+    .navbtn{display:none}
     .whoami{display:none}
-    .signout{width:auto;flex:0 0 auto;margin:0;padding:.5rem .8rem;white-space:nowrap}
-    main{padding:1.5rem 1.05rem 4rem}
+    .signout{width:auto;flex:0 0 auto;margin-left:auto;padding:.5rem .8rem;white-space:nowrap}
+    main{padding:1.5rem 1.05rem 6.5rem}
+    .nudge{bottom:4.9rem}
+    .tabbar{display:flex}
+    .qgrid{display:grid}
     h1{font-size:1.55rem}
     .lede{font-size:.95rem}
     .wpane{padding:1.2rem 1rem 1.3rem}
@@ -570,13 +571,31 @@
 
   .navhint{display:none}
   @media (max-width:860px){
-    .navhint{display:flex;position:fixed;top:0;right:0;z-index:41;height:52px;width:70px;
+    .navhint{display:none !important;position:fixed;top:0;right:0;z-index:41;height:52px;width:70px;
       align-items:center;justify-content:flex-end;padding-right:.5rem;pointer-events:none;
       background:linear-gradient(90deg,rgba(15,10,26,0),rgba(15,10,26,.97) 62%);
       color:var(--peach);opacity:1;transition:opacity .25s}
     .navhint svg{animation:hintpulse 1.5s ease-in-out infinite}
   }
   @keyframes hintpulse{0%,100%{transform:translateX(0);opacity:.7}50%{transform:translateX(5px);opacity:1}}
+
+  /* ---- mobile bottom tab bar + quick links ---- */
+  .tabbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:50;
+    background:rgba(15,10,26,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-top:1px solid var(--line);padding:.45rem .3rem calc(.45rem + env(safe-area-inset-bottom))}
+  .tabbtn{appearance:none;background:none;border:0;flex:1 1 0;display:flex;flex-direction:column;
+    align-items:center;gap:.22rem;color:var(--mute);font-family:inherit;font-size:.62rem;
+    font-weight:600;letter-spacing:.02em;cursor:pointer;padding:.2rem 0}
+  .tabbtn svg{width:19px;height:19px}
+  .tabbtn.on{color:var(--peach)}
+  .tabbtn[data-tab="join"]{color:var(--peach)}
+  .qgrid{display:none;grid-template-columns:1fr 1fr;gap:.6rem;margin:.4rem 0 1.6rem}
+  .qcard{appearance:none;background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:.8rem .85rem;display:flex;align-items:center;gap:.6rem;color:var(--text);
+    font-family:inherit;font-size:.86rem;font-weight:600;cursor:pointer;text-align:left}
+  .qcard svg.qi{width:15px;height:15px;color:var(--peach);flex:0 0 auto}
+  .qcard .nlk{margin-left:auto}
+  .qcard .navdot{margin-left:auto}
 
   /* ---- membership gating ---- */
   .nlk{width:11px;height:11px;flex:0 0 auto;margin-left:auto;opacity:.55}
@@ -722,7 +741,12 @@
   <div class="whoami" id="whoami"></div>
   <button class="signout" id="signout" type="button">Sign out</button>
 </nav>
-<div class="navhint" id="navhint" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+<nav class="tabbar" id="tabbar" aria-label="Main">
+  <button class="tabbtn on" data-tab="intro" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4c4-2 6 2 10 0v8c-4 2-6-2-10 0"/></svg><span>Start</span></button>
+  <button class="tabbtn" data-tab="courses" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5 16 12l-6 3.5z"/></svg><span>Courses</span></button>
+  <button class="tabbtn" data-tab="radar" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.6"/><path d="M12 12l5.5-5.5"/></svg><span>Radar</span></button>
+  <button class="tabbtn" data-tab="join" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.4 5.6L20 9.5l-4.3 4 1.1 6L12 16.7 7.2 19.5l1.1-6L4 9.5l5.6-.9z"/></svg><span>1 on 1</span></button>
+</nav>
 
 <main>
 
@@ -732,6 +756,14 @@
   <h1>Introduction</h1>
   <p class="lede">One step at a time. Check things off as you do them, your progress saves on its own.</p>
   <div class="rowlinks" style="margin:-.4rem 0 1.5rem"><a class="lnk" href="https://discord.gg/yYnPrTvZUx" target="_blank" rel="noopener">Join the free Discord community</a></div>
+  <div class="qgrid" id="qgrid">
+    <button class="qcard" data-go="scripts" type="button"><svg class="qi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M10 12h5M10 16h5"/></svg>Scripts</button>
+    <button class="qcard" data-go="docs" type="button"><svg class="qi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Documents</button>
+    <button class="qcard" data-go="calls" type="button"><svg class="qi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10.5 21 8v8l-5-2.5z"/></svg>Call Recordings</button>
+    <button class="qcard" data-go="book" type="button"><svg class="qi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>Book a Call</button>
+    <button class="qcard" data-go="updates" type="button"><svg class="qi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5.5 4 9v6l7 3.5V5.5z"/><path d="M11 5.5 20 4v16l-9-1.5"/></svg>Updates</button>
+    <button class="qcard" data-go="accounts" type="button"><svg class="qi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.5-3.5 4-5 7-5s5.5 1.5 7 5"/></svg>My Accounts</button>
+  </div>
 
   <div class="introrow">
   <div class="wiz">
@@ -1391,6 +1423,24 @@
   }
 
   var GATED = { scripts: 1, docs: 1, calls: 1, book: 1, accounts: 1 };
+  var TABMAP = { intro: 'intro', courses: 'courses', radar: 'radar', join: 'join' };
+  function lightTab(sec) {
+    [].forEach.call(document.querySelectorAll('.tabbtn'), function (t) {
+      t.classList.toggle('on', TABMAP[t.dataset.tab] === sec);
+    });
+  }
+  [].forEach.call(document.querySelectorAll('.tabbtn'), function (t) {
+    t.addEventListener('click', function () {
+      var b = document.querySelector('.navbtn[data-go="' + t.dataset.tab + '"]');
+      if (b) b.click();
+    });
+  });
+  [].forEach.call(document.querySelectorAll('.qcard'), function (q) {
+    q.addEventListener('click', function () {
+      var b = document.querySelector('.navbtn[data-go="' + q.dataset.go + '"]');
+      if (b) b.click();
+    });
+  });
   function isPaid() {
     if (!ME) return false;
     // until supabase-paid.sql has been run the column does not exist;
@@ -1407,6 +1457,7 @@
       var lit = go === b.dataset.go ? b : document.querySelector('.navbtn[data-go="join"]');
       (lit || b).classList.add('on');
       document.getElementById(go).classList.add('on');
+      lightTab(go);
       window.scrollTo(0, 0);
       if (go === 'admin') loadAdmin();
     });
@@ -1414,7 +1465,6 @@
 
   /* lock down the UI for free accounts; everything opens the membership page */
   function gateUI() {
-    navSwipeHint();
     window.KLV_PAID = isPaid();
     var nj = document.getElementById('navjoin');
     if (nj) nj.style.display = (!isPaid() || (ME && ME.is_admin)) ? '' : 'none';
@@ -1436,6 +1486,9 @@
     var LOCK = '<svg class="nlk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
     navs.forEach(function (b) {
       if (GATED[b.dataset.go]) { b.classList.add('navlocked'); b.insertAdjacentHTML('beforeend', LOCK); }
+    });
+    [].forEach.call(document.querySelectorAll('.qcard'), function (q) {
+      if (GATED[q.dataset.go]) q.insertAdjacentHTML('beforeend', LOCK);
     });
     [].forEach.call(document.querySelectorAll('[data-gatehide]'), function (el) {
       el.style.display = 'none';
@@ -2662,7 +2715,7 @@
 (function () {
   var NEWEST = '2026-08-19';
   var KEY = 'klv_upd_seen';
-  var btns = document.querySelectorAll('.navbtn[data-go="updates"]');
+  var btns = document.querySelectorAll('.navbtn[data-go="updates"], .qcard[data-go="updates"]');
   var seen = '';
   try { seen = localStorage.getItem(KEY) || ''; } catch (e) {}
   if (seen < NEWEST) {
@@ -2675,7 +2728,7 @@
   [].forEach.call(btns, function (b) {
     b.addEventListener('click', function () {
       try { localStorage.setItem(KEY, NEWEST); } catch (e) {}
-      [].forEach.call(document.querySelectorAll('.navbtn[data-go="updates"] .navdot'),
+      [].forEach.call(document.querySelectorAll('.navbtn[data-go="updates"] .navdot, .qcard[data-go="updates"] .navdot'),
         function (d) { d.remove(); });
     });
   });
