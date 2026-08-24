@@ -1365,8 +1365,12 @@
   var navs = [].slice.call(document.querySelectorAll('.navbtn'));
   var secs = [].slice.call(document.querySelectorAll('section.sec'));
   /* the pill row has to LOOK swipeable: chevron until the end is reached,
-     plus a little scroll-and-back nudge on first paint */
-  (function () {
+     plus a little scroll-and-back nudge. Runs from gateUI, after the app is
+     actually visible, because a hidden bar measures 0 wide. */
+  var navHintDone = false;
+  function navSwipeHint() {
+    if (navHintDone) return;
+    navHintDone = true;
     var bar = document.querySelector('.side');
     var hint = document.getElementById('navhint');
     if (!bar || !hint) return;
@@ -1384,7 +1388,7 @@
         setTimeout(function () { bar.scrollTo({ left: 0, behavior: 'smooth' }); }, 600);
       }, 900);
     }
-  })();
+  }
 
   var GATED = { scripts: 1, docs: 1, calls: 1, book: 1, accounts: 1 };
   function isPaid() {
@@ -1410,6 +1414,7 @@
 
   /* lock down the UI for free accounts; everything opens the membership page */
   function gateUI() {
+    navSwipeHint();
     window.KLV_PAID = isPaid();
     var nj = document.getElementById('navjoin');
     if (nj) nj.style.display = (!isPaid() || (ME && ME.is_admin)) ? '' : 'none';
