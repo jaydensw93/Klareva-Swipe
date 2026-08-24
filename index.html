@@ -597,6 +597,28 @@
   .selrow b{display:block;font-size:.95rem;margin-bottom:.15rem}
   .selrow span{color:var(--muted);font-size:.86rem;line-height:1.45}
   @media (max-width:700px){.selgrid{grid-template-columns:1fr}}
+
+  /* ---- welcome modal (new accounts) ---- */
+  .wmov{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
+    background:rgba(11,6,20,.55);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
+    padding:1.2rem}
+  .wmod{position:relative;max-width:500px;width:100%;background:#151024;border:1px solid rgba(246,195,168,.28);
+    border-radius:18px;padding:2.1rem 1.9rem 1.9rem;text-align:center;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:#f7f5fc;box-shadow:0 24px 70px rgba(0,0,0,.5)}
+  .wmod b.wt2{display:block;font-size:1.35rem;margin-bottom:.65rem;letter-spacing:-.01em}
+  .wmod p{color:#b9b3c9;font-size:.94rem;line-height:1.6;margin:0 0 .85rem}
+  .wmod p strong{color:#f7f5fc}
+  .wmodx{position:absolute;top:.65rem;right:.85rem;background:none;border:0;color:#b9b3c9;
+    font-size:1.35rem;cursor:pointer;line-height:1;font-family:inherit}
+  .wmodx:hover{color:#f7f5fc}
+  .wmcta{display:inline-block;margin-top:.35rem;padding:.85rem 2.1rem;border-radius:999px;border:0;
+    background:linear-gradient(90deg,#F2B59D,#D67BA6);color:#231226;font-weight:700;font-size:.98rem;
+    cursor:pointer;text-decoration:none;font-family:inherit;box-shadow:0 10px 28px rgba(214,123,166,.28)}
+  .wmcta:hover{filter:brightness(1.07)}
+  .wmalt{display:block;margin-top:1rem;color:#F2B59D;font-size:.88rem;font-weight:600;
+    background:none;border:0;cursor:pointer;font-family:inherit}
+  .wmalt:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -1406,7 +1428,7 @@
           document.getElementById('whoami').textContent = ME.name || ME.email;
           if (ME.is_admin) document.getElementById('navadmin').style.display = '';
           gateUI();
-          callNudge();
+          if (!welcomeModal()) callNudge();
           var md = document.getElementById('mydiscord');
           if (md && ME.discord) md.value = ME.discord;
           loadAccounts();
@@ -1416,6 +1438,69 @@
 
   /* Booking nudge: every visit, dismissible, gone for the rest of the session. */
   var nudgeShown = false;
+  function welcomeModal() {
+    var seen = false;
+    try { seen = !!localStorage.getItem('klv_welcome_v1'); } catch (e) {}
+    if (seen) return false;
+    var made = ME && ME.created_at ? Date.parse(ME.created_at) : 0;
+    if (!made || Date.now() - made > 86400000) return false;
+
+    var ov = document.createElement('div');
+    ov.className = 'wmov';
+    var m = document.createElement('div');
+    m.className = 'wmod';
+    m.setAttribute('role', 'dialog');
+    m.setAttribute('aria-label', 'Join the free community');
+
+    var x = document.createElement('button');
+    x.className = 'wmodx';
+    x.type = 'button';
+    x.setAttribute('aria-label', 'Close');
+    x.textContent = '\u00d7';
+
+    var t = document.createElement('b');
+    t.className = 'wt2';
+    t.textContent = 'You are in. Come say hey.';
+
+    var p1 = document.createElement('p');
+    p1.innerHTML = 'The <strong>free Discord community</strong> is where everything happens. '
+      + 'One to two <strong>group calls every week</strong>, questions answered daily, '
+      + 'and everyone sharing what is working.';
+    var p2 = document.createElement('p');
+    p2.innerHTML = 'And when you want Jayden on your account directly, the '
+      + '<strong>1 on 1 mentorship</strong> gets you all day, every day help.';
+
+    var cta = document.createElement('a');
+    cta.className = 'wmcta';
+    cta.href = 'https://discord.gg/yYnPrTvZUx';
+    cta.target = '_blank';
+    cta.rel = 'noopener';
+    cta.textContent = 'Join the free Discord';
+
+    var alt = document.createElement('button');
+    alt.className = 'wmalt';
+    alt.type = 'button';
+    alt.textContent = 'See the 1 on 1 mentorship \u2192';
+
+    function markSeen() {
+      try { localStorage.setItem('klv_welcome_v1', '1'); } catch (e) {}
+    }
+    function closeIt() { markSeen(); ov.remove(); }
+    x.addEventListener('click', closeIt);
+    cta.addEventListener('click', markSeen);
+    ov.addEventListener('click', function (e) { if (e.target === ov) closeIt(); });
+    alt.addEventListener('click', function () {
+      closeIt();
+      var j = document.querySelector('.navbtn[data-go="join"]');
+      if (j) j.click();
+    });
+
+    m.appendChild(x); m.appendChild(t); m.appendChild(p1); m.appendChild(p2);
+    m.appendChild(cta); m.appendChild(alt);
+    ov.appendChild(m);
+    document.body.appendChild(ov);
+    return true;
+  }
   function callNudge() {
     if (nudgeShown) return;
     nudgeShown = true;
