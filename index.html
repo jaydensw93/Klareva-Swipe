@@ -572,25 +572,52 @@
   .gatecard p{color:var(--muted);max-width:520px;margin:0 auto 1.05rem;font-size:.93rem}
   .gatelock{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;
     justify-content:center;background:rgba(246,195,168,.13);color:var(--peach)}
-  #join{max-width:840px;margin:0 auto;text-align:center}
+  #join{max-width:880px;margin:0 auto;text-align:center}
   #join .eyebrow{text-align:center}
-  #join .lede{margin-left:auto;margin-right:auto;max-width:560px}
-  #join h2{margin-top:2.6rem}
-  #join .note{max-width:640px;margin-left:auto;margin-right:auto;text-align:left}
-  .selhero{border:1px solid rgba(246,195,168,.28);border-radius:18px;padding:2.7rem 1.8rem 2.5rem;
+  .selh1{font-family:'Fraunces',Georgia,'Times New Roman',serif;font-weight:500;
+    font-size:clamp(1.9rem,4.2vw,2.9rem);line-height:1.16;letter-spacing:-.01em;
+    max-width:720px;margin:0 auto .9rem}
+  #join .lede{margin:.2rem auto 1.9rem;max-width:540px}
+  .seleyebrow{font-family:ui-monospace,Menlo,monospace;font-size:.7rem;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--peach);margin:3.4rem 0 .8rem}
+  .selh2{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:1.7rem;margin:0 0 .6rem}
+  .selsub{color:var(--muted);max-width:560px;margin:0 auto 1.5rem;font-size:.95rem;line-height:1.65}
+  .selhero{border:1px solid rgba(246,195,168,.28);border-radius:18px;padding:2.5rem 1.8rem 2.3rem;
     text-align:center;background:linear-gradient(180deg,rgba(246,195,168,.09),rgba(214,123,166,.05));
-    margin-bottom:.4rem}
+    max-width:560px;margin:0 auto}
   .selpr b{font-size:3.1rem;letter-spacing:-.02em;background:linear-gradient(90deg,#F2B59D,#D67BA6);
     -webkit-background-clip:text;background-clip:text;color:transparent}
   .selpr span{color:var(--muted);font-size:.95rem;margin-left:.4rem}
-  .bigcta{display:inline-block;margin-top:1.3rem;padding:1.02rem 3rem;border-radius:999px;border:0;
+  .selin{list-style:none;margin:1.3rem auto .4rem;padding:0;max-width:400px;text-align:left}
+  .selin li{display:flex;gap:.6rem;align-items:flex-start;padding:.42rem 0;font-size:.93rem;
+    color:var(--text);line-height:1.5}
+  .selin li svg{color:var(--peach);flex:0 0 auto;margin-top:.22rem}
+  .bigcta{display:inline-block;margin-top:1.2rem;padding:1.02rem 3rem;border-radius:999px;border:0;
     background:linear-gradient(90deg,#F2B59D,#D67BA6);color:#231226;font-weight:700;font-size:1.06rem;
     cursor:pointer;text-decoration:none;font-family:inherit;
     box-shadow:0 12px 34px rgba(214,123,166,.30)}
   .bigcta:hover{filter:brightness(1.07);transform:translateY(-1px)}
-  .selnote{color:var(--muted);font-size:.87rem;margin-top:1.05rem;max-width:430px;
+  .selnote{color:var(--muted);font-size:.85rem;margin-top:1rem;max-width:430px;
     margin-left:auto;margin-right:auto}
+  .mkrow{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin:1.6rem 0 .4rem}
+  .mkrow img{width:100%;aspect-ratio:9/13;object-fit:cover;border-radius:14px;
+    border:1px solid var(--line);display:block}
+  .selsteps{max-width:620px;margin:0 auto;text-align:left}
+  .selstep{display:flex;gap:1.1rem;padding:1.25rem 0;border-bottom:1px solid var(--line)}
+  .selstep:last-child{border-bottom:0}
+  .selstep .sn{font-family:ui-monospace,Menlo,monospace;font-size:.78rem;color:var(--peach);
+    flex:0 0 3.2rem;padding-top:.2rem}
+  .selstep b{display:block;font-size:1.02rem;margin-bottom:.3rem}
+  .selstep p{color:var(--muted);font-size:.92rem;line-height:1.6;margin:0}
+  .brandcard{border:1px solid var(--line);border-radius:18px;padding:2.2rem 1.8rem;max-width:620px;
+    margin:0 auto;background:var(--panel)}
+  .brandstat{font-family:'Fraunces',Georgia,serif;font-size:2.6rem;
+    background:linear-gradient(90deg,#F2B59D,#D67BA6);-webkit-background-clip:text;
+    background-clip:text;color:transparent;margin-bottom:.3rem}
   .selgrid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-top:1.2rem;text-align:left}
+  .finalcta{margin:3.2rem 0 1rem}
+  .finalcta .selh2{margin-bottom:1rem}
+  @media (max-width:700px){.mkrow{grid-template-columns:1fr 1fr}}
   .selrow{display:flex;gap:.7rem;padding:.9rem .95rem;border:1px solid var(--line);border-radius:12px;
     background:var(--panel);align-items:flex-start}
   .selrow svg{color:var(--peach);flex:0 0 auto;margin-top:.2rem}
@@ -1038,30 +1065,70 @@
 </section>
 
 <!-- JOIN -->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&amp;display=swap" rel="stylesheet">
 <section class="sec" id="join">
-  <div class="eyebrow">Membership</div>
-  <h1>Work with Jayden</h1>
-  <p class="lede">The courses gave you every step for free. Membership is where it turns into money, with Jayden working on your accounts with you.</p>
+  <div class="eyebrow" style="margin-top:1.2rem">For creators ready to run the system</div>
+  <h1 class="selh1">Work With Jayden 1&nbsp;On&nbsp;1, Create For A Real Brand, And Get Paid On Every Sale.</h1>
+  <p class="lede">Even if you have never posted a single video. The courses gave you every step for free. This is where they turn into money.</p>
 
   <div class="selhero">
-    <div class="selpr"><b>$39.99</b><span>/ month &nbsp;&middot;&nbsp; cancel anytime</span></div>
-    <div><a class="bigcta" id="joincta" href="#" target="_blank" rel="noopener">Join the mentorship</a></div>
-    <p class="selnote">Paying unlocks everything on this site instantly, and you get a Discord invite that attaches your tier automatically when you join.</p>
+    <div class="eyebrow" style="text-align:center;margin-bottom:.4rem">Start today &nbsp;&middot;&nbsp; instant access</div>
+    <div class="selpr"><b>$39.99</b><span>/ month</span></div>
+    <ul class="selin">
+      <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span>1 on 1 with Jayden, all day, every day</span></li>
+      <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span>Your onboarding call, where your plan gets built</span></li>
+      <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span>The suppliers: Flow for $19, CapCut Pro for $2</span></li>
+      <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span>METHOD, the avatar builders, and ready-to-film scripts</span></li>
+      <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span>The full Viral Radar and winning content library</span></li>
+      <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span>Your accounts tracked, your numbers coached</span></li>
+    </ul>
+    <div><a class="bigcta paycta" id="joincta" href="#" target="_blank" rel="noopener">Join the mentorship &rarr;</a></div>
+    <p class="selnote">&#128274; Secure checkout through Stripe &nbsp;&middot;&nbsp; billed monthly &nbsp;&middot;&nbsp; cancel anytime. Your Discord invite attaches your tier automatically when you join.</p>
   </div>
 
-  <h2>What you unlock</h2>
+  <div class="seleyebrow">What you&rsquo;ll be making</div>
+  <h2 class="selh2">These creators are 100% AI.</h2>
+  <p class="selsub">Every face below was generated with AI. No real person on camera, no filming yourself, no showing your face to anyone you know. You build the creator once, and it makes content for you from then on.</p>
+  <div class="mkrow">
+    <img src="join/1.jpg" alt="" loading="lazy"><img src="join/2.jpg" alt="" loading="lazy"><img src="join/3.jpg" alt="" loading="lazy"><img src="join/4.jpg" alt="" loading="lazy">
+  </div>
+
+  <div class="seleyebrow">What this actually is</div>
+  <h2 class="selh2">How it works.</h2>
+  <div class="selsteps">
+    <div class="selstep"><span class="sn">01</span><div><b>Build your AI creators</b><p>Pick the faces, give them a voice, and place them where your niche lives. The avatar builders walk you through every setting, and Jayden reviews your avatars before you post a single video.</p></div></div>
+    <div class="selstep"><span class="sn">02</span><div><b>Find what is already winning</b><p>The Viral Radar hands you every video going viral in our lane, refreshed twice a day and ranked by how hard it beat its own account. No brainstorming, no guessing.</p></div></div>
+    <div class="selstep"><span class="sn">03</span><div><b>Recreate it with METHOD</b><p>Paste the script into Claude with METHOD and it rebuilds the video as yours, same structure, same hook, new body part, new store, our product. Render it in Flow, cut it in CapCut.</p></div></div>
+    <div class="selstep"><span class="sn">04</span><div><b>Post daily on three accounts</b><p>Two lifestyle accounts and one review account, Instagram and Facebook each. Your posts and views land on your dashboard automatically, and Jayden coaches you off the numbers.</p></div></div>
+    <div class="selstep"><span class="sn">05</span><div><b>Get paid on every sale</b><p>Your affiliate link sits in every bio. Sales through your content pay you directly, and the brand behind it is real, with real customers buying every day.</p></div></div>
+  </div>
+
+  <div class="seleyebrow">The brand you create for</div>
+  <h2 class="selh2">Klareva is a real skincare brand.</h2>
+  <p class="selsub">This is not a course that teaches you and leaves you to find someone who will pay you. Behind the mentorship is a real brand with real products people buy every day, and that is the brand your content earns from.</p>
+  <div class="brandcard">
+    <div class="brandstat">$30K+</div>
+    <p style="color:var(--muted);font-size:.93rem;margin:0">already paid out to creators making content for the brand.</p>
+  </div>
+
+  <div class="seleyebrow">Everything included</div>
+  <h2 class="selh2">Here&rsquo;s everything you get.</h2>
   <div class="selgrid">
-    <div class="selrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>One on one with Jayden</b><span>Direct access. Calls whenever you are stuck, your videos reviewed, your account looked at by the person who has done it.</span></div></div>
-    <div class="selrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>The private Discord</b><span>Your tier attaches automatically the moment you join through the invite you get after paying. Daily video ideas, wins, and Jayden answering in minutes.</span></div></div>
-    <div class="selrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>The suppliers</b><span>The plug for Google Flow with Veo at $19 a month instead of $250, and CapCut Pro for around $2. These alone cover the membership.</span></div></div>
-    <div class="selrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>METHOD + the avatar builders</b><span>The exact documents that turn Claude into your script converter and avatar designer.</span></div></div>
-    <div class="selrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>Ready-to-film script sheets</b><span>Word for word scripts, each mapped to the viral video it was built from.</span></div></div>
-    <div class="selrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>The full Viral Radar</b><span>Every viral video in both lanes, refreshed twice a day, ranked by outlier score, plus the full winning content library. Free accounts see the top 3.</span></div></div>
-    <div class="selrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>Your accounts, tracked</b><span>Add your accounts and every post and view shows up on your dashboard automatically. Jayden sees your numbers and coaches off them.</span></div></div>
-    <div class="selrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>Group call recordings</b><span>Every group call, recorded and posted, so you never miss the adjustments that are working right now.</span></div></div>
+    <div class="selrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>One on one with Jayden</b><span>Direct access, all day, every day. Your videos reviewed, your account looked at by the person who has done it.</span></div></div>
+    <div class="selrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>The private Discord</b><span>Your tier attaches automatically the moment you join through the invite you get after paying. Daily video ideas, wins, and Jayden answering in minutes.</span></div></div>
+    <div class="selrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>The suppliers</b><span>The plug for Google Flow with Veo at $19 a month instead of $250, and CapCut Pro for around $2. These alone cover the membership.</span></div></div>
+    <div class="selrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>METHOD + the avatar builders</b><span>The exact documents that turn Claude into your script converter and avatar designer.</span></div></div>
+    <div class="selrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>Ready-to-film script sheets</b><span>Word for word scripts, each mapped to the viral video it was built from.</span></div></div>
+    <div class="selrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>The full Viral Radar</b><span>Every viral video in both lanes, refreshed twice a day, ranked by outlier score, plus the full winning content library.</span></div></div>
+    <div class="selrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>Your accounts, tracked</b><span>Every post and view shows up on your dashboard automatically, and Jayden coaches off your numbers.</span></div></div>
+    <div class="selrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg><div><b>Group call recordings</b><span>Every group call, recorded and posted, so you never miss what is working right now.</span></div></div>
   </div>
 
-  <div class="note" style="margin-top:1.6rem"><p><strong>You already have all the information.</strong> The courses on this site are free and they hold every step of the system. What they cannot do is watch your account, tell you which of your videos to double down on, or hand you the suppliers and scripts that make it cheap and fast. Knowing and doing are different incomes. This is the doing side.</p></div>
+  <div class="finalcta">
+    <h2 class="selh2">Learn the system free. Run it with Jayden. Get paid.</h2>
+    <a class="bigcta paycta" href="#" target="_blank" rel="noopener">Join the mentorship &rarr;</a>
+  </div>
 </section>
 
 <!-- BOOK -->
@@ -1286,22 +1353,20 @@
     window.KLV_PAID = isPaid();
     var nj = document.getElementById('navjoin');
     if (nj) nj.style.display = (!isPaid() || (ME && ME.is_admin)) ? '' : 'none';
-    var cta = document.getElementById('joincta');
-    if (cta) {
-      var pay = (window.KLAREVA_CFG || {}).payUrl || '';
+    var pay = (window.KLAREVA_CFG || {}).payUrl || '';
+    [].forEach.call(document.querySelectorAll('.paycta'), function (cta) {
       if (pay) {
         // lock the checkout to the email their dashboard account uses, so the
         // payment always matches and the unlock is instant
         cta.href = pay + (pay.indexOf('?') < 0 ? '?' : '&')
           + 'prefilled_email=' + encodeURIComponent((ME && ME.email) || '');
-      }
-      else {
+      } else {
         cta.addEventListener('click', function (e) {
           e.preventDefault();
           cta.textContent = 'Checkout opens shortly, DM Jayden on Discord to join today';
         });
       }
-    }
+    });
     if (isPaid()) return;
     var LOCK = '<svg class="nlk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
     navs.forEach(function (b) {
