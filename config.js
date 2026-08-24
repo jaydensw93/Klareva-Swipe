@@ -16,4 +16,4 @@ window.KLAREVA_CFG = {
 };
 // Checkout link for the $39.99/mo membership (Whop/Stripe). Empty = button
 // shows a "DM Jayden" note instead. Paste the live checkout URL here.
-window.KLAREVA_CFG.payUrl = "";
+window.KLAREVA_CFG.payUrl = "https://buy.stripe.com/4gMbJ3dwfgtQ7p7023gA800";
