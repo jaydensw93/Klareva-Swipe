@@ -565,6 +565,7 @@
     .wpane{padding:1.2rem 1rem 1.3rem}
     .taskbody{padding-left:1.1rem}
   }
+  .wiz{scroll-margin-top:64px}
   @media (max-width:560px){
     .wizdots{display:none}
   }
@@ -2291,7 +2292,14 @@
       + (panes[state.step].getAttribute('data-title') || '');
     back.style.visibility = state.step === 0 ? 'hidden' : 'visible';
     next.textContent = state.step === N - 1 ? 'Go to Courses \u2192' : 'Next \u2192';
-    if (scroll !== false) window.scrollTo(0, 0);
+    if (scroll !== false) {
+      // keep the wizard on screen instead of jumping to the very top
+      var wz = document.querySelector('.wiz');
+      if (wz) {
+        var r = wz.getBoundingClientRect();
+        if (r.top < 0 || r.top > 90) wz.scrollIntoView({ block: 'start' });
+      }
+    }
     updateCount();
   }
 
