@@ -568,6 +568,16 @@
     .wizdots{display:none}
   }
 
+  .navhint{display:none}
+  @media (max-width:860px){
+    .navhint{display:flex;position:fixed;top:0;right:0;z-index:41;height:52px;width:70px;
+      align-items:center;justify-content:flex-end;padding-right:.5rem;pointer-events:none;
+      background:linear-gradient(90deg,rgba(15,10,26,0),rgba(15,10,26,.97) 62%);
+      color:var(--peach);opacity:1;transition:opacity .25s}
+    .navhint svg{animation:hintpulse 1.5s ease-in-out infinite}
+  }
+  @keyframes hintpulse{0%,100%{transform:translateX(0);opacity:.7}50%{transform:translateX(5px);opacity:1}}
+
   /* ---- membership gating ---- */
   .nlk{width:11px;height:11px;flex:0 0 auto;margin-left:auto;opacity:.55}
   .navbtn.navlocked span{opacity:.72}
@@ -712,6 +722,7 @@
   <div class="whoami" id="whoami"></div>
   <button class="signout" id="signout" type="button">Sign out</button>
 </nav>
+<div class="navhint" id="navhint" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
 
 <main>
 
@@ -1353,6 +1364,28 @@
   /* ---------------------------------------------------------- nav ---- */
   var navs = [].slice.call(document.querySelectorAll('.navbtn'));
   var secs = [].slice.call(document.querySelectorAll('section.sec'));
+  /* the pill row has to LOOK swipeable: chevron until the end is reached,
+     plus a little scroll-and-back nudge on first paint */
+  (function () {
+    var bar = document.querySelector('.side');
+    var hint = document.getElementById('navhint');
+    if (!bar || !hint) return;
+    function upd() {
+      var max = bar.scrollWidth - bar.clientWidth;
+      hint.style.opacity = (max > 30 && bar.scrollLeft < max - 24) ? '1' : '0';
+    }
+    bar.addEventListener('scroll', upd, { passive: true });
+    window.addEventListener('resize', upd);
+    upd();
+    if (window.matchMedia && window.matchMedia('(max-width:860px)').matches) {
+      setTimeout(function () {
+        if (bar.scrollLeft > 4) return;
+        bar.scrollTo({ left: 120, behavior: 'smooth' });
+        setTimeout(function () { bar.scrollTo({ left: 0, behavior: 'smooth' }); }, 600);
+      }, 900);
+    }
+  })();
+
   var GATED = { scripts: 1, docs: 1, calls: 1, book: 1, accounts: 1 };
   function isPaid() {
     if (!ME) return false;
