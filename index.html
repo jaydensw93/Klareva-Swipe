@@ -1427,8 +1427,10 @@
     }
   }
 
+  // master paywall switch, flipped in config.js (paywall: true/false)
+  var PAYWALL = (window.KLAREVA_CFG || {}).paywall !== false;
   var GATED = { scripts: 1, docs: 1, book: 1, accounts: 1 };
-  var TABMAP = { intro: 'intro', courses: 'courses', radar: 'radar', join: 'join' };
+  var TABMAP = { intro: 'intro', courses: 'courses', radar: 'radar', join: PAYWALL ? 'join' : 'book' };
   function lightTab(sec) {
     [].forEach.call(document.querySelectorAll('.tabbtn'), function (t) {
       t.classList.toggle('on', TABMAP[t.dataset.tab] === sec);
@@ -1436,7 +1438,9 @@
   }
   [].forEach.call(document.querySelectorAll('.tabbtn'), function (t) {
     t.addEventListener('click', function () {
-      var b = document.querySelector('.navbtn[data-go="' + t.dataset.tab + '"]');
+      var go = t.dataset.tab;
+      if (!PAYWALL && go === 'join') go = 'book';
+      var b = document.querySelector('.navbtn[data-go="' + go + '"]');
       if (b) b.click();
     });
   });
@@ -1447,6 +1451,7 @@
     });
   });
   function isPaid() {
+    if (!PAYWALL) return true;
     if (!ME) return false;
     // until supabase-paid.sql has been run the column does not exist;
     // treat that as paid so existing students never get locked out
@@ -1472,7 +1477,7 @@
   function gateUI() {
     window.KLV_PAID = isPaid();
     var nj = document.getElementById('navjoin');
-    if (nj) nj.style.display = (!isPaid() || (ME && ME.is_admin)) ? '' : 'none';
+    if (nj) nj.style.display = (PAYWALL && (!isPaid() || (ME && ME.is_admin))) ? '' : 'none';
     var pay = (window.KLAREVA_CFG || {}).payUrl || '';
     [].forEach.call(document.querySelectorAll('.paycta'), function (cta) {
       if (pay) {
@@ -1674,7 +1679,8 @@
     var alt = document.createElement('button');
     alt.className = 'wmalt';
     alt.type = 'button';
-    alt.textContent = 'See the 1 on 1 mentorship \u2192';
+    var PW = (window.KLAREVA_CFG || {}).paywall !== false;
+    alt.textContent = PW ? 'See the 1 on 1 mentorship \u2192' : 'Book a 1 on 1 call with Jayden \u2192';
 
     function markSeen() {
       try { localStorage.setItem('klv_welcome_v1', '1'); } catch (e) {}
@@ -1685,7 +1691,7 @@
     ov.addEventListener('click', function (e) { if (e.target === ov) closeIt(); });
     alt.addEventListener('click', function () {
       closeIt();
-      var j = document.querySelector('.navbtn[data-go="join"]');
+      var j = document.querySelector('.navbtn[data-go="' + (PW ? 'join' : 'book') + '"]');
       if (j) j.click();
     });
 
