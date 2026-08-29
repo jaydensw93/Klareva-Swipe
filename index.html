@@ -1615,6 +1615,12 @@
           document.getElementById('whoami').textContent = ME.name || ME.email;
           if (ME.is_admin) document.getElementById('navadmin').style.display = '';
           gateUI();
+          // ?go=<section> deep link, e.g. swipe.klareva.co/?go=join from the bio
+          var goP = new URLSearchParams(location.search).get('go');
+          if (goP && /^[a-z]+$/.test(goP)) {
+            var gb = document.querySelector('.navbtn[data-go="' + goP + '"]');
+            if (gb) gb.click();
+          }
           if (!welcomeModal()) callNudge();
           var md = document.getElementById('mydiscord');
           if (md && ME.discord) md.value = ME.discord;
